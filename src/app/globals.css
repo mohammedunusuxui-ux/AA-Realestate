@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #030102;
+  --foreground: #ffffff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom Scrollbar for Luxury Aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #030102;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+html, body, button, input, select, textarea {
+  font-family: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+html, body {
+  background-color: #030102;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: hidden; /* Block page scroll and hide default scrollbar */
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Chrome/Safari utility to prevent white flash during fast scroll load */
+canvas {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Premium Button Animations */
+.btn-animate-primary {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.btn-animate-primary:hover {
+  transform: translateY(-2px) !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: 0 12px 30px -5px rgba(255, 255, 255, 0.35) !important;
+}
+.btn-animate-primary:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+.btn-animate-secondary {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.btn-animate-secondary:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 12px 30px -5px rgba(255, 255, 255, 0.15) !important;
+}
+.btn-animate-secondary:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* Explicitly force standard system cursor visibility */
+* {
+  cursor: auto;
+}
+html, body {
+  cursor: auto !important;
+}
+a, button, select, input, textarea, [role="button"], [type="button"], label, .cursor-pointer {
+  cursor: pointer !important;
+}
+input[type="text"], input[type="email"], input[type="password"], input[type="tel"], textarea {
+  cursor: text !important;
+}
+
+/* Utility to hide scrollbar but keep scroll functionality */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Vertical marquee scroll animation */
+@keyframes vertical-scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.animate-vertical-scroll {
+  animation: vertical-scroll 30s linear infinite;
 }
+
+/* Horizontal marquee scroll animation */
+@keyframes horizontal-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-horizontal-scroll {
+  animation: horizontal-scroll 45s linear infinite;
+}
+
+
