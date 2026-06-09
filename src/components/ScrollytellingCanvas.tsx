@@ -61,7 +61,7 @@ export default function ScrollytellingCanvas() {
   const [formState, setFormState] = useState({ name: "", email: "", phone: "", interest: "Villas" });
 
   // Section 4 Active Card State
-  const [activeCard, setActiveCard] = useState<1 | 2 | 3>(1);
+  const [activeCard, setActiveCard] = useState<1 | 2 | 3 | 4>(1);
 
   // Authentication Modal State
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -566,8 +566,10 @@ export default function ScrollytellingCanvas() {
                 playsInline
                 className="w-full h-full object-cover"
               />
+              {/* Dark overlay to enhance text readability */}
+              <div className="absolute inset-0 bg-black/35 z-5 pointer-events-none" />
               {/* Gradient overlay for cinematic contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/45 z-10 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/55 z-10 pointer-events-none" />
             </div>
 
             {/* Cinematic Text Content Overlay */}
@@ -606,7 +608,7 @@ export default function ScrollytellingCanvas() {
                   className="w-full h-full object-cover"
                 />
                 {/* Premium overlay to blend video with light luxury design and maintain high readability */}
-                <div className="absolute inset-0 bg-[#F7F7F7]/80 backdrop-blur-[1px] z-10 pointer-events-none" />
+                <div className="absolute inset-0 bg-[#F7F7F7]/88 backdrop-blur-[1.5px] z-10 pointer-events-none" />
               </div>
 
               {/* Soft ambient corner vignette blobs */}
@@ -702,7 +704,7 @@ export default function ScrollytellingCanvas() {
               </div>
 
               {/* Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6 w-full">
 
                 {/* Card 01 - Talk to a Real Human */}
                 <div
@@ -834,6 +836,51 @@ export default function ScrollytellingCanvas() {
                     ) : (
                       <h3 className="text-lg sm:text-xl font-bold text-white/90 group-hover:text-white leading-snug transition-colors duration-500">
                         We find what fits — and make it happen.
+                      </h3>
+                    )}
+                  </div>
+                </div>
+
+                {/* Card 04 - Close with Confidence */}
+                <div
+                  onClick={() => setActiveCard(4)}
+                  className={`relative aspect-[4/3] md:aspect-auto md:h-[500px] rounded-[2rem] p-8 overflow-hidden flex flex-col justify-between group transition-all duration-500 cursor-pointer ${activeCard === 4 ? "md:col-span-2 bg-neutral-950 hover:shadow-xl shadow-lg" : "md:col-span-1 bg-neutral-900 hover:-translate-y-1 shadow-sm hover:shadow-md"
+                    }`}
+                >
+                  {/* Background Image */}
+                  <img
+                    src="/couple_happy_home.png"
+                    alt="Close with Confidence"
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out z-0 ${activeCard === 4 ? "opacity-85 scale-100" : "opacity-75 scale-100 group-hover:scale-105"
+                      }`}
+                  />
+                  {/* Dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 z-10 pointer-events-none" />
+
+                  {/* Top Right Number */}
+                  <div className="relative z-20 flex justify-between items-start w-full">
+                    <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-white/85">
+                      Close with Confidence
+                    </span>
+                    <span className="text-[3.5rem] sm:text-[4.5rem] font-bold leading-none tracking-tighter text-white/90">
+                      .04
+                    </span>
+                  </div>
+
+                  {/* Bottom Left Content */}
+                  <div className="relative z-20">
+                    {activeCard === 4 ? (
+                      <>
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white leading-snug">
+                          Seamless Closing.
+                        </h3>
+                        <p className="text-xs sm:text-sm text-white/70 mt-2 font-light max-w-sm leading-relaxed">
+                          We handle the complex details to make handover seamless.
+                        </p>
+                      </>
+                    ) : (
+                      <h3 className="text-lg sm:text-xl font-bold text-white/90 group-hover:text-white leading-snug transition-colors duration-500">
+                        We handle the complex details to make handover seamless.
                       </h3>
                     )}
                   </div>
@@ -1470,11 +1517,20 @@ export default function ScrollytellingCanvas() {
           {/* ── Section 7: Footer Banner ── */}
           <div className="relative w-full bg-[#171717] px-6 sm:px-10 md:px-14 lg:px-16 py-24 md:py-32 overflow-hidden text-white font-sans border-t border-white/5">
 
+            {/* Background Image Banner */}
+            <div className="absolute inset-0 z-0">
+              <img
+                src="/Footer Banner Image/AD8Qpts9AmNOiGQ1XK4D2QuFM.png"
+                alt="Footer Banner Background"
+                className="w-full h-full object-cover opacity-75"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/95 via-[#171717]/80 to-[#171717] z-10 pointer-events-none" />
+            </div>
 
             {/* Subtle ambient lighting effect inside the dark banner */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full bg-amber-500/5 blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full bg-amber-500/5 blur-[120px] pointer-events-none z-5" />
 
-            <div className="relative z-10 w-full max-w-6xl mx-auto flex flex-col items-center text-center gap-8 md:gap-10">
+            <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col items-center text-center gap-8 md:gap-10">
               {/* Accent line or badge */}
               <div className="flex items-center gap-2 text-white/50">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block animate-pulse" />
@@ -2168,26 +2224,26 @@ const RevealWord: React.FC<RevealWordProps> = ({ word, bold, italic, index, tota
   const wordStart = sectionStart + index * spread;
   const wordEnd = Math.min(wordStart + spread * 1.6, sectionEnd);
 
-  // Opacity: 0.15 → 1
+  // Opacity: 0.35 → 1
   const opacity = useTransform(
     scrollProgress,
     [wordStart, wordEnd],
-    [0.15, 1]
+    [0.35, 1]
   );
 
-  // Blur: blur(8px) → blur(0px)
+  // Blur: blur(4px) → blur(0px)
   const blurVal = useTransform(
     scrollProgress,
     [wordStart, wordEnd],
-    [8, 0]
+    [4, 0]
   );
   const filter = useTransform(blurVal, (v) => `blur(${v}px)`);
 
-  // Colour: light grey → near-black
+  // Colour: middle grey → near-black
   const color = useTransform(
     scrollProgress,
     [wordStart, wordEnd],
-    ["#c3c3c3", "#171717"]
+    ["#737373", "#171717"]
   );
 
   return (

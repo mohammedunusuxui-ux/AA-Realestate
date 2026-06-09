@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeContext";
 
 const interTight = localFont({
   src: [
@@ -111,7 +112,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${interTight.variable} h-full antialiased dark overflow-hidden`}>
       <body className="h-full bg-[#030102] text-white/90 font-sans selection:bg-white/20 selection:text-white overflow-hidden">
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

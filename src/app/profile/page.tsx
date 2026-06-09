@@ -91,7 +91,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Minimalist Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-10 bg-[#171717]/90 backdrop-blur-md px-8 py-2.5 rounded-full border border-white/10 shadow-sm font-sans">
+        <nav className="hidden md:flex items-center gap-14 bg-[#171717]/90 backdrop-blur-md px-12 py-4 rounded-full border border-white/10 shadow-sm font-sans">
           <div
             className="flex items-center"
             onMouseEnter={() => setIsBuyDropdownOpen(true)}
@@ -124,11 +124,11 @@ export default function ProfilePage() {
                           Residential Properties
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Sale</Link>
-                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Sale</Link>
-                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Sale</Link>
-                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Sale</Link>
-                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Land / Plots for Sale</Link>
+                          <Link href="/properties?type=buy&category=apartments" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Sale</Link>
+                          <Link href="/properties?type=buy&category=villas" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Sale</Link>
+                          <Link href="/properties?type=buy&category=townhouses" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Sale</Link>
+                          <Link href="/properties?type=buy&category=penthouses" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Sale</Link>
+                          <Link href="/properties?type=buy&category=plots" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Land / Plots for Sale</Link>
                         </div>
                       </div>
 
@@ -258,11 +258,11 @@ export default function ProfilePage() {
                           Residential Properties
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Rent</Link>
-                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Studios for Rent</Link>
-                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Rent</Link>
-                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Rent</Link>
-                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Rent</Link>
+                          <Link href="/properties?type=rent&category=apartments" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Rent</Link>
+                          <Link href="/properties?type=rent&category=studios" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Studios for Rent</Link>
+                          <Link href="/properties?type=rent&category=villas" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Rent</Link>
+                          <Link href="/properties?type=rent&category=townhouses" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Rent</Link>
+                          <Link href="/properties?type=rent&category=penthouses" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Rent</Link>
                         </div>
                       </div>
 

@@ -1,9 +1,42 @@
 @import "tailwindcss";
 
-:root {
-  --background: #030102;
-  --foreground: #ffffff;
+/* ── Dark Mode (default) ── */
+:root, .dark {
+  --bg-primary:     #030102;
+  --bg-secondary:   #111111;
+  --bg-card:        #171717;
+  --bg-nav:         #171717;
+  --border-subtle:  rgba(255,255,255,0.08);
+  --text-primary:   rgba(255,255,255,0.92);
+  --text-secondary: rgba(255,255,255,0.50);
+  --text-muted:     rgba(255,255,255,0.25);
+  --accent:         #C8994A;
+  --scrollbar-track: #030102;
+  --scrollbar-thumb: rgba(255,255,255,0.10);
+  --scrollbar-thumb-hover: rgba(255,255,255,0.25);
 }
+
+/* ── Light Mode — matched to home page Section 4 ── */
+.light {
+  --bg-primary:     #FFFFFF;
+  --bg-secondary:   #F5F5F5;
+  --bg-card:        #FFFFFF;
+  --bg-nav:         rgba(255,255,255,0.96);
+  --border-subtle:  rgba(23,23,23,0.10);
+  --text-primary:   #171717;
+  --text-secondary: #878787;
+  --text-muted:     #B0B0B0;
+  --accent:         #171717;
+  --accent-hover:   #333333;
+  --btn-default-bg:     #171717;
+  --btn-default-text:   #FFFFFF;
+  --btn-hover-bg:       #333333;
+  --btn-active-bg:      #000000;
+  --scrollbar-track: #F5F5F5;
+  --scrollbar-thumb: rgba(23,23,23,0.12);
+  --scrollbar-thumb-hover: rgba(23,23,23,0.28);
+}
+
 
 @theme {
   --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -12,18 +45,18 @@
 /* Custom Scrollbar for Luxury Aesthetics */
 ::-webkit-scrollbar {
   width: 6px;
-  height: 0px; /* Hide horizontal scrollbar globally */
+  height: 0px;
 }
 ::-webkit-scrollbar-track {
-  background: #030102;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
   transition: background 0.3s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Hide horizontal scrollbar globally */
@@ -37,13 +70,14 @@ html, body, button, input, select, textarea {
 }
 
 html, body {
-  background-color: #030102;
-  color: rgba(255, 255, 255, 0.9);
-  overflow: hidden; /* Block page scroll and hide default scrollbar */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Chrome/Safari utility to prevent white flash during fast scroll load */
@@ -150,4 +184,455 @@ select:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #0c0b0c inset !important;
   transition: background-color 5000s ease-in-out 0s !important;
 }
+
+/* ═══════════════════════════════════════════════
+   LIGHT MODE — Properties Page (Section 4 palette)
+═══════════════════════════════════════════════ */
+
+/* Page wrapper */
+.light .properties-page {
+  background-color: #FFFFFF !important;
+  color: #171717 !important;
+}
+
+
+/* ── Page heading (breadcrumbs + title) & general light mode text color mappings ── */
+.light .properties-page h1 {
+  color: #171717 !important;
+}
+.light .properties-page p {
+  color: #878787 !important;
+}
+.light .properties-page a[href="/"] {
+  color: #B0B0B0 !important;
+}
+.light .properties-page .text-white {
+  color: #171717 !important;
+}
+.light .properties-page .text-white\/90 {
+  color: #1C1C1C !important;
+}
+.light .properties-page .text-white\/80 {
+  color: #2E2E2E !important;
+}
+.light .properties-page .text-white\/75 {
+  color: #3C3C3C !important;
+}
+.light .properties-page .text-white\/70 {
+  color: #555555 !important;
+}
+.light .properties-page .text-white\/60 {
+  color: #666666 !important;
+}
+.light .properties-page .text-white\/55 {
+  color: #707070 !important;
+}
+.light .properties-page .text-white\/50 {
+  color: #7C7C7C !important;
+}
+.light .properties-page .text-white\/45 {
+  color: #888888 !important;
+}
+.light .properties-page .text-white\/40 {
+  color: #949494 !important;
+}
+.light .properties-page .text-white\/30 {
+  color: #A5A5A5 !important;
+}
+.light .properties-page .text-white\/25 {
+  color: #B2B2B2 !important;
+}
+.light .properties-page .text-white\/20 {
+  color: #C0C0C0 !important;
+}
+.light .properties-page .text-white\/10 {
+  color: #E2E2E2 !important;
+}
+.light .properties-page .bg-white\/3.rounded-\[2rem\] {
+  background-color: #F8F8F8 !important;
+  border-color: rgba(23, 23, 23, 0.08) !important;
+}
+
+/* Ensure header elements remain white/light in light mode since header is dark themed */
+.light .properties-page header .text-white { color: #FFFFFF !important; }
+.light .properties-page header .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+.light .properties-page header .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+.light .properties-page header .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+.light .properties-page header .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+.light .properties-page header .text-white\/55 { color: rgba(255, 255, 255, 0.55) !important; }
+.light .properties-page header .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+.light .properties-page header .text-white\/45 { color: rgba(255, 255, 255, 0.45) !important; }
+.light .properties-page header .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+.light .properties-page header .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+.light .properties-page header .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
+.light .properties-page header .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+.light .properties-page header .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+
+/* ── Filter Sidebar ── */
+.light aside {
+  background-color: #FFFFFF !important;
+  border: 1px solid rgba(23,23,23,0.10) !important;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.06) !important;
+}
+.light aside h3 {
+  color: #171717 !important;
+}
+.light aside label {
+  color: #B0B0B0 !important;
+}
+.light aside button.text-white\/60 {
+  color: #878787 !important;
+}
+.light aside button.text-white\/60:hover {
+  color: #171717 !important;
+}
+.light aside input[type="text"] {
+  background-color: #F5F5F5 !important;
+  border-color: rgba(23,23,23,0.10) !important;
+  color: #171717 !important;
+}
+.light aside input::placeholder {
+  color: #B0B0B0 !important;
+}
+.light aside select {
+  background-color: #F5F5F5 !important;
+  border-color: rgba(23,23,23,0.10) !important;
+  color: #878787 !important;
+}
+.light aside .border-t {
+  border-color: rgba(23,23,23,0.08) !important;
+}
+.light aside svg {
+  color: #B0B0B0 !important;
+}
+
+/* ── Pill Buttons (Filter sidebar) ── */
+/* Inactive pill */
+.light aside button.rounded-lg:not(.bg-white) {
+  background-color: #F5F5F5 !important;
+  border-color: rgba(23, 23, 23, 0.12) !important;
+  color: #878787 !important;
+}
+.light aside button.rounded-lg:not(.bg-white):hover {
+  background-color: #EFEFEF !important;
+  border-color: rgba(23, 23, 23, 0.20) !important;
+  color: #171717 !important;
+}
+/* Active pill — Section 4 style: filled dark */
+.light aside button.rounded-lg.bg-white {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+  color: #FFFFFF !important;
+}
+.light aside button.rounded-lg.bg-white:hover {
+  background-color: #333333 !important;
+  border-color: #333333 !important;
+}
+.light aside button.rounded-lg.bg-white:active {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  transform: scale(0.97);
+}
+
+/* ── Category pills top bar ── */
+.light .category-pill-bar {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(23, 23, 23, 0.08) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05) !important;
+}
+/* Active category pill */
+.light .category-pill-bar button.bg-white,
+.light .category-pill-bar button.text-black {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+  color: #FFFFFF !important;
+}
+.light .category-pill-bar button.bg-white span,
+.light .category-pill-bar button.text-black span {
+  color: #FFFFFF !important;
+}
+.light .category-pill-bar button.bg-white span.text-black\/50,
+.light .category-pill-bar button.text-black span.text-black\/50 {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Inactive category pill */
+.light .category-pill-bar button:not(.bg-white):not(.text-black) {
+  background-color: #F5F5F5 !important;
+  border-color: rgba(23, 23, 23, 0.10) !important;
+  color: #878787 !important;
+}
+.light .category-pill-bar button:not(.bg-white):not(.text-black) span,
+.light .category-pill-bar button:not(.bg-white):not(.text-black) svg {
+  color: #878787 !important;
+}
+.light .category-pill-bar button:not(.bg-white):not(.text-black) span.text-white\/30 {
+  color: rgba(23, 23, 23, 0.4) !important;
+}
+.light .category-pill-bar button:not(.bg-white):hover {
+  background-color: #EFEFEF !important;
+  color: #171717 !important;
+}
+.light .category-pill-bar button:not(.bg-white):hover span,
+.light .category-pill-bar button:not(.bg-white):hover svg {
+  color: #171717 !important;
+}
+.light .category-pill-bar button:not(.bg-white):hover span.text-white\/30 {
+  color: rgba(23, 23, 23, 0.6) !important;
+}
+
+/* ── Property Cards ── */
+.light .property-card-container {
+  border-color: rgba(23, 23, 23, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+}
+.light .property-card-container:hover {
+  border-color: rgba(23, 23, 23, 0.15) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+}
+/* Ensure text inside property cards remains white in light mode since cards are dark-themed */
+.light .properties-page .property-card-container .text-white { color: #FFFFFF !important; }
+.light .properties-page .property-card-container .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+.light .properties-page .property-card-container .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+.light .properties-page .property-card-container .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+.light .properties-page .property-card-container .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+.light .properties-page .property-card-container .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+.light .properties-page .property-card-container .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+.light .properties-page .property-card-container .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+.light .properties-page .property-card-container .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
+.light .properties-page .property-card-container .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+.light .properties-page .property-card-container .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+.light .property-card-container .absolute.bottom-0 h3,
+.light .property-card-container .absolute.bottom-0 p,
+.light .property-card-container .absolute.bottom-0 span,
+.light .property-card-container .absolute.bottom-0 svg {
+  color: #FFFFFF !important;
+}
+.light .property-card-container .absolute.bottom-0 button:hover svg {
+  color: #171717 !important;
+}
+
+/* ── View Switcher Dropdown (Light Mode) ── */
+.light .properties-page .view-switcher-btn {
+  background-color: #F5F5F5 !important;
+  border-color: rgba(23, 23, 23, 0.10) !important;
+  color: #878787 !important;
+}
+.light .properties-page .view-switcher-btn:hover {
+  background-color: #EFEFEF !important;
+  color: #171717 !important;
+}
+.light .properties-page .view-switcher-btn span,
+.light .properties-page .view-switcher-btn svg {
+  color: inherit !important;
+}
+
+.light .properties-page .view-switcher-menu {
+  background-color: #FFFFFF !important;
+  border-color: rgba(23, 23, 23, 0.10) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Inactive item in menu */
+.light .properties-page .view-switcher-menu button {
+  color: #878787 !important;
+  background-color: transparent !important;
+}
+.light .properties-page .view-switcher-menu button:hover {
+  background-color: #F5F5F5 !important;
+  color: #171717 !important;
+}
+.light .properties-page .view-switcher-menu button span,
+.light .properties-page .view-switcher-menu button svg {
+  color: inherit !important;
+}
+
+/* Active item in menu */
+.light .properties-page .view-switcher-menu button.active-view {
+  background-color: #171717 !important;
+  color: #FFFFFF !important;
+}
+.light .properties-page .view-switcher-menu button.active-view span,
+.light .properties-page .view-switcher-menu button.active-view svg {
+  color: #FFFFFF !important;
+}
+
+/* ── Property Card List View Light Mode Overrides ── */
+.light .properties-page .property-card-list {
+  background-color: #FFFFFF !important;
+  border-color: rgba(23, 23, 23, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+}
+.light .properties-page .property-card-list:hover {
+  border-color: rgba(23, 23, 23, 0.15) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+}
+/* Force right details container to white background */
+.light .properties-page .property-card-list > div.flex-1 {
+  background-color: #FFFFFF !important;
+  backdrop-filter: none !important;
+}
+/* Force headings & main text to dark charcoal */
+.light .properties-page .property-card-list h3,
+.light .properties-page .property-card-list .text-white,
+.light .properties-page .property-card-list .text-white\/90,
+.light .properties-page .property-card-list .text-white\/80 {
+  color: #171717 !important;
+}
+/* Force specifications, location and subtitle text to neutral dark-gray */
+.light .properties-page .property-card-list p,
+.light .properties-page .property-card-list span:not(.text-black):not(.text-amber-400),
+.light .properties-page .property-card-list .text-white\/50 {
+  color: #555555 !important;
+}
+/* Developer tag pill background */
+.light .properties-page .property-card-list span.bg-white\/10 {
+  background-color: #F5F5F5 !important;
+  color: #555555 !important;
+}
+
+/* List View Call/WhatsApp action buttons (Dark Mode default - dark bg, white text) */
+.properties-page .property-card-list .list-action-btn {
+  background-color: #1f1f1f !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+}
+.properties-page .property-card-list .list-action-btn:hover {
+  background-color: #2e2e2e !important;
+  color: #FFFFFF !important;
+}
+.properties-page .property-card-list .list-action-btn svg {
+  color: #FFFFFF !important;
+}
+.properties-page .property-card-list .list-action-btn:hover svg {
+  color: #FFFFFF !important;
+}
+.properties-page .property-card-list a.list-action-btn span,
+.properties-page .property-card-list a.list-action-btn:hover span {
+  color: #FFFFFF !important;
+}
+
+/* List View Call/WhatsApp action buttons (Light Mode override - matching primary style) */
+.light .properties-page .property-card-list .list-action-btn {
+  background-color: #171717 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+.light .properties-page .property-card-list .list-action-btn:hover {
+  background-color: #333333 !important;
+  color: #FFFFFF !important;
+}
+.light .properties-page .property-card-list .list-action-btn svg {
+  color: #FFFFFF !important;
+}
+.light .properties-page .property-card-list .list-action-btn:hover svg {
+  color: #FFFFFF !important;
+}
+.light .properties-page .property-card-list a.list-action-btn span,
+.light .properties-page .property-card-list a.list-action-btn:hover span {
+  color: #FFFFFF !important;
+}
+
+/* ── Smooth Fade In Animation ── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+/* ── Sidebar Select Options ── */
+.light aside select option {
+  background-color: #FFFFFF !important;
+  color: #171717 !important;
+}
+
+/* ── FAQ Accordion ── */
+/* Separators */
+.light .properties-page .divide-white\/8 > * + * {
+  border-color: rgba(23, 23, 23, 0.08) !important;
+}
+/* Section pre-header */
+.light .properties-page p.text-white\/30 {
+  color: #B0B0B0 !important;
+}
+/* Question text */
+.light .properties-page span.text-white\/80 {
+  color: #171717 !important;
+}
+.light .properties-page button:hover span.text-white\/80 {
+  color: #000000 !important;
+}
+/* Answer text */
+.light .properties-page .text-white\/45 {
+  color: #878787 !important;
+}
+/* Plus/Minus circular icon */
+.light .properties-page span[class*="border-white/10"] {
+  border-color: rgba(23, 23, 23, 0.12) !important;
+}
+.light .properties-page span.text-white\/40 {
+  color: #878787 !important;
+}
+.light .properties-page span.bg-white.text-black {
+  background-color: #171717 !important;
+  color: #FFFFFF !important;
+}
+
+/* ── Dark Footer Light Mode Contrast Fix ── */
+.light .properties-page .properties-footer .text-white { color: #FFFFFF !important; }
+.light .properties-page .properties-footer .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+.light .properties-page .properties-footer .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+.light .properties-page .properties-footer .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+.light .properties-page .properties-footer .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+.light .properties-page .properties-footer .text-white\/55 { color: rgba(255, 255, 255, 0.55) !important; }
+.light .properties-page .properties-footer .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+.light .properties-page .properties-footer .text-white\/45 { color: rgba(255, 255, 255, 0.45) !important; }
+.light .properties-page .properties-footer .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+.light .properties-page .properties-footer .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+.light .properties-page .properties-footer .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
+.light .properties-page .properties-footer .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+.light .properties-page .properties-footer .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+.light .properties-page .properties-footer .border-t { border-color: rgba(255, 255, 255, 0.1) !important; }
+.light .properties-page .properties-footer a { color: rgba(255, 255, 255, 0.5); }
+.light .properties-page .properties-footer a:hover { color: #FFFFFF !important; }
+
+/* ── Dark Inquiry Modal Light Mode Contrast Fix ── */
+.light .properties-page .inquiry-modal {
+  background-color: #171717 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.light .properties-page .inquiry-modal .text-white { color: #FFFFFF !important; }
+.light .properties-page .inquiry-modal .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+.light .properties-page .inquiry-modal .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+.light .properties-page .inquiry-modal .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+.light .properties-page .inquiry-modal .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+.light .properties-page .inquiry-modal .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+.light .properties-page .inquiry-modal .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+.light .properties-page .inquiry-modal .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+.light .properties-page .inquiry-modal .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
+.light .properties-page .inquiry-modal .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+.light .properties-page .inquiry-modal .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+.light .properties-page .inquiry-modal label {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+.light .properties-page .inquiry-modal input,
+.light .properties-page .inquiry-modal textarea {
+  background-color: rgba(3, 1, 2, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF !important;
+}
+.light .properties-page .inquiry-modal input:focus,
+.light .properties-page .inquiry-modal textarea:focus {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
 
