@@ -1,87 +1,85 @@
 "use client";
 
-import React from "react";
-import ScrollytellingCanvas from "@/components/ScrollytellingCanvas";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function Home() {
+export default function ProfilePage() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<"info" | "saved" | "alerts" | "contacted">("info");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState("mohammedunusuxui@gmail.com");
+  const [name, setName] = useState("Mohammed");
+  const [surname, setSurname] = useState("Unus");
+  const [isSaved, setIsSaved] = useState(false);
 
-  const [scrolled, setScrolled] = React.useState(false);
-  const [isBuyDropdownOpen, setIsBuyDropdownOpen] = React.useState(false);
-  const [isRentDropdownOpen, setIsRentDropdownOpen] = React.useState(false);
-  const [isNewProjectsDropdownOpen, setIsNewProjectsDropdownOpen] = React.useState(false);
-  const [isToolsDropdownOpen, setIsToolsDropdownOpen] = React.useState(false);
-  const [isMortgageDropdownOpen, setIsMortgageDropdownOpen] = React.useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isBuyDropdownOpen, setIsBuyDropdownOpen] = useState(false);
+  const [isRentDropdownOpen, setIsRentDropdownOpen] = useState(false);
+  const [isNewProjectsDropdownOpen, setIsNewProjectsDropdownOpen] = useState(false);
+  const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
+  const [isMortgageDropdownOpen, setIsMortgageDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [userEmail, setUserEmail] = React.useState("");
-
-  React.useEffect(() => {
-    // Check initial login state
+  useEffect(() => {
+    // Check authentication state
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedIn);
-    setUserEmail(localStorage.getItem("userEmail") || "");
-
-    const handleScrollChange = (e: Event) => {
-      const customEvent = e as CustomEvent<boolean>;
-      setScrolled(customEvent.detail);
-    };
-
-    const handleAuthChange = (e: Event) => {
-      const customEvent = e as CustomEvent<{ isLoggedIn: boolean }>;
-      setIsLoggedIn(customEvent.detail.isLoggedIn);
-      setUserEmail(localStorage.getItem("userEmail") || "");
-    };
-
-    window.addEventListener("headerScrollChange", handleScrollChange);
-    window.addEventListener("authStateChange", handleAuthChange);
-
-    // Read query parameters to scroll to specific sections on mount
-    const params = new URLSearchParams(window.location.search);
-    const sectionParam = params.get("section");
-    if (sectionParam !== null) {
-      const sectionIndex = parseInt(sectionParam, 10);
-      if (!isNaN(sectionIndex)) {
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent("scrollToSection", { detail: sectionIndex }));
-        }, 600);
-      }
+    if (!loggedIn) {
+      // If not logged in, redirect to home page
+      router.push("/");
+      return;
     }
+    setIsLoggedIn(true);
 
-    return () => {
-      window.removeEventListener("headerScrollChange", handleScrollChange);
-      window.removeEventListener("authStateChange", handleAuthChange);
-    };
-  }, []);
+    // Load credentials from local storage if available
+    const storedEmail = localStorage.getItem("userEmail");
+    if (storedEmail) setEmail(storedEmail);
 
-  const handleNavClick = (e: React.MouseEvent, sectionIndex: number, openInquiry = false) => {
-    e.preventDefault();
-    window.dispatchEvent(new CustomEvent("scrollToSection", { detail: sectionIndex }));
-    if (openInquiry) {
-      // Small delay to allow the scroll animation to transition before displaying the modal
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("openInquiryModal"));
-      }, 300);
-    }
+    const storedName = localStorage.getItem("userName");
+    if (storedName) setName(storedName);
+
+    const storedSurname = localStorage.getItem("userSurname");
+    if (storedSurname) setSurname(storedSurname);
+  }, [router]);
+
+  const handleSave = () => {
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userSurname", surname);
+    setIsSaved(true);
+    setTimeout(() => {
+      setIsSaved(false);
+    }, 3000);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userEmail");
+    setIsLoggedIn(false);
+    // Notify main page of auth change
+    window.dispatchEvent(new CustomEvent("authStateChange", { detail: { isLoggedIn: false } }));
+    router.push("/");
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-[#030102] flex items-center justify-center font-sans">
+        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div className="relative min-h-screen bg-[#030102] selection:bg-white/20 selection:text-white overflow-hidden">
+    <div className="min-h-screen h-full bg-[#030102] text-white/90 font-sans overflow-y-auto selection:bg-white/20 selection:text-white relative">
+      {/* Background Ambient Glows */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-amber-500/5 blur-[150px] pointer-events-none z-0" />
 
-
-      {/* Premium Header/Navigation */}
-      <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 flex items-center justify-between pointer-events-none ${
-        scrolled 
-          ? "bg-[#030102]/65 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12" 
-          : "bg-transparent py-6 md:py-8 px-6 md:px-12"
-      }`}>
+      {/* Premium Header */}
+      <header className="relative z-50 w-full border-b border-white/5 bg-[#030102]/80 backdrop-blur-md px-6 md:px-12 py-5 flex items-center justify-between">
         {/* Brand Logo */}
-        <div className="pointer-events-auto font-sans">
-          <a
-            href="#"
-            onClick={(e) => handleNavClick(e, 0)}
+        <div className="font-sans">
+          <Link
+            href="/"
             className="block select-none hover:opacity-80 transition-all duration-300"
           >
             <img
@@ -89,25 +87,24 @@ export default function Home() {
               alt="AA Traders Logo"
               className="h-11 md:h-12 w-auto object-contain"
             />
-          </a>
+          </Link>
         </div>
 
         {/* Minimalist Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-10 pointer-events-auto bg-[#171717]/90 backdrop-blur-md px-8 py-2.5 rounded-full border border-white/10 shadow-sm font-sans">
+        <nav className="hidden md:flex items-center gap-10 bg-[#171717]/90 backdrop-blur-md px-8 py-2.5 rounded-full border border-white/10 shadow-sm font-sans">
           <div
             className="flex items-center"
             onMouseEnter={() => setIsBuyDropdownOpen(true)}
             onMouseLeave={() => setIsBuyDropdownOpen(false)}
           >
-            <a
-              href="#"
-              onClick={(e) => handleNavClick(e, 1)}
+            <Link
+              href="/?section=1"
               className={`text-[12px] tracking-[0.25em] uppercase transition-colors py-1 block font-bold ${
                 isBuyDropdownOpen ? "text-white" : "text-white/60 hover:text-white"
               }`}
             >
               Buy
-            </a>
+            </Link>
 
             <AnimatePresence>
               {isBuyDropdownOpen && (
@@ -116,7 +113,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.98 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50 pointer-events-auto"
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50"
                 >
                   <div className="bg-[#030102]/95 backdrop-blur-3xl border border-white/10 rounded-[2.2rem] p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] flex flex-col gap-10 text-left font-sans">
                     {/* 4 Column Grid */}
@@ -127,11 +124,11 @@ export default function Home() {
                           Residential Properties
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Sale</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Sale</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Sale</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Sale</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Land / Plots for Sale</a>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Sale</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Sale</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Sale</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Sale</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Land / Plots for Sale</Link>
                         </div>
                       </div>
 
@@ -141,11 +138,11 @@ export default function Home() {
                           Buyer Tools
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Mortgage Calculator</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Property Valuation</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sold House Prices</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sale Price Map</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Investment ROI Calculator</a>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Mortgage Calculator</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Property Valuation</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sold House Prices</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sale Price Map</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Investment ROI Calculator</Link>
                         </div>
                       </div>
 
@@ -155,11 +152,11 @@ export default function Home() {
                           Buying Insights
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Buyer's Guide</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Area Insights</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Community Guides</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Tower & Compound Guides</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Schools & University Guides</a>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Buyer's Guide</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Area Insights</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Community Guides</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Tower & Compound Guides</Link>
+                          <Link href="/?section=1" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Schools & University Guides</Link>
                         </div>
                       </div>
 
@@ -169,7 +166,6 @@ export default function Home() {
                         <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
                         
                         <div className="space-y-3.5">
-                          {/* Icon */}
                           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
                             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -183,46 +179,46 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <button className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
+                        <Link href="/?section=1" className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
                           Calculate Mortgage
-                        </button>
+                        </Link>
                       </div>
                     </div>
 
                     {/* Bottom Row: 4 Horizontal Quick Links */}
                     <div className="border-t border-white/10 pt-8 grid grid-cols-4 gap-6">
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      <Link href="/?section=1" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                           </svg>
                         </span>
                         Buy Residential
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=1" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                         </span>
                         Buy Commercial
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=6" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
                         </span>
                         Find an Agent
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=4" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                         </span>
                         Off-plan Projects
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -235,15 +231,14 @@ export default function Home() {
             onMouseEnter={() => setIsRentDropdownOpen(true)}
             onMouseLeave={() => setIsRentDropdownOpen(false)}
           >
-            <a
-              href="#"
-              onClick={(e) => handleNavClick(e, 2)}
+            <Link
+              href="/?section=2"
               className={`text-[12px] tracking-[0.25em] uppercase transition-colors py-1 block font-bold ${
                 isRentDropdownOpen ? "text-white" : "text-white/60 hover:text-white"
               }`}
             >
               Rent
-            </a>
+            </Link>
 
             <AnimatePresence>
               {isRentDropdownOpen && (
@@ -252,7 +247,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.98 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50 pointer-events-auto"
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50"
                 >
                   <div className="bg-[#030102]/95 backdrop-blur-3xl border border-white/10 rounded-[2.2rem] p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] flex flex-col gap-10 text-left font-sans">
                     {/* 4 Column Grid */}
@@ -263,11 +258,11 @@ export default function Home() {
                           Residential Properties
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Rent</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Studios for Rent</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Rent</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Rent</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Rent</a>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Apartments for Rent</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Studios for Rent</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Villas for Rent</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Townhouses for Rent</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Penthouses for Rent</Link>
                         </div>
                       </div>
 
@@ -277,11 +272,11 @@ export default function Home() {
                           Renter Tools
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rent vs Buy Calculator</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rented House Prices</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rental Price Map</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rental Budget Calculator</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Tenant Rights Guide</a>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rent vs Buy Calculator</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rented House Prices</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rental Price Map</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rental Budget Calculator</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Tenant Rights Guide</Link>
                         </div>
                       </div>
 
@@ -291,11 +286,11 @@ export default function Home() {
                           Renting Insights
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Renter's Guide</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Area Insights</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Community Guides</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Tower & Compound Guides</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Schools & University Guides</a>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Renter's Guide</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Area Insights</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Community Guides</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Tower & Compound Guides</Link>
+                          <Link href="/?section=2" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Schools & University Guides</Link>
                         </div>
                       </div>
 
@@ -305,7 +300,6 @@ export default function Home() {
                         <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
                         
                         <div className="space-y-3.5">
-                          {/* Icon */}
                           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
                             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -319,66 +313,66 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <button className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
+                        <Link href="/?section=2" className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
                           Read Article
-                        </button>
+                        </Link>
                       </div>
                     </div>
 
                     {/* Bottom Row: 4 Horizontal Quick Links */}
                     <div className="border-t border-white/10 pt-8 grid grid-cols-4 gap-6">
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      <Link href="/?section=2" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                           </svg>
                         </span>
                         Rent Residential
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=2" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                         </span>
                         Rent Commercial
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=6" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
                         </span>
                         Find an Agent
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=2" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </span>
                         Short-Term Rentals
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
           <div
             className="flex items-center"
             onMouseEnter={() => setIsNewProjectsDropdownOpen(true)}
             onMouseLeave={() => setIsNewProjectsDropdownOpen(false)}
           >
-            <a
-              href="#"
-              onClick={(e) => handleNavClick(e, 4)}
+            <Link
+              href="/?section=4"
               className={`text-[12px] tracking-[0.25em] uppercase transition-colors py-1 block font-bold ${
                 isNewProjectsDropdownOpen ? "text-white" : "text-white/60 hover:text-white"
               }`}
             >
               New Projects
-            </a>
+            </Link>
 
             <AnimatePresence>
               {isNewProjectsDropdownOpen && (
@@ -387,7 +381,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.98 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50 pointer-events-auto"
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50"
                 >
                   <div className="bg-[#030102]/95 backdrop-blur-3xl border border-white/10 rounded-[2.2rem] p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] flex flex-col gap-10 text-left font-sans">
                     {/* 4 Column Grid */}
@@ -398,11 +392,11 @@ export default function Home() {
                           All New Projects
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Dubai</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Abu Dhabi</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Sharjah</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Ras Al Khaimah</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Umm Al Quwain</a>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Dubai</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Abu Dhabi</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Sharjah</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Ras Al Khaimah</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">New Projects in Umm Al Quwain</Link>
                         </div>
                       </div>
 
@@ -412,11 +406,11 @@ export default function Home() {
                           Find Developers
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Emaar Properties</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Azizi Developments</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Aldar Properties</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Damac Properties</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sobha Realty</a>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Emaar Properties</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Azizi Developments</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Aldar Properties</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Damac Properties</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sobha Realty</Link>
                         </div>
                       </div>
 
@@ -426,11 +420,11 @@ export default function Home() {
                           Investing Insights
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Investor's Guide</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Areas to Invest</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Latest Projects</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Off-Plan Market Reports</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Golden Visa Guidelines</a>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Investor's Guide</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Areas to Invest</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Latest Projects</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Off-Plan Market Reports</Link>
+                          <Link href="/?section=4" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Golden Visa Guidelines</Link>
                         </div>
                       </div>
 
@@ -440,7 +434,6 @@ export default function Home() {
                         <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
                         
                         <div className="space-y-3.5">
-                          {/* Icon */}
                           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
                             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -455,66 +448,66 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <button className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
+                        <Link href="/?section=4" className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
                           All New Projects
-                        </button>
+                        </Link>
                       </div>
                     </div>
 
                     {/* Bottom Row: 4 Horizontal Quick Links */}
                     <div className="border-t border-white/10 pt-8 grid grid-cols-4 gap-6">
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      <Link href="/?section=4" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
                         </span>
                         Find Developers
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=4" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                         </span>
                         Off-plan Properties
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=4" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
                           </svg>
                         </span>
                         Market Trends
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=4" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                           </svg>
                         </span>
                         Off-Plan Guides
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
           <div
             className="flex items-center"
             onMouseEnter={() => setIsToolsDropdownOpen(true)}
             onMouseLeave={() => setIsToolsDropdownOpen(false)}
           >
-            <a
-              href="#"
-              onClick={(e) => handleNavClick(e, 6)}
+            <Link
+              href="/?section=6"
               className={`text-[12px] tracking-[0.25em] uppercase transition-colors py-1 block font-bold ${
                 isToolsDropdownOpen ? "text-white" : "text-white/60 hover:text-white"
               }`}
             >
               Tools & insights
-            </a>
+            </Link>
 
             <AnimatePresence>
               {isToolsDropdownOpen && (
@@ -523,7 +516,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.98 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50 pointer-events-auto"
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[1000px] z-50"
                 >
                   <div className="bg-[#030102]/95 backdrop-blur-3xl border border-white/10 rounded-[2.2rem] p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] flex flex-col gap-10 text-left font-sans">
                     {/* 4 Column Grid */}
@@ -534,11 +527,11 @@ export default function Home() {
                           Tools
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Mortgage Calculator</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rent vs Buy Calculator</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rental Transactions</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sale Transactions</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Investment ROI Tracker</a>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Mortgage Calculator</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rent vs Buy Calculator</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Rental Transactions</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sale Transactions</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Investment ROI Tracker</Link>
                         </div>
                       </div>
 
@@ -548,12 +541,12 @@ export default function Home() {
                           Insights
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Market Reports</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Renter Guides</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Buyer Guides</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Popular Communities</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Budget-Friendly Areas</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Property Blog</a>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Market Reports</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Renter Guides</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Buyer Guides</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Popular Communities</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Budget-Friendly Areas</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Property Blog</Link>
                         </div>
                       </div>
 
@@ -563,11 +556,11 @@ export default function Home() {
                           Area Insights
                         </h4>
                         <div className="flex flex-col gap-3.5">
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Dubai</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Abu Dhabi</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sharjah</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Ajman</a>
-                          <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Ras Al Khaimah</a>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Dubai</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Abu Dhabi</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Sharjah</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Ajman</Link>
+                          <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Ras Al Khaimah</Link>
                         </div>
                       </div>
 
@@ -577,7 +570,6 @@ export default function Home() {
                         <div className="absolute top-0 right-0 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
                         
                         <div className="space-y-3.5">
-                          {/* Icon */}
                           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
                             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 4a2 2 0 00-2 2v3a2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 00-2-2H9z" />
@@ -591,31 +583,31 @@ export default function Home() {
                           </p>
                         </div>
 
-                        <button className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
+                        <Link href="/?section=6" className="mt-6 w-full py-3 bg-white text-black text-[11px] tracking-[0.15em] uppercase font-bold rounded-xl hover:bg-neutral-200 transition-colors text-center cursor-pointer shadow-md active:scale-95">
                           Explore Blog
-                        </button>
+                        </Link>
                       </div>
                     </div>
 
                     {/* Bottom Row: 4 Horizontal Quick Links */}
                     <div className="border-t border-white/10 pt-8 grid grid-cols-4 gap-6">
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      <Link href="/?section=6" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                           </svg>
                         </span>
                         Mortgage Calculator
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=6" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
                           </svg>
                         </span>
                         Rent Vs Buy Calculator
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=6" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -623,42 +615,42 @@ export default function Home() {
                           </svg>
                         </span>
                         Area Insights
-                      </a>
-                      <a href="#" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
+                      </Link>
+                      <Link href="/?section=6" className="flex items-center gap-3 text-[11px] md:text-xs tracking-[0.15em] uppercase text-white/70 hover:text-white transition-colors group font-semibold">
                         <span className="w-6.5 h-6.5 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
                         </span>
                         Popular Communities
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-          <a
-            href="#"
-            onClick={(e) => handleNavClick(e, 6)}
+
+          <Link
+            href="/?section=6"
             className="text-[12px] tracking-[0.25em] text-white/60 hover:text-white uppercase transition-colors font-bold"
           >
             Find agent
-          </a>
+          </Link>
+
           <div
             className="relative flex items-center"
             onMouseEnter={() => setIsMortgageDropdownOpen(true)}
             onMouseLeave={() => setIsMortgageDropdownOpen(false)}
           >
-            <a
-              href="#"
-              onClick={(e) => handleNavClick(e, 6)}
+            <Link
+              href="/?section=6"
               className={`text-[12px] tracking-[0.25em] uppercase transition-colors py-1 block font-bold ${
                 isMortgageDropdownOpen ? "text-white" : "text-white/60 hover:text-white"
               }`}
             >
               Mortgages
-            </a>
+            </Link>
 
             <AnimatePresence>
               {isMortgageDropdownOpen && (
@@ -667,20 +659,20 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[240px] z-50 pointer-events-auto"
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[240px] z-50"
                 >
                   <div className="bg-[#030102]/95 backdrop-blur-3xl border border-white/10 rounded-[1.5rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col gap-4 text-left font-sans">
                     <h4 className="text-[12px] md:text-[13px] font-bold tracking-[0.18em] uppercase text-white/90 pb-2 border-b border-white/10">
                       Mortgages
                     </h4>
                     <div className="flex flex-col gap-3.5">
-                      <a href="#" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Mortgage Cashback</a>
-                      <a href="#" className="flex items-center justify-between text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium group">
+                      <Link href="/?section=6" className="text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium">Mortgage Cashback</Link>
+                      <Link href="/?section=6" className="flex items-center justify-between text-[13px] md:text-[14px] text-white/60 hover:text-white transition-colors font-medium group">
                         Mortgage Finder
                         <svg className="w-3.5 h-3.5 text-white/40 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2-2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
@@ -689,29 +681,20 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Action Button & Mobile Menu Trigger */}
-        <div className="pointer-events-auto font-sans flex items-center gap-4 relative">
-          {isLoggedIn ? (
-            <Link href="/profile" className="block relative">
-              {/* Profile Image Trigger */}
-              <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border border-white/20 shadow-lg hover:border-white/40 hover:scale-105 cursor-pointer transition-all duration-300 relative select-none">
-                <img
-                  src="/avatar1.png"
-                  alt="User Profile"
-                  className="w-full h-full object-cover"
-                />
-                {/* Online luxury status indicator */}
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#030102] rounded-full" />
-              </div>
-            </Link>
-          ) : (
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("openAuthModal"))}
-              className="px-6 py-2 border border-white/20 text-white text-[10px] tracking-[0.2em] uppercase rounded-full bg-[#030102]/20 cursor-pointer btn-animate-secondary"
-            >
-              Login / Signup
-            </button>
-          )}
+        {/* Action Button: Avatar & Mobile Menu Trigger */}
+        <div className="font-sans flex items-center gap-4 relative">
+          <Link href="/profile" className="block relative">
+            {/* Profile Image Trigger */}
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border border-white/20 shadow-lg hover:border-white/40 hover:scale-105 cursor-pointer transition-all duration-300 relative select-none">
+              <img
+                src="/avatar1.png"
+                alt="User Profile"
+                className="w-full h-full object-cover"
+              />
+              {/* Online luxury status indicator */}
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#030102] rounded-full" />
+            </div>
+          </Link>
 
           {/* Mobile Hamburger Button */}
           <button
@@ -740,73 +723,55 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-30 bg-[#030102]/98 backdrop-blur-3xl px-6 pt-28 pb-12 flex flex-col justify-between md:hidden pointer-events-auto"
+            className="fixed inset-0 z-40 bg-[#030102]/98 backdrop-blur-3xl px-6 pt-28 pb-12 flex flex-col justify-between md:hidden pointer-events-auto"
           >
             {/* Ambient glows inside mobile menu */}
             <div className="absolute top-1/4 left-1/4 w-[250px] h-[250px] rounded-full bg-purple-500/5 blur-[80px] pointer-events-none" />
             <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-amber-500/5 blur-[100px] pointer-events-none" />
 
             <div className="flex flex-col gap-6 font-sans relative z-10 pt-4">
-              <a
-                href="#"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 1);
-                }}
+              <Link
+                href="/?section=1"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
               >
                 Buy
-              </a>
-              <a
-                href="#"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 2);
-                }}
+              </Link>
+              <Link
+                href="/?section=2"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
               >
                 Rent
-              </a>
-              <a
-                href="#"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 4);
-                }}
+              </Link>
+              <Link
+                href="/?section=4"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
               >
                 New Projects
-              </a>
-              <a
-                href="#"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 6);
-                }}
+              </Link>
+              <Link
+                href="/?section=6"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
               >
                 Tools & Insights
-              </a>
-              <a
-                href="#"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 6);
-                }}
+              </Link>
+              <Link
+                href="/?section=6"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
               >
                 Find Agent
-              </a>
-              <a
-                href="#"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 6);
-                }}
+              </Link>
+              <Link
+                href="/?section=6"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
               >
                 Mortgages
-              </a>
+              </Link>
             </div>
 
             {/* Footer details in mobile menu */}
@@ -819,23 +784,170 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Floating Vertical Branding Labels */}
-      <div className="fixed left-6 bottom-12 z-35 hidden lg:block pointer-events-none select-none font-sans">
-        <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 rotate-270 origin-left translate-y-full font-light">
-          AA TRADERS DEVELOPMENTS &copy; 2026
-        </p>
-      </div>
+      {/* Main Account Area */}
+      <main className="relative z-10 w-full px-6 md:px-12 lg:px-16 py-12 flex flex-col gap-10 min-h-[calc(100vh-88px)] justify-start">
+        <div className="w-full">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white font-sans text-left">
+            My account
+          </h1>
+        </div>
 
-      <div className="fixed right-6 bottom-12 z-35 hidden lg:block pointer-events-none select-none font-sans">
-        <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 rotate-90 origin-right translate-y-full font-light">
-          DUBAI, UAE
-        </p>
-      </div>
+        {/* Tab Headers */}
+        <div className="w-full border-b border-white/5 flex gap-8 md:gap-12 text-[11px] md:text-[12px] font-bold tracking-[0.2em] uppercase overflow-x-auto whitespace-nowrap scrollbar-none pb-0.5">
+          <button
+            onClick={() => setActiveTab("info")}
+            className={`pb-4 transition-all relative cursor-pointer border-b-2 ${
+              activeTab === "info"
+                ? "text-white border-white"
+                : "text-white/40 hover:text-white/70 border-transparent"
+            }`}
+          >
+            Personal Information
+          </button>
+          <button
+            onClick={() => setActiveTab("saved")}
+            className={`pb-4 transition-all relative cursor-pointer border-b-2 ${
+              activeTab === "saved"
+                ? "text-white border-white"
+                : "text-white/40 hover:text-white/70 border-transparent"
+            }`}
+          >
+            Saved properties (0)
+          </button>
+          <button
+            onClick={() => setActiveTab("alerts")}
+            className={`pb-4 transition-all relative cursor-pointer border-b-2 ${
+              activeTab === "alerts"
+                ? "text-white border-white"
+                : "text-white/40 hover:text-white/70 border-transparent"
+            }`}
+          >
+            Search alerts (0)
+          </button>
+          <button
+            onClick={() => setActiveTab("contacted")}
+            className={`pb-4 transition-all relative cursor-pointer border-b-2 ${
+              activeTab === "contacted"
+                ? "text-white border-white"
+                : "text-white/40 hover:text-white/70 border-transparent"
+            }`}
+          >
+            Contacted properties (0)
+          </button>
+        </div>
 
-      {/* Main High-Performance Canvas Scroll Track & Content */}
-      <main className="relative z-30">
-        {/* Scrollytelling Hero Section */}
-        <ScrollytellingCanvas />
+        {/* Tab Content Panel */}
+        <div className="w-full">
+          {activeTab === "info" && (
+            <div className="bg-gradient-to-br from-[#171717]/60 to-[#030102]/60 backdrop-blur-3xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-xl w-full mt-2 relative overflow-hidden">
+              {/* Glowing highlight */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-white/[0.02] rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+              
+              <div className="max-w-4xl mx-auto space-y-8">
+                <div>
+                  <h3 className="text-lg md:text-xl font-bold tracking-[0.15em] uppercase text-white/90 pb-4 border-b border-white/10">
+                    Personal Information
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Name field */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-white/40 block">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full bg-[#121212]/50 border border-white/10 rounded-xl px-5 py-4 text-[14px] md:text-[15px] text-white focus:outline-none focus:border-white/30 focus:bg-[#1a1a1a]/50 transition-all font-medium placeholder-white/20"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+
+                  {/* Surname field */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-white/40 block">
+                      Surname
+                    </label>
+                    <input
+                      type="text"
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
+                      className="w-full bg-[#121212]/50 border border-white/10 rounded-xl px-5 py-4 text-[14px] md:text-[15px] text-white focus:outline-none focus:border-white/30 focus:bg-[#1a1a1a]/50 transition-all font-medium placeholder-white/20"
+                      placeholder="Enter your surname"
+                    />
+                  </div>
+
+                  {/* Email address field - full-width */}
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase text-white/40 block">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      disabled
+                      className="w-full bg-[#0d0d0d]/40 border border-white/5 rounded-xl px-5 py-4 text-[14px] md:text-[15px] text-white/40 cursor-not-allowed font-medium select-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Save & Logout section centered below */}
+                <div className="pt-6 border-t border-white/5 flex flex-col items-center gap-4 max-w-md mx-auto">
+                  <button
+                    onClick={handleSave}
+                    className="w-full py-4 bg-white text-black text-xs md:text-sm tracking-[0.25em] uppercase font-bold rounded-xl btn-animate-primary cursor-pointer shadow-lg active:scale-98 text-center"
+                  >
+                    {isSaved ? "Changes Saved" : "Save Changes"}
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="text-xs md:text-sm tracking-[0.25em] uppercase font-bold text-red-500 hover:text-red-400 hover:scale-105 active:scale-95 transition-all duration-300 py-2"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "saved" && (
+            <div className="bg-gradient-to-br from-[#171717]/60 to-[#030102]/60 backdrop-blur-3xl border border-white/10 rounded-3xl p-16 text-center shadow-xl flex flex-col items-center justify-center gap-4 w-full mt-2 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/3 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+              <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shadow-inner relative z-10">
+                <svg className="w-6 h-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+              </div>
+              <p className="text-white/60 text-sm font-semibold tracking-wide relative z-10">You don't have any saved properties yet.</p>
+            </div>
+          )}
+
+          {activeTab === "alerts" && (
+            <div className="bg-gradient-to-br from-[#171717]/60 to-[#030102]/60 backdrop-blur-3xl border border-white/10 rounded-3xl p-16 text-center shadow-xl flex flex-col items-center justify-center gap-4 w-full mt-2 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/3 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+              <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shadow-inner relative z-10">
+                <svg className="w-6 h-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </div>
+              <p className="text-white/60 text-sm font-semibold tracking-wide relative z-10">No active search alerts.</p>
+            </div>
+          )}
+
+          {activeTab === "contacted" && (
+            <div className="bg-gradient-to-br from-[#171717]/60 to-[#030102]/60 backdrop-blur-3xl border border-white/10 rounded-3xl p-16 text-center shadow-xl flex flex-col items-center justify-center gap-4 w-full mt-2 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/3 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+              <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shadow-inner relative z-10">
+                <svg className="w-6 h-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <p className="text-white/60 text-sm font-semibold tracking-wide relative z-10">No contacted properties.</p>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

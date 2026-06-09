@@ -12,6 +12,7 @@
 /* Custom Scrollbar for Luxury Aesthetics */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 0px; /* Hide horizontal scrollbar globally */
 }
 ::-webkit-scrollbar-track {
   background: #030102;
@@ -23,6 +24,12 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* Hide horizontal scrollbar globally */
+::-webkit-scrollbar:horizontal {
+  display: none !important;
+  height: 0 !important;
 }
 
 html, body, button, input, select, textarea {
@@ -91,11 +98,13 @@ input[type="text"], input[type="email"], input[type="password"], input[type="tel
 
 /* Utility to hide scrollbar but keep scroll functionality */
 .scrollbar-none::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 .scrollbar-none {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
 }
 
 /* Vertical marquee scroll animation */
@@ -126,4 +135,19 @@ input[type="text"], input[type="email"], input[type="password"], input[type="tel
   animation: horizontal-scroll 45s linear infinite;
 }
 
+/* Premium Webkit Autofill Override for Seamless Dark Theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0c0b0c inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
 
