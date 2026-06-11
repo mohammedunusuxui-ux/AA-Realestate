@@ -481,7 +481,7 @@ select:-webkit-autofill:focus {
 }
 /* Force specifications, location and subtitle text to neutral dark-gray */
 .light .properties-page .property-card-list p,
-.light .properties-page .property-card-list span:not(.text-black):not(.text-amber-400),
+.light .properties-page .property-card-list span:not(.text-black):not(.text-amber-400):not(.text-white),
 .light .properties-page .property-card-list .text-white\/50 {
   color: #555555 !important;
 }

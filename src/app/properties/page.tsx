@@ -5,59 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeContext";
-
-// ─── Properties Data ─────────────────────────────────────────────────────────
-const PROPERTIES_DATA = [
-  { id: 1,  title: "The Royal Atlantis Signature Penthouse", location: "Palm Jumeirah, Dubai",             price: "AED 42,000,000",       priceVal: 42000000,  beds: 5, baths: 6, area: "8,500 sq ft",   type: "buy",  category: "penthouses",  image: "/penthouse_interior.png",   tag: "Signature",        developer: "Kerzner" },
-  { id: 2,  title: "One Canal Ultra-Luxury Villa",           location: "Dubai Water Canal, Dubai",         price: "AED 65,000,000",       priceVal: 65000000,  beds: 6, baths: 7, area: "11,200 sq ft",  type: "buy",  category: "villas",      image: "/villa_exterior.png",       tag: "Exclusive",        developer: "AHS Properties" },
-  { id: 3,  title: "Bulgari Resort Loft Residence",          location: "Jumeirah Bay Island, Dubai",       price: "AED 28,000,000",       priceVal: 28000000,  beds: 3, baths: 4, area: "4,600 sq ft",   type: "buy",  category: "apartments",  image: "/smart_loft.png",           tag: "Limited Edition",  developer: "Meraas" },
-  { id: 4,  title: "Vela Viento Sky Residences",             location: "Business Bay, Dubai",              price: "AED 18,500,000",       priceVal: 18500000,  beds: 4, baths: 5, area: "5,800 sq ft",   type: "buy",  category: "apartments",  image: "/couple_outside_villa.png",  tag: "Off-Plan",         developer: "Omniyat" },
-  { id: 5,  title: "District One Crystal Mansion",           location: "Mohammed Bin Rashid City, Dubai",  price: "AED 75,000,000",       priceVal: 75000000,  beds: 7, baths: 8, area: "14,500 sq ft",  type: "buy",  category: "villas",      image: "/couple_happy_home.png",    tag: "Ultra-Premium",    developer: "Meydan Sobha" },
-  { id: 6,  title: "Emaar Beachfront Sky Villa",             location: "Emaar Beachfront, Dubai",          price: "AED 22,000,000",       priceVal: 22000000,  beds: 4, baths: 5, area: "6,400 sq ft",   type: "buy",  category: "villas",      image: "/couple_outside_villa.png",  tag: "Ready",            developer: "Emaar" },
-  { id: 7,  title: "DIFC Executive Penthouse",               location: "DIFC, Dubai",                      price: "AED 34,500,000",       priceVal: 34500000,  beds: 4, baths: 5, area: "5,200 sq ft",   type: "buy",  category: "penthouses",  image: "/penthouse_interior.png",   tag: "Signature",        developer: "ICD Brookfield" },
-  { id: 8,  title: "Sobha Hartland Forest Villas",           location: "Sobha Hartland, Dubai",            price: "AED 12,800,000",       priceVal: 12800000,  beds: 5, baths: 6, area: "7,100 sq ft",   type: "buy",  category: "villas",      image: "/villa_exterior.png",       tag: "Off-Plan",         developer: "Sobha Realty" },
-  { id: 9,  title: "Jumeirah Bay Island Waterfront Plot",    location: "Jumeirah Bay Island, Dubai",       price: "AED 110,000,000",      priceVal: 110000000, beds: 0, baths: 0, area: "16,000 sq ft",  type: "buy",  category: "plots",       image: "/penthouse_interior.png",   tag: "Waterfront Plot",  developer: "Meraas" },
-  { id: 10, title: "Dubai Hills Estate Grand Townhouse",     location: "Dubai Hills Estate, Dubai",        price: "AED 6,800,000",        priceVal: 6800000,   beds: 3, baths: 4, area: "3,200 sq ft",   type: "buy",  category: "townhouses",  image: "/couple_moving_in.png",     tag: "Family Community", developer: "Emaar" },
-  { id: 11, title: "Palm Jumeirah Waterfront Mansion",       location: "Palm Jumeirah, Dubai",             price: "AED 120,000 / month",  priceVal: 1440000,   beds: 5, baths: 6, area: "7,800 sq ft",   type: "rent", category: "villas",      image: "/villa_exterior.png",       tag: "Rental",           developer: "Custom Built" },
-  { id: 12, title: "Downtown Boulevard Luxury Apartment",    location: "Downtown Dubai, Dubai",            price: "AED 35,000 / month",   priceVal: 420000,    beds: 2, baths: 3, area: "1,850 sq ft",   type: "rent", category: "apartments",  image: "/smart_loft.png",           tag: "High Floor",       developer: "Emaar" },
-  { id: 13, title: "Marina Gate Penthouse Duplex",           location: "Dubai Marina, Dubai",              price: "AED 95,000 / month",   priceVal: 1140000,   beds: 4, baths: 5, area: "4,900 sq ft",   type: "rent", category: "penthouses",  image: "/penthouse_interior.png",   tag: "Furnished",        developer: "Select Group" },
-  { id: 14, title: "Jumeirah Golf Estates Villa",            location: "Jumeirah Golf Estates, Dubai",     price: "AED 55,000 / month",   priceVal: 660000,    beds: 5, baths: 6, area: "6,200 sq ft",   type: "rent", category: "villas",      image: "/couple_outside_villa.png",  tag: "Golf View",        developer: "Leisurecorp" },
-  { id: 15, title: "Arabian Ranches Family Townhouse",       location: "Arabian Ranches, Dubai",           price: "AED 15,000 / month",   priceVal: 180000,    beds: 3, baths: 3, area: "2,400 sq ft",   type: "rent", category: "townhouses",  image: "/couple_moving_in.png",     tag: "Gated Community",  developer: "Emaar" },
-  { id: 16, title: "Nakheel Deira Islands Beachfront Villa", location: "Deira Islands, Dubai",             price: "AED 49,000,000",       priceVal: 49000000,  beds: 6, baths: 7, area: "9,500 sq ft",   type: "buy",  category: "villas",      image: "/couple_happy_home.png",    tag: "Beachfront",       developer: "Nakheel" },
-  { id: 17, title: "City Walk Modern Studio Apartment",      location: "City Walk, Dubai",                 price: "AED 3,200,000",        priceVal: 3200000,   beds: 2, baths: 2, area: "1,450 sq ft",   type: "buy",  category: "apartments",  image: "/smart_loft.png",           tag: "Ready",            developer: "Meraas" },
-  { id: 18, title: "Meydan Avenue Signature Townhouse",      location: "Meydan, Dubai",                    price: "AED 5,500,000",        priceVal: 5500000,   beds: 4, baths: 4, area: "3,800 sq ft",   type: "buy",  category: "townhouses",  image: "/couple_moving_in.png",     tag: "Family",           developer: "Meydan" },
-  { id: 19, title: "Damac Hills Golf Villa",                 location: "Damac Hills, Dubai",               price: "AED 9,200,000",        priceVal: 9200000,   beds: 5, baths: 5, area: "4,500 sq ft",   type: "buy",  category: "villas",      image: "/villa_exterior.png",       tag: "Golf Front",       developer: "Damac" },
-  { id: 20, title: "JBR Walk Seaview Apartment",             location: "Jumeirah Beach Residence, Dubai",  price: "AED 4,800,000",        priceVal: 4800000,   beds: 2, baths: 2, area: "1,700 sq ft",   type: "buy",  category: "apartments",  image: "/smart_loft.png",           tag: "Sea View",         developer: "Dubai Properties" },
-  { id: 21, title: "Tilal Al Ghaf Premium Villa",            location: "Tilal Al Ghaf, Dubai",             price: "AED 14,500,000",       priceVal: 14500000,  beds: 6, baths: 6, area: "8,200 sq ft",   type: "buy",  category: "villas",      image: "/couple_happy_home.png",    tag: "Lagoon Front",     developer: "Majid Al Futtaim" },
-  { id: 22, title: "Al Barari Sanctuary Estate",             location: "Al Barari, Dubai",                 price: "AED 32,000,000",       priceVal: 32000000,  beds: 6, baths: 7, area: "12,000 sq ft",  type: "buy",  category: "villas",      image: "/villa_exterior.png",       tag: "Green Living",     developer: "Al Barari" },
-  { id: 23, title: "Bluewaters Island Penthouse",            location: "Bluewaters Island, Dubai",         price: "AED 25,000,000",       priceVal: 25000000,  beds: 4, baths: 5, area: "4,200 sq ft",   type: "buy",  category: "penthouses",  image: "/penthouse_interior.png",   tag: "Island Living",    developer: "Meraas" },
-  { id: 24, title: "Mudon Community Townhouse",              location: "Mudon, Dubai",                     price: "AED 3,800,000",        priceVal: 3800000,   beds: 3, baths: 3, area: "2,200 sq ft",   type: "buy",  category: "townhouses",  image: "/couple_moving_in.png",     tag: "Family",           developer: "Dubai Properties" },
-  { id: 25, title: "Zabeel Park Luxury Apartment",           location: "Za'abeel, Dubai",                  price: "AED 28,000 / month",   priceVal: 336000,    beds: 3, baths: 3, area: "2,100 sq ft",   type: "rent", category: "apartments",  image: "/smart_loft.png",           tag: "Park View",        developer: "Emaar" },
-  { id: 26, title: "Polo Residences Golf Estate",            location: "Meydan, Dubai",                    price: "AED 7,600,000",        priceVal: 7600000,   beds: 4, baths: 4, area: "3,600 sq ft",   type: "buy",  category: "villas",      image: "/couple_outside_villa.png",  tag: "Polo Front",       developer: "Meydan" },
-  { id: 27, title: "Creek Harbour Horizon Apartment",        location: "Dubai Creek Harbour, Dubai",       price: "AED 2,900,000",        priceVal: 2900000,   beds: 1, baths: 2, area: "1,050 sq ft",   type: "buy",  category: "apartments",  image: "/smart_loft.png",           tag: "Creek View",       developer: "Emaar" },
-];
-
-// ─── FAQ Data ────────────────────────────────────────────────────────────────
-const FAQ_DATA = [
-  { q: "Can a foreigner buy property in Dubai?",                     a: "Yes. Dubai offers freehold ownership to foreign nationals in designated areas including Palm Jumeirah, Downtown, Dubai Marina, and over 70 other prime communities." },
-  { q: "What are the typical fees when buying property in Dubai?",   a: "Buyers typically pay a 4% Dubai Land Department (DLD) transfer fee, a 2% agency commission, and AED 4,000–5,000 in admin fees. Mortgage registration adds 0.25% of the loan value." },
-  { q: "How long does the property transfer process take?",          a: "A standard cash transfer takes 1–3 business days at the DLD. Mortgage transactions take 7–14 days due to bank processing and NOC requirements." },
-  { q: "Is there a property tax or capital gains tax in Dubai?",     a: "There is no annual property tax or capital gains tax in Dubai, making it one of the most tax-efficient real estate markets in the world." },
-  { q: "What is the Golden Visa and how does property help?",        a: "Purchasing property worth AED 2,000,000 or more qualifies you for a 10-year UAE Golden Visa, granting residency with full access to UAE banking, schooling, and services." },
-  { q: "What documents do I need to buy a property in Dubai?",      a: "Typically a valid passport, Emirates ID (for residents), proof of funds, and the signed sales purchase agreement (SPA). Your agent will guide you through the full checklist." },
-];
-
-// ─── Top Categories Bar Data ──────────────────────────────────────────────────
-const TOP_CATEGORIES = [
-  { id: "all",         label: "All Properties",  count: "179,881" },
-  { id: "apartments",  label: "Apartments",      count: "115,283" },
-  { id: "villas",      label: "Villas",          count: "38,908" },
-  { id: "townhouses",  label: "Townhouses",      count: "15,081" },
-  { id: "plots",       label: "Land",            count: "7,993" },
-  { id: "penthouses",  label: "Penthouses",      count: "1,397" },
-  { id: "buildings",   label: "Whole Buildings", count: "1,016" },
-  { id: "duplexes",    label: "Duplexes",        count: "2,403" }
-];
+import { PROPERTIES_DATA, FAQ_DATA, TOP_CATEGORIES } from "@/data/properties";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function PropertiesPage() {
@@ -96,6 +44,31 @@ export default function PropertiesPage() {
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
 
+  // Category Horizontal Scroll Ref and States
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightScroll, setShowRightScroll] = useState(false);
+
+  const checkScrollPosition = () => {
+    const container = categoryScrollRef.current;
+    if (container) {
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      setShowLeftScroll(scrollLeft > 2);
+      setShowRightScroll(scrollLeft < scrollWidth - clientWidth - 2);
+    }
+  };
+
+  const scrollCategories = (direction: "left" | "right") => {
+    const container = categoryScrollRef.current;
+    if (container) {
+      const scrollAmount = 240;
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth"
+      });
+    }
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const typeParam = params.get("type");
@@ -119,9 +92,15 @@ export default function PropertiesPage() {
     };
     document.addEventListener("mousedown", handleClickOutside);
 
+    // Initial check and resize tracking for scroll indicators
+    const timer = setTimeout(checkScrollPosition, 350);
+    window.addEventListener("resize", checkScrollPosition);
+
     return () => { 
       if (container) container.removeEventListener("scroll", handleScroll); 
       document.removeEventListener("mousedown", handleClickOutside);
+      clearTimeout(timer);
+      window.removeEventListener("resize", checkScrollPosition);
     };
   }, []);
 
@@ -135,6 +114,7 @@ export default function PropertiesPage() {
     if (type !== "all") p.set("type", type);
     if (category !== "all") p.set("category", category);
     router.push(`/properties?${p.toString()}`, { scroll: false });
+    setTimeout(checkScrollPosition, 100);
   };
 
   const clearAllFilters = () => {
@@ -1002,36 +982,90 @@ export default function PropertiesPage() {
             <div className="flex-1 w-full">
               {/* Category Pills Bar (visible on all filter states) */}
               <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4 mb-6 category-pill-bar">
-                <div 
-                  className="flex items-center gap-2.5 overflow-x-auto scroll-smooth py-1 w-full no-scrollbar"
-                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-                >
-                  <style>{`
-                    .no-scrollbar::-webkit-scrollbar {
-                      display: none;
-                    }
-                  `}</style>
-                  {TOP_CATEGORIES.map((cat) => {
-                    const isActive = activeCategory === cat.id;
-                    return (
+                {/* Scrollable Container Wrapper with Left/Right Scroll Chevrons */}
+                <div className="relative min-w-0 flex-1 group flex items-center">
+                  
+                  {/* Left Scroll Gradient Overlay and Button */}
+                  {showLeftScroll && (
+                    <div className={`absolute left-0 top-0 bottom-0 w-16 z-20 pointer-events-none flex items-center justify-start rounded-l-full bg-gradient-to-r ${
+                      theme === "dark" 
+                        ? "from-[#030102] via-[#030102]/65 to-transparent" 
+                        : "from-white via-white/65 to-transparent"
+                    }`}>
                       <button
-                        key={cat.id}
-                        onClick={() => selectFilter(activeType, cat.id)}
-                        className={`flex items-center gap-1.5 px-4.5 py-2.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition-all border shrink-0 cursor-pointer ${
-                          isActive
-                            ? "bg-white border-white text-black shadow-lg"
-                            : "bg-[#030102]/60 border-white/10 text-white/55 hover:text-white hover:border-white/20 hover:bg-white/5"
-                        }`}
+                        onClick={() => scrollCategories("left")}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto cursor-pointer shadow-lg
+                          ${theme === "dark"
+                            ? "bg-neutral-900 border-white/10 text-white hover:bg-neutral-800"
+                            : "bg-white border-black/10 text-black hover:bg-neutral-100"}`}
+                        aria-label="Scroll categories left"
                       >
-                        <span>{cat.label}</span>
-                        {cat.count && (
-                          <span className={`text-[10px] ml-0.5 ${isActive ? "text-black/50 font-extrabold" : "text-white/30"}`}>
-                            • {cat.count}
-                          </span>
-                        )}
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
                       </button>
-                    );
-                  })}
+                    </div>
+                  )}
+
+                  {/* Scrollable Chips Div */}
+                  <div 
+                    ref={categoryScrollRef}
+                    onScroll={checkScrollPosition}
+                    className="flex items-center gap-2.5 overflow-x-auto scroll-smooth py-1 w-full no-scrollbar"
+                    style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                  >
+                    <style>{`
+                      .no-scrollbar::-webkit-scrollbar {
+                        display: none;
+                      }
+                    `}</style>
+                    {TOP_CATEGORIES.map((cat) => {
+                      const isActive = activeCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          onClick={() => selectFilter(activeType, cat.id)}
+                          className={`flex items-center gap-1.5 px-4.5 py-2.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition-all border shrink-0 cursor-pointer ${
+                            isActive
+                              ? "bg-white border-white text-black shadow-lg"
+                              : "bg-[#030102]/60 border-white/10 text-white/55 hover:text-white hover:border-white/20 hover:bg-white/5"
+                          }`}
+                        >
+                          <span>{cat.label}</span>
+                          {cat.count && (
+                            <span className={`text-[10px] ml-0.5 ${isActive ? "text-black/50 font-extrabold" : "text-white/30"}`}>
+                              • {cat.count}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                    {/* End Spacer to preserve right padding on scroll */}
+                    <div className="w-6 shrink-0" />
+                  </div>
+
+                  {/* Right Scroll Gradient Overlay and Button */}
+                  {showRightScroll && (
+                    <div className={`absolute right-0 top-0 bottom-0 w-16 z-20 pointer-events-none flex items-center justify-end rounded-r-full bg-gradient-to-l ${
+                      theme === "dark" 
+                        ? "from-[#030102] via-[#030102]/65 to-transparent" 
+                        : "from-white via-white/65 to-transparent"
+                    }`}>
+                      <button
+                        onClick={() => scrollCategories("right")}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto cursor-pointer shadow-lg
+                          ${theme === "dark"
+                            ? "bg-neutral-900 border-white/10 text-white hover:bg-neutral-800"
+                            : "bg-white border-black/10 text-black hover:bg-neutral-100"}`}
+                        aria-label="Scroll categories right"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+
                 </div>
                 
                 {/* View Switcher Dropdown */}
@@ -1108,6 +1142,7 @@ export default function PropertiesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 animate-fade-in">
                   {sorted.map((prop, i) => (
                     <motion.div key={prop.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.04 }}
+                      onClick={() => router.push(`/properties/${prop.id}`)}
                       className="relative rounded-[1.75rem] overflow-hidden border border-white/10 hover:border-white/25 aspect-[3/4] shadow-lg group transition-all duration-500 bg-neutral-950 cursor-pointer property-card-container">
                       <img src={prop.image} alt={prop.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 z-0" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
@@ -1140,7 +1175,7 @@ export default function PropertiesPage() {
                               <span className="flex items-center gap-1"><AreaIcon /><span className="text-white/80">{prop.area}</span></span>
                             )}
                           </div>
-                          <button onClick={() => { setSelectedProperty(prop); setIsInquiryModalOpen(true); }}
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedProperty(prop); setIsInquiryModalOpen(true); }}
                             className="w-11 h-11 bg-white/20 hover:bg-white text-white hover:text-black rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 active:scale-95 shrink-0 shadow-md">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -1159,7 +1194,8 @@ export default function PropertiesPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: i * 0.04 }}
-                      className="relative rounded-[1.75rem] overflow-hidden border border-white/10 hover:border-white/25 shadow-lg group transition-all duration-500 bg-neutral-950 flex flex-col md:flex-row property-card-list select-none min-h-[260px]"
+                      onClick={() => router.push(`/properties/${prop.id}`)}
+                      className="relative rounded-[1.75rem] overflow-hidden border border-white/10 hover:border-white/25 shadow-lg group transition-all duration-500 bg-neutral-950 flex flex-col md:flex-row property-card-list select-none min-h-[260px] cursor-pointer"
                     >
                       {/* Left: Image Container */}
                       <div className="relative w-full md:w-[320px] lg:w-[380px] shrink-0 h-[220px] md:h-auto overflow-hidden">
@@ -1264,7 +1300,7 @@ export default function PropertiesPage() {
                                 className="px-6 py-3 rounded-full flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 font-semibold text-xs tracking-normal list-action-btn"
                               >
                                 <PhoneIcon />
-                                <span>Call</span>
+                                <span className="text-white">Call</span>
                               </a>
                               
                               <a
@@ -1277,7 +1313,7 @@ export default function PropertiesPage() {
                                 className="px-6 py-3 rounded-full flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-95 font-semibold text-xs tracking-normal list-action-btn"
                               >
                                 <WhatsAppIcon />
-                                <span>WhatsApp</span>
+                                <span className="text-white">WhatsApp</span>
                               </a>
                             </div>
                           </div>
