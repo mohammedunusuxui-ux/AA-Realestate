@@ -1,8 +1,11 @@
 "use client";
 
 import React, { use, useState, useEffect, useRef } from "react";
-import { PROPERTIES_DATA, FAQ_DATA } from "@/data/properties";
+import { PROPERTIES_DATA, FAQ_DATA, AGENTS_LIST } from "@/data/properties";
 import { useTheme } from "@/components/ThemeContext";
+import { usePreferences } from "@/components/PreferencesContext";
+import Header from "@/components/Header";
+import DeveloperLogo from "@/components/DeveloperLogo";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -68,6 +71,26 @@ const MailIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
   </svg>
 );
+
+const HeartIcon = ({ filled }: { filled: boolean }) => (
+  <svg className="w-4.5 h-4.5 transition-colors duration-300" fill={filled ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+  </svg>
+);
+
+const ShareIcon = () => (
+  <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 10.742l-2.622 1.31M8.684 10.742a3.978 3.978 0 115.632-3.722m-5.632 3.722a3.978 3.978 0 005.632 3.722m-5.632-3.722L14.71 13.06m-5.632-2.318L6.062 9.43m8.648 3.63a3.978 3.978 0 11-5.632 3.722" />
+  </svg>
+);
+
+const FlagIcon = () => (
+  <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+  </svg>
+);
+
+
 
 const ROOMS = [
   { 
@@ -196,6 +219,110 @@ const renderRoomIcon = (iconName: string) => {
   }
 };
 
+const plotDocuments = [
+  { name: "Title Deed / Mulkiya", size: "1.8 MB", file: "title_deed_mulkiya.pdf" },
+  { name: "Oqood Registration", size: "1.2 MB", file: "oqood_registration.pdf" },
+  { name: "Affection Plan", size: "2.4 MB", file: "affection_plan.pdf" },
+  { name: "Site Plan / Blueprint", size: "3.8 MB", file: "site_plan.pdf" },
+  { name: "RERA Certificate", size: "3.2 MB", file: "rera_certificate.pdf" }
+];
+
+// ─── Helper: Developer Official Legal Name ──────────────────────────────────
+const getDeveloperOfficialName = (dev: string) => {
+  switch (dev.toLowerCase()) {
+    case "emaar":
+      return "EMAAR PROPERTIES PJSC";
+    case "nakheel":
+      return "NAKHEEL REAL ESTATE - SOLE PROPRIETORSHIP L.L.C.";
+    case "damac":
+      return "DAMAC PROPERTIES CO. PJSC";
+    case "sobha realty":
+    case "meydan sobha":
+      return "SOBHA REALTY L.L.C.";
+    case "meraas":
+      return "MERAAS DEVELOPMENT L.L.C.";
+    case "omniyat":
+      return "OMNIYAT PROPERTIES L.L.C.";
+    case "select group":
+      return "SELECT GROUP REAL ESTATE L.L.C.";
+    default:
+      return `${dev.toUpperCase()} DEVELOPMENTS L.L.C.`;
+  }
+};
+
+// ─── Helper: Developer Friendly Name ────────────────────────────────────────
+const getDeveloperFriendlyName = (dev: string) => {
+  const lower = dev.toLowerCase();
+  switch (lower) {
+    case "emaar":
+      return "Emaar Properties";
+    case "nakheel":
+      return "Nakheel Properties";
+    case "damac":
+      return "Damac Properties";
+    case "sobha realty":
+    case "meydan sobha":
+      return "Sobha Realty";
+    case "meraas":
+      return "Meraas Developments";
+    case "omniyat":
+      return "Omniyat Properties";
+    case "select group":
+      return "Select Group";
+    default:
+      if (lower.endsWith("properties") || lower.endsWith("realty") || lower.endsWith("developments") || lower.endsWith("group") || lower.endsWith("holdings")) {
+        return dev;
+      }
+      return `${dev} Properties`;
+  }
+};
+
+// ─── Helper: Developer Brief Info ───────────────────────────────────────────
+const getDeveloperBrief = (dev: string) => {
+  const data: Record<string, { desc: string; founded: string; projects: string[] }> = {
+    emaar: {
+      desc: "Emaar Properties is one of the world's most valuable and admired real estate development companies. With proven competencies in properties, shopping malls & retail and hospitality & leisure, Emaar shapes new lifestyles with a focus on design excellence, build quality and timely delivery. Famous for building the Burj Khalifa, Downtown Dubai, and Dubai Mall.",
+      founded: "1997",
+      projects: ["Burj Khalifa", "Downtown Dubai", "Dubai Marina", "Emaar Beachfront", "Dubai Hills Estate"]
+    },
+    nakheel: {
+      desc: "Nakheel is a world-leading master developer whose innovative, landmark projects form an iconic portfolio of master communities and residential, retail, hospitality and leisure developments that are pivotal to realizing Dubai's vision. Famous for the Palm Jumeirah and the World Islands, reclaiming coastline and redefining waterfront living.",
+      founded: "2000",
+      projects: ["Palm Jumeirah", "The World Islands", "Deira Islands", "Jumeirah Islands", "Dragon Mart"]
+    },
+    damac: {
+      desc: "DAMAC Properties has been at the forefront of the Middle East's luxury real estate market since 2002, delivering luxury residential, commercial and leisure properties across the region, including the UAE, Saudi Arabia, Qatar, Jordan, Lebanon, Iraq, the Maldives, Canada, and the United Kingdom.",
+      founded: "2002",
+      projects: ["DAMAC Hills", "DAMAC Lagoons", "DAMAC Tower Nine Elms", "Cavalli Tower"]
+    },
+    "sobha realty": {
+      desc: "Sobha Realty is an international luxury developer committed to redefining the art of living with sustainable communities. Established in 1976 as an interior decoration firm in Oman by PNC Menon, it has grown into a leading premium developer with high-end master developments in Dubai Hills and Sobha Hartland.",
+      founded: "1976",
+      projects: ["Sobha Hartland", "Sobha Hartland II", "Sobha Reserve", "The S Tower"]
+    },
+    meraas: {
+      desc: "Meraas is a Dubai-based conglomerate that aims to enhance Dubai's global active economy and active living index through a diverse portfolio of developments. They specialize in contemporary waterfront and urban lifestyle destinations, incorporating creative concepts that attract locals and tourists alike.",
+      founded: "2007",
+      projects: ["Jumeirah Bay Island", "Bluewaters Island", "City Walk", "La Mer", "Port de La Mer"]
+    },
+    omniyat: {
+      desc: "Omniyat is a privately-held real estate development and service group that creates premium unique artistic residences and spaces. Known for working with world-renowned architects like Zaha Hadid, Omniyat treats each project as a unique work of art, delivering iconic landmarks to the Dubai skyline.",
+      founded: "2005",
+      projects: ["The Opus by Zaha Hadid", "One at Palm Jumeirah", "The Lana (Dorchester Collection)", "ORLA"]
+    }
+  };
+
+  const key = dev.toLowerCase();
+  if (data[key]) return data[key];
+  if (key === "meydan sobha") return data["sobha realty"];
+  
+  return {
+    desc: `${dev} is a prominent luxury real estate developer operating in the UAE, dedicated to delivering premium residential and commercial spaces that meet international standards of design, quality, and craftsmanship.`,
+    founded: "N/A",
+    projects: ["Premium Residential Suites", "Signature Waterfront Estates"]
+  };
+};
+
 // ─── Component ──────────────────────────────────────────────────────────────
 export default function PropertyDetailPage({
   params,
@@ -205,18 +332,124 @@ export default function PropertyDetailPage({
   const { id } = use(params);
   const router = useRouter();
   const { theme, toggle: toggleTheme } = useTheme();
+  const { formatPrice, formatArea, currency } = usePreferences();
   const pageContainerRef = useRef<HTMLDivElement>(null);
 
   const propertyId = parseInt(id, 10);
   const property = PROPERTIES_DATA.find((p) => p.id === propertyId);
 
+  // Find similar properties using scoring logic (max score is 7)
+  const similarProperties = PROPERTIES_DATA
+    .filter((p) => p && property && p.id !== property.id)
+    .map((p) => {
+      let score = 0;
+      if (property && p.category === property.category) score += 3;
+      if (property && p.developer === property.developer) score += 2;
+      const baseLoc = property ? property.location.split(",")[0].trim().toLowerCase() : "";
+      const pLoc = p.location.split(",")[0].trim().toLowerCase();
+      if (baseLoc && (baseLoc.includes(pLoc) || pLoc.includes(baseLoc))) score += 1.5;
+      if (property && p.type === property.type) score += 0.5;
+      return { prop: p, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+
   // States
-  const [scrolled, setScrolled] = useState(false);
-  const [isBuyDropdownOpen, setIsBuyDropdownOpen] = useState(false);
-  const [isRentDropdownOpen, setIsRentDropdownOpen] = useState(false);
-  const [isNewProjectsDropdownOpen, setIsNewProjectsDropdownOpen] = useState(false);
-  const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isShareDropdownOpen, setIsShareDropdownOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [reportOtherText, setReportOtherText] = useState("");
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isDevModalOpen, setIsDevModalOpen] = useState(false);
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
+
+  // Load initial saved status from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedList = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+      setIsSaved(savedList.includes(propertyId));
+    }
+  }, [propertyId]);
+
+  const handleSaveToggle = () => {
+    if (typeof window !== "undefined") {
+      const savedList: number[] = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      let newList: number[];
+      let message = "";
+      if (savedList.includes(propertyId)) {
+        newList = savedList.filter(id => id !== propertyId);
+        setIsSaved(false);
+        message = "Property removed from saved listings";
+      } else {
+        newList = [...savedList, propertyId];
+        setIsSaved(true);
+        message = loggedIn 
+          ? "Property saved to your account" 
+          : "Property saved locally! Log in to sync.";
+      }
+      localStorage.setItem("savedProperties", JSON.stringify(newList));
+      
+      // Notify other components of saved list change
+      window.dispatchEvent(new CustomEvent("savedPropertiesChange", { detail: newList }));
+      
+      setToastMessage(message);
+      setTimeout(() => setToastMessage(null), 3000);
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      setToastMessage("Link copied to clipboard!");
+      setIsShareDropdownOpen(false);
+      setTimeout(() => setToastMessage(null), 3000);
+    }
+  };
+
+  const handleShareWhatsApp = () => {
+    if (typeof window !== "undefined" && property) {
+      const text = `Check out this amazing property: ${property.title} in ${property.location} - ${window.location.href}`;
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(url, "_blank");
+      setIsShareDropdownOpen(false);
+    }
+  };
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== "undefined" && navigator.share && property) {
+      try {
+        await navigator.share({
+          title: property.title,
+          text: `Check out this amazing property: ${property.title} in ${property.location}`,
+          url: window.location.href,
+        });
+        setIsShareDropdownOpen(false);
+      } catch (err) {
+        console.error("Native share failed:", err);
+        handleCopyLink();
+      }
+    } else {
+      handleCopyLink();
+    }
+  };
+
+  const handleReportSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportReason) return;
+    setReportSubmitted(true);
+    setTimeout(() => {
+      setIsReportModalOpen(false);
+      setReportSubmitted(false);
+      setReportReason("");
+      setReportOtherText("");
+      setToastMessage("Report submitted successfully.");
+      setTimeout(() => setToastMessage(null), 4000);
+    }, 1800);
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [mediaType, setMediaType] = useState<"photo" | "video">("photo");
@@ -224,6 +457,7 @@ export default function PropertyDetailPage({
   const [compareLocation, setCompareLocation] = useState("Dubai Marina");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [showInlineMap, setShowInlineMap] = useState(false);
+  const [isPlotDocsOpen, setIsPlotDocsOpen] = useState(true);
   const [floorPlanUnit, setFloorPlanUnit] = useState<"Feet" | "Meter">("Meter");
   const [floorPlanFurnished, setFloorPlanFurnished] = useState(true);
   const [activeRoomIndex, setActiveRoomIndex] = useState(0);
@@ -286,6 +520,46 @@ export default function PropertyDetailPage({
     return () => cancelAnimationFrame(animationFrameId);
   }, [floorPlanView, isAutoRotating, rotationSpeed, isDragging]);
 
+  // Active section tracking for sticky sub-nav
+  useEffect(() => {
+    const container = pageContainerRef.current;
+    if (!container) return;
+
+    const sections = [
+      "gallery",
+      "description",
+      "amenities",
+      "prices-trends",
+      "location",
+      "floor-plans",
+      "plot-documents"
+    ];
+
+    const handleScroll = () => {
+      const scrollPos = container.scrollTop + 180; // adjusted for header offset
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const containerRect = container.getBoundingClientRect();
+          const rect = el.getBoundingClientRect();
+          const top = rect.top - containerRect.top + container.scrollTop;
+          const height = rect.height;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    // Run once on mount to set initial section
+    handleScroll();
+
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handlePrevRoom = () => {
     setActiveRoomIndex((prev) => (prev === 0 ? ROOMS.length - 1 : prev - 1));
   };
@@ -310,13 +584,88 @@ export default function PropertyDetailPage({
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
 
+  // Acquisition Cost States (Collapsible Dropdown inline)
+  const [isAcquisitionDropdownOpen, setIsAcquisitionDropdownOpen] = useState(false);
+  const [acquisitionPaymentType, setAcquisitionPaymentType] = useState<"cash" | "mortgage">("cash");
+
+  // Active Navigation Section state
+  const [activeSection, setActiveSection] = useState("gallery");
+
+  // Mortgage Calculator States
+  const [mortgageDownPaymentPercent, setMortgageDownPaymentPercent] = useState(20);
+  const [mortgageInterestRate, setMortgageInterestRate] = useState(4.5);
+  const [mortgageTermYears, setMortgageTermYears] = useState(25);
+
   // Inline Chat
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatMinimized, setIsChatMinimized] = useState(false);
   const [chatInput, setChatInput] = useState("");
-  const [chatMessages, setChatMessages] = useState<{from:"user"|"agent"; text:string; time:string}[]>([
-    { from: "agent", text: `Hi! I'm the agent for ${property?.title ?? "this property"}. How can I help you today?`, time: new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) }
-  ]);
+  
+  // Facebook Messenger states
+  const [chatState, setChatState] = useState<"list" | "chat">("chat");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<"all" | "unread">("all");
+  
+  type Agent = typeof AGENTS_LIST[number];
+  
+  // Dedicated property agent
+  const propertyAgent = AGENTS_LIST.find(a => a.name === property?.agent?.name) ?? AGENTS_LIST[0];
+  const [chatAgent, setChatAgent] = useState<Agent>(propertyAgent);
+  
+  // Track active chat heads. Initially populated with the dedicated agent.
+  const [chatHeads, setChatHeads] = useState<Agent[]>([propertyAgent]);
+  
+  // Track conversations history dynamically for each agent
+  const [conversations, setConversations] = useState<Record<string, {from:"user"|"agent"; text:string; time:string}[]>>({
+    [propertyAgent.name]: [
+      { from: "agent", text: `Hi! I'm ${propertyAgent.name}, ${propertyAgent.title} at AA Traders. I'm the dedicated agent for ${property?.title ?? "this property"}. How can I help you today?`, time: new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) }
+    ]
+  });
+
+  // Track unread status for conversations
+  const [unreadAgents, setUnreadAgents] = useState<string[]>(["Layla Hassan", "Priya Sharma", "Fatima Al Zaabi"]);
+
+  // Pre-configured last messages for the Messenger list view simulation
+  const [mockLastMessages, setMockLastMessages] = useState<Record<string, { text: string; time: string }>>({
+    "Omar Al Rashid": { text: "Messages and calls are secure...", time: "44w" },
+    "Layla Hassan": { text: "Layla sent an attachment.", time: "9w" },
+    "Priya Sharma": { text: "Happy Birthday! 🎂", time: "10w" },
+    "James Whitfield": { text: "Are you interested in a viewing?", time: "2d" },
+    "Sara Al Mansoori": { text: "Let's connect soon.", time: "1w" },
+    "Michael Chen": { text: "Price list has been updated.", time: "3d" },
+    "Ravi Nair": { text: "Sent a PDF proposal.", time: "5w" },
+    "Fatima Al Zaabi": { text: "Fatima sent an attachment.", time: "9w" },
+    "Aisha Malik": { text: "Sure, let me check that.", time: "1h" },
+    "Khalid Meraas": { text: "Call me when you are free.", time: "5d" }
+  });
+
+  const chatMessages = conversations[chatAgent.name] || [
+    { from: "agent", text: `Hi! I'm ${chatAgent.name}, ${chatAgent.title} at AA Traders. How can I help you today?`, time: new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) }
+  ];
+
   const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  const switchAgent = (agent: Agent) => {
+    setChatAgent(agent);
+    setChatState("chat");
+    setIsChatOpen(true);
+    setIsChatMinimized(false);
+    
+    // Add to chat heads list if not already present
+    if (!chatHeads.some(h => h.name === agent.name)) {
+      setSavedHeads(agent);
+    }
+    
+    // Mark as read
+    setUnreadAgents(prev => prev.filter(name => name !== agent.name));
+  };
+
+  const setSavedHeads = (agent: Agent) => {
+    setChatHeads(prev => {
+      if (prev.some(h => h.name === agent.name)) return prev;
+      return [agent, ...prev.slice(0, 3)]; // max 4 chat heads
+    });
+  };
 
   const scrollChatToBottom = () => {
     if (chatScrollRef.current) {
@@ -328,8 +677,24 @@ export default function PropertyDetailPage({
     const text = chatInput.trim();
     if (!text) return;
     const time = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
-    setChatMessages(prev => [...prev, { from: "user", text, time }]);
+    
+    const userMsg = { from: "user" as const, text, time };
+    
+    // Update conversation history
+    setConversations(prev => ({
+      ...prev,
+      [chatAgent.name]: [...(prev[chatAgent.name] || []), userMsg]
+    }));
+    
+    // Update last message preview
+    setMockLastMessages(prev => ({
+      ...prev,
+      [chatAgent.name]: { text, time: "Just now" }
+    }));
+    
     setChatInput("");
+    
+    // Simulate agent typing response
     setTimeout(() => {
       const replies = [
         "Great question! I'd be happy to arrange a private viewing for you.",
@@ -338,14 +703,24 @@ export default function PropertyDetailPage({
         "We also have similar listings in the area if you'd like to compare.",
         "I'll check with the owner and get back to you right away!",
       ];
-      const reply = replies[Math.floor(Math.random() * replies.length)];
-      setChatMessages(prev => [...prev, { from: "agent", text: reply, time: new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) }]);
+      const replyText = replies[Math.floor(Math.random() * replies.length)];
+      const agentMsg = { from: "agent" as const, text: replyText, time: new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) };
+      
+      setConversations(prev => ({
+        ...prev,
+        [chatAgent.name]: [...(prev[chatAgent.name] || []), agentMsg]
+      }));
+      
+      setMockLastMessages(prev => ({
+        ...prev,
+        [chatAgent.name]: { text: replyText, time: "Just now" }
+      }));
     }, 900);
   };
 
   useEffect(() => {
     scrollChatToBottom();
-  }, [chatMessages]);
+  }, [conversations, chatAgent.name]);
 
 
   useEffect(() => {
@@ -353,25 +728,25 @@ export default function PropertyDetailPage({
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedIn);
 
-    const container = pageContainerRef.current;
-    const handleScroll = () => {
-      if (container) {
-        setScrolled(container.scrollTop > 50);
-      }
+    const handleOpenInquiry = () => {
+      setIsInquiryModalOpen(true);
     };
-    if (container) {
-      container.addEventListener("scroll", handleScroll);
-    }
+    const handleToggleChat = () => {
+      setIsChatOpen((prev) => !prev);
+    };
+
+    window.addEventListener("openInquiryModal", handleOpenInquiry);
+    window.addEventListener("toggleChat", handleToggleChat);
+
     return () => {
-      if (container) {
-        container.removeEventListener("scroll", handleScroll);
-      }
+      window.removeEventListener("openInquiryModal", handleOpenInquiry);
+      window.removeEventListener("toggleChat", handleToggleChat);
     };
   }, []);
 
   if (!property) {
     return (
-      <div className="min-h-screen bg-[#030102] flex items-center justify-center text-center p-6 text-white">
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center text-center p-6 text-white">
         <div>
           <h1 className="text-3xl font-black mb-4">Property Not Found</h1>
           <p className="text-white/50 text-sm mb-6">The property details you are looking for do not exist or have been removed.</p>
@@ -534,74 +909,31 @@ export default function PropertyDetailPage({
 
   const secondaryPath = getBezierPath(secondaryCoords);
 
+  const filteredAgents = AGENTS_LIST.filter(agent => {
+    const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          agent.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (agent.specialty && agent.specialty.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    if (activeFilter === "unread") {
+      return matchesSearch && unreadAgents.includes(agent.name);
+    }
+    return matchesSearch;
+  });
+
   return (
     <div
       ref={pageContainerRef}
-      className={`relative h-screen overflow-y-auto scroll-smooth ${
-        theme === "light" ? "bg-white text-neutral-900" : "bg-[#030102] text-white"
+      className={`properties-page relative h-screen overflow-y-auto scroll-smooth ${
+        theme === "light" ? "bg-white text-neutral-900" : "bg-[#0A0A0A] text-white"
       } transition-colors duration-500`}
     >
 
       {/* ── Header ── */}
-      <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 flex items-center justify-between ${
-        scrolled 
-          ? theme === "light"
-            ? "bg-white/90 backdrop-blur-md border-b border-neutral-200/50 py-4 px-6 md:px-12"
-            : "bg-[#030102]/65 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12"
-          : "bg-transparent py-6 md:py-8 px-6 md:px-12"
-      }`}>
-        {/* Brand Logo */}
-        <div className="font-sans">
-          <Link href="/" className="block select-none hover:opacity-80 transition-all duration-300">
-            <img
-              src="/Logo/AA Real Estate.png"
-              alt="AA Real Estate Logo"
-              className="h-11 md:h-12 w-auto object-contain"
-            />
-          </Link>
-        </div>
-
-        {/* Minimalist Desktop Navigation Links */}
-        <nav className={`hidden md:flex items-center gap-14 bg-[#171717]/90 backdrop-blur-md px-12 py-4 rounded-full border shadow-sm font-sans
-          ${theme === "light" ? "border-neutral-200 text-white" : "border-white/10 text-white"}`}>
-          <Link href="/properties?type=buy" className="text-[12px] tracking-[0.25em] uppercase hover:text-white/80 transition-colors py-1 block font-bold">Buy</Link>
-          <Link href="/properties?type=rent" className="text-[12px] tracking-[0.25em] uppercase hover:text-white/80 transition-colors py-1 block font-bold">Rent</Link>
-          <Link href="/?section=4" className="text-[12px] tracking-[0.25em] uppercase hover:text-white/80 transition-colors py-1 block font-bold">New Projects</Link>
-          <Link href="/?section=6" className="text-[12px] tracking-[0.25em] uppercase hover:text-white/80 transition-colors py-1 block font-bold">Find Agent</Link>
-        </nav>
-
-        {/* Right actions */}
-        <div className="flex items-center gap-3">
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center border transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95
-              ${theme === "dark"
-                ? "bg-black border-white/10 text-white/60 hover:text-white hover:bg-neutral-900"
-                : "bg-white border-black/10 text-black/60 hover:text-black hover:bg-neutral-100"}`}
-          >
-            {theme === "dark" ? (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-              </svg>
-            )}
-          </button>
-          <Link href="/?openAuth=true" className={`px-6 py-2 border text-[10px] tracking-[0.2em] uppercase rounded-full cursor-pointer transition-colors
-            ${theme === "light"
-              ? "border-neutral-200 text-neutral-900 bg-neutral-100/50 hover:bg-neutral-100"
-              : "border-white/20 text-white bg-[#030102]/20 hover:bg-white/10"}`}>
-            Login / Signup
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       {/* ── Main Layout ── */}
       <main className="relative z-10 w-full pt-36 pb-0">
-        <div className="w-full px-6 md:px-12 overflow-x-hidden">
+        <div className="w-full px-6 md:px-12">
         
         {/* Navigation Breadcrumbs / Back Row */}
         <div className="mb-6">
@@ -614,21 +946,274 @@ export default function PropertyDetailPage({
           </div>
         </div>
 
-        {/* Property Title Heading */}
-        <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase mb-3 font-sans leading-tight ${theme === "light" ? "text-neutral-900" : "text-white"}`}>
-          {property.title}
-        </h1>
+        {/* Title and actions row */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+          <div>
+            {/* Property Title Heading */}
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase mb-3 font-sans leading-tight ${theme === "light" ? "text-neutral-900" : "text-white"}`}>
+              {property.title}
+            </h1>
 
-        {/* Subheading: Location */}
-        <div className={`flex items-center gap-2 text-sm sm:text-base font-semibold mb-8 ${theme === "light" ? "text-neutral-600" : "text-neutral-450"}`}>
-          <div className="text-amber-500">
-            <PinIcon />
+            {/* Subheading: Location */}
+            <div className={`flex items-center gap-2 text-sm sm:text-base font-semibold ${theme === "light" ? "text-neutral-600" : "text-neutral-450"}`}>
+              <div className="text-amber-500">
+                <PinIcon />
+              </div>
+              <span>{property.location}</span>
+            </div>
           </div>
-          <span>{property.location}</span>
+
+          {/* Desktop Save, Share, Report Action Group */}
+          <div className="hidden md:flex items-center gap-4 select-none relative">
+            {/* Save Button */}
+            <button
+              onClick={handleSaveToggle}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full border text-xs tracking-normal font-semibold transition-all duration-300 active:scale-95 cursor-pointer select-none
+                ${theme === "light"
+                  ? isSaved
+                    ? "bg-rose-500/10 border-rose-500/30 text-rose-600 hover:bg-rose-500/20"
+                    : "bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 shadow-sm"
+                  : isSaved
+                    ? "bg-rose-500/20 border-rose-500/40 text-rose-455 hover:bg-rose-500/30"
+                    : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white"
+                }`}
+            >
+              <HeartIcon filled={isSaved} />
+              <span>{isSaved ? "Saved" : "Save"}</span>
+            </button>
+
+            {/* Share Button */}
+            <div className="relative">
+              <button
+                onClick={() => setIsShareDropdownOpen(!isShareDropdownOpen)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border text-xs tracking-normal font-semibold transition-all duration-300 active:scale-95 cursor-pointer select-none
+                  ${theme === "light"
+                    ? "bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 shadow-sm"
+                    : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white"
+                  }`}
+              >
+                <ShareIcon />
+                <span>Share</span>
+              </button>
+
+              <AnimatePresence>
+                {isShareDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsShareDropdownOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className={`absolute top-full mt-3 right-0 z-50 w-48 rounded-2xl border p-2.5 shadow-2xl backdrop-blur-md font-sans text-left
+                        ${theme === "light"
+                          ? "bg-white border-neutral-200/80 text-neutral-800"
+                          : "bg-[#0b0709]/95 border-white/10 text-white"
+                        }`}
+                    >
+                      <button
+                        onClick={handleNativeShare}
+                        className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer
+                          ${theme === "light" ? "hover:bg-neutral-100 text-neutral-800" : "hover:bg-white/5 text-white"}`}
+                      >
+                        <ShareIcon />
+                        System Share
+                      </button>
+                      <button
+                        onClick={handleCopyLink}
+                        className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer
+                          ${theme === "light" ? "hover:bg-neutral-100 text-neutral-800" : "hover:bg-white/5 text-white"}`}
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        Copy Link
+                      </button>
+                      <button
+                        onClick={handleShareWhatsApp}
+                        className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer
+                          ${theme === "light" ? "hover:bg-neutral-100 text-[#128C7E]" : "hover:bg-white/5 text-[#25D366]"}`}
+                      >
+                        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.799-4.382 9.802-9.77.001-2.61-1.01-5.063-2.846-6.898C16.398 2.1 13.953.948 11.998.948 6.596.948 2.2 5.332 2.197 10.72c-.001 1.517.411 3.01 1.192 4.304l-.99 3.616 3.708-.973c1.238.675 2.593 1.033 3.94 1.037z"/>
+                        </svg>
+                        WhatsApp
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Report Button */}
+            <button
+              onClick={() => setIsReportModalOpen(true)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full border text-xs tracking-normal font-semibold transition-all duration-300 active:scale-95 cursor-pointer select-none
+                ${theme === "light"
+                  ? "bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 shadow-sm"
+                  : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white"
+                }`}
+            >
+              <FlagIcon />
+              <span>Report</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Save, Share, Report Action Group */}
+        <div className="flex md:hidden items-center gap-3 mb-8 select-none">
+          {/* Save Button */}
+          <button
+            onClick={handleSaveToggle}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-xs tracking-normal font-semibold transition-all duration-300 active:scale-95 cursor-pointer
+              ${theme === "light"
+                ? isSaved
+                  ? "bg-rose-500/10 border-rose-500/30 text-rose-600"
+                  : "bg-white border-neutral-200 text-neutral-800 shadow-sm"
+                : isSaved
+                  ? "bg-rose-500/20 border-rose-500/40 text-rose-455"
+                  : "bg-white/5 border-white/10 text-white/80"
+              }`}
+          >
+            <HeartIcon filled={isSaved} />
+            <span>{isSaved ? "Saved" : "Save"}</span>
+          </button>
+
+          {/* Share Button */}
+          <div className="flex-1 relative">
+            <button
+              onClick={() => setIsShareDropdownOpen(!isShareDropdownOpen)}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-xs tracking-normal font-semibold transition-all duration-300 active:scale-95 cursor-pointer
+                ${theme === "light"
+                  ? "bg-white border-neutral-200 text-neutral-800 shadow-sm"
+                  : "bg-white/5 border-white/10 text-white/80"
+                }`}
+            >
+              <ShareIcon />
+              <span>Share</span>
+            </button>
+
+            <AnimatePresence>
+              {isShareDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsShareDropdownOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className={`absolute bottom-full mb-3 right-0 z-50 w-48 rounded-2xl border p-2.5 shadow-2xl backdrop-blur-md font-sans text-left
+                      ${theme === "light"
+                        ? "bg-white border-neutral-200/80 text-neutral-800"
+                        : "bg-[#0b0709]/95 border-white/10 text-white"
+                      }`}
+                  >
+                    <button
+                      onClick={handleNativeShare}
+                      className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer
+                        ${theme === "light" ? "hover:bg-neutral-100 text-neutral-800" : "hover:bg-white/5 text-white"}`}
+                    >
+                      <ShareIcon />
+                      System Share
+                    </button>
+                    <button
+                      onClick={handleCopyLink}
+                      className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer
+                        ${theme === "light" ? "hover:bg-neutral-100 text-neutral-800" : "hover:bg-white/5 text-white"}`}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                      </svg>
+                      Copy Link
+                    </button>
+                    <button
+                      onClick={handleShareWhatsApp}
+                      className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer
+                        ${theme === "light" ? "hover:bg-neutral-100 text-[#128C7E]" : "hover:bg-white/5 text-[#25D366]"}`}
+                    >
+                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.799-4.382 9.802-9.77.001-2.61-1.01-5.063-2.846-6.898C16.398 2.1 13.953.948 11.998.948 6.596.948 2.2 5.332 2.197 10.72c-.001 1.517.411 3.01 1.192 4.304l-.99 3.616 3.708-.973c1.238.675 2.593 1.033 3.94 1.037z"/>
+                      </svg>
+                      WhatsApp
+                    </button>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Report Button */}
+          <button
+            onClick={() => setIsReportModalOpen(true)}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-xs tracking-wider uppercase font-bold transition-all duration-300 active:scale-95 cursor-pointer
+              ${theme === "light"
+                ? "bg-white border-neutral-200 text-neutral-800 shadow-sm"
+                : "bg-white/5 border-white/10 text-white/80"
+              }`}
+          >
+            <FlagIcon />
+            <span>Report</span>
+          </button>
+        </div>
+
+        {/* ── Sub-Navigation Bar ── */}
+        <div className={`sticky top-[73px] z-30 border-b backdrop-blur-md transition-all duration-300 -mx-6 md:-mx-12 px-6 md:px-12 w-[calc(100%+3rem)] md:w-[calc(100%+6rem)] mb-8
+          ${theme === "light"
+            ? "bg-white/75 border-neutral-200/50 text-neutral-800"
+            : "bg-[#0A0A0A]/70 border-white/5 text-white/90"}`}
+        >
+          <div className="w-full">
+            <div className="flex items-center justify-start md:justify-between overflow-x-auto md:overflow-visible scrollbar-none gap-6 md:gap-0 h-14 md:h-16 text-xs font-semibold select-none whitespace-nowrap w-full">
+              {[
+                { id: "gallery", label: "Gallery" },
+                { id: "description", label: "Description" },
+                { id: "amenities", label: "Amenities & Features" },
+                { id: "prices-trends", label: "Prices & Trends" },
+                { id: "location", label: "Location" },
+                { id: "floor-plans", label: "Floor Plans" },
+                { id: "plot-documents", label: "Plot Documents" },
+              ].map((tab) => {
+                const isActive = activeSection === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      const el = document.getElementById(tab.id);
+                      const container = pageContainerRef.current;
+                      if (el && container) {
+                        const headerOffset = 145; // main header (80) + sub-nav (65)
+                        const containerRect = container.getBoundingClientRect();
+                        const elementPosition = el.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition - containerRect.top + container.scrollTop - headerOffset;
+                        container.scrollTo({
+                          top: offsetPosition,
+                          behavior: "smooth"
+                        });
+                        setActiveSection(tab.id);
+                      }
+                    }}
+                    className={`relative h-full flex items-center justify-center cursor-pointer transition-colors duration-300 pb-[2px] px-2 md:px-0
+                      ${isActive
+                        ? "text-[#EFBF04] font-extrabold"
+                        : "text-neutral-400 hover:text-neutral-500 dark:hover:text-white/80"}`}
+                  >
+                    <span>{tab.label}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSubTabUnderline"
+                        className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-[#EFBF04]"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {/* ── Image Gallery Grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
+        <div id="gallery" className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
           {/* Left Side: Large primary landscape image or Video player */}
           <div className="lg:col-span-2 relative aspect-[21/9] sm:aspect-[21/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-xl group bg-neutral-950">
             <AnimatePresence mode="wait">
@@ -684,7 +1269,7 @@ export default function PropertyDetailPage({
             <div className="absolute bottom-6 left-6 z-20 flex gap-2">
               <button
                 onClick={() => setMediaType("photo")}
-                className={`px-4 py-2 rounded-full text-[9px] tracking-widest font-extrabold uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
+                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-normal transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
                   ${mediaType === "photo"
                     ? "bg-white border-white text-black"
                     : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
@@ -696,7 +1281,7 @@ export default function PropertyDetailPage({
               </button>
               <button
                 onClick={() => setMediaType("video")}
-                className={`px-4 py-2 rounded-full text-[9px] tracking-widest font-extrabold uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
+                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-normal transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
                   ${mediaType === "video"
                     ? "bg-white border-white text-black"
                     : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
@@ -738,12 +1323,26 @@ export default function PropertyDetailPage({
           <div className="lg:col-span-2 space-y-12">
             
             {/* Description */}
-            <div className="space-y-4">
+            <div id="description" className="space-y-4">
               <h2 className="text-2xl font-bold tracking-tight">Description</h2>
               <p className={`text-base leading-relaxed font-light ${theme === "light" ? "text-neutral-600" : "text-neutral-400"}`}>
-                {property.title} is a beautifully designed modern estate located in the prestigious area of {property.location}.
-                Offering breathtaking panoramic views and a serene surrounding landscape, this property integrates luxury, style, and everyday comfort.
-                Constructed by premium developers {property.developer || "AA Traders Signature Homes"}, the property features expansive open-plan layout interiors with high-performance glass windows that bring in extensive natural light, boosting the overall luxury residence experience.
+                {(() => {
+                  const fullDesc = `${property.title} is a beautifully designed modern estate located in the prestigious area of ${property.location}. Offering breathtaking panoramic views and a serene surrounding landscape, this property integrates luxury, style, and everyday comfort. Constructed by premium developers ${property.developer || "AA Traders Signature Homes"}, the property features expansive open-plan layout interiors with high-performance glass windows that bring in extensive natural light, boosting the overall luxury residence experience.`;
+                  
+                  if (fullDesc.length <= 250) return fullDesc;
+                  
+                  return (
+                    <>
+                      <span>{isDescExpanded ? fullDesc : `${fullDesc.slice(0, 250)}...`}</span>
+                      <button
+                        onClick={() => setIsDescExpanded(!isDescExpanded)}
+                        className="font-semibold inline-flex items-center ml-2 transition-all duration-300 hover:underline cursor-pointer active:scale-95 focus:outline-none text-[#EFBF04] hover:text-amber-400"
+                      >
+                        {isDescExpanded ? "See Less" : "See More"}
+                      </button>
+                    </>
+                  );
+                })()}
               </p>
             </div>
 
@@ -751,7 +1350,7 @@ export default function PropertyDetailPage({
             <div className={`rounded-[2rem] border p-8 grid grid-cols-2 sm:grid-cols-3 gap-8 shadow-sm
               ${theme === "light" 
                 ? "bg-neutral-50/50 border-neutral-200/70 text-neutral-800" 
-                : "bg-[#111111]/45 border-white/8 text-white"}`}
+                : "bg-[#1A1A1A]/45 border-white/8 text-white"}`}
             >
               <div className="flex items-center gap-3.5">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center border
@@ -815,15 +1414,15 @@ export default function PropertyDetailPage({
                 </div>
                 <div>
                   <span className="block text-[10px] uppercase tracking-wider opacity-50 font-bold">Developer</span>
-                  <span className="text-sm font-bold truncate max-w-[120px]" title={property.developer || "Exclusive"}>
-                    {property.developer || "Exclusive"}
-                  </span>
+                  <div className="mt-0.5">
+                    <DeveloperLogo developer={property.developer || "Exclusive"} theme={theme} />
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Amenities & Features */}
-            <div className="space-y-5">
+            <div id="amenities" className="space-y-5">
               <h2 className="text-xl font-bold tracking-tight">Amenities & Features</h2>
               <div className="flex flex-wrap gap-2.5">
                 {["Swimming Pool", "Gym", "Private Parking", "24/7 Security", "Central A/C", "Landscaped Garden"].map((item) => (
@@ -832,7 +1431,7 @@ export default function PropertyDetailPage({
                     className={`px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider border shadow-sm
                       ${theme === "light"
                         ? "bg-neutral-50 border-neutral-200/80 text-neutral-700"
-                        : "bg-[#111111]/30 border-white/5 text-white/80"}`}
+                        : "bg-[#1A1A1A]/30 border-white/5 text-white/80"}`}
                   >
                     {item}
                   </span>
@@ -841,10 +1440,10 @@ export default function PropertyDetailPage({
             </div>
 
             {/* Prices & Trends Section */}
-            <div className={`rounded-[2rem] border p-8 space-y-6 shadow-sm relative transition-colors duration-500
+            <div id="prices-trends" className={`rounded-[2rem] border p-8 space-y-6 shadow-sm relative transition-colors duration-500
               ${theme === "light" 
                 ? "bg-neutral-50/50 border-neutral-200/70" 
-                : "bg-[#111111]/45 border-white/8 text-white"}`}
+                : "bg-[#1A1A1A]/45 border-white/8 text-white"}`}
             >
               {/* Header Row */}
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -866,7 +1465,7 @@ export default function PropertyDetailPage({
                           ? "bg-white border-white text-black"
                           : theme === "light"
                             ? "bg-neutral-100 border-neutral-200 text-neutral-500 hover:text-neutral-900"
-                            : "bg-[#030102]/40 border-white/5 text-white/40 hover:text-white/70"}`}
+                            : "bg-[#0A0A0A]/40 border-white/5 text-white/40 hover:text-white/70"}`}
                     >
                       {tf}
                     </button>
@@ -913,7 +1512,7 @@ export default function PropertyDetailPage({
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-3.5 h-0.75 border-t-2 border-dashed border-indigo-400 inline-block" />
+                    <span className="w-3.5 h-0.75 border-t-2 border-dashed border-[#EFBF04] inline-block" />
                     <span className={theme === "light" ? "text-neutral-700" : "text-white/70"}>
                       {compareLocation}
                     </span>
@@ -1122,19 +1721,19 @@ export default function PropertyDetailPage({
                                   {activeLocName}
                                 </div>
                                 <div className={`text-[13px] font-black tracking-tight mt-0.5 ${theme === "light" ? "text-neutral-900" : "text-white"}`}>
-                                  AED {primaryPrices[hoveredIndex].toLocaleString()}
+                                  {formatPrice(primaryPrices[hoveredIndex])}
                                 </div>
                               </div>
                             </div>
                             {/* Compare location row */}
-                            <div className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 ${theme === "light" ? "bg-indigo-50" : "bg-indigo-500/10"}`}>
-                              <span className="w-2.5 h-2.5 rounded-full bg-indigo-400 shrink-0" />
+                            <div className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 ${theme === "light" ? "bg-amber-50" : "bg-amber-500/10"}`}>
+                              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
                               <div className="flex-1 min-w-0">
-                                <div className={`text-[9px] font-bold uppercase tracking-wider truncate ${theme === "light" ? "text-indigo-700" : "text-indigo-400"}`}>
+                                <div className={`text-[9px] font-bold uppercase tracking-wider truncate ${theme === "light" ? "text-amber-700" : "text-amber-400"}`}>
                                   {compareLocation}
                                 </div>
                                 <div className={`text-[13px] font-black tracking-tight mt-0.5 ${theme === "light" ? "text-neutral-900" : "text-white"}`}>
-                                  AED {secondaryPrices[hoveredIndex].toLocaleString()}
+                                  {formatPrice(secondaryPrices[hoveredIndex])}
                                 </div>
                               </div>
                             </div>
@@ -1171,12 +1770,12 @@ export default function PropertyDetailPage({
             </div>
 
             {/* Location Section */}
-            <div className="space-y-5">
+            <div id="location" className="space-y-5">
               <h2 className="text-xl font-bold tracking-tight">Location</h2>
               <div className={`rounded-[2rem] border overflow-hidden p-6 md:p-8 shadow-sm relative transition-all duration-500
                 ${theme === "light" 
                   ? "bg-white border-neutral-200/80 text-neutral-800" 
-                  : "bg-[#111111]/30 border-white/5 text-white"}`}
+                  : "bg-[#1A1A1A]/30 border-white/5 text-white"}`}
               >
                 {/* Stylized vector map background roads */}
                 <svg className={`absolute inset-0 w-full h-full pointer-events-none opacity-[0.08] dark:opacity-[0.03]
@@ -1217,62 +1816,57 @@ export default function PropertyDetailPage({
                       onClick={() => setShowInlineMap(!showInlineMap)}
                       className={`px-6 py-2.5 rounded-xl text-xs font-semibold tracking-wide border cursor-pointer transition-all duration-300 active:scale-97 shrink-0
                         ${theme === "light"
-                          ? "border-indigo-600/30 text-indigo-600 hover:bg-indigo-50/50"
-                          : "border-amber-500/30 text-amber-500 hover:bg-amber-500/5"}`}
+                          ? "border-[#EFBF04]/50 text-[#1D1D1F] hover:bg-[#EFBF04]/8"
+                          : "border-[#EFBF04]/30 text-[#EFBF04] hover:bg-[#EFBF04]/5"}`}
                     >
-                      {showInlineMap ? "Hide Map" : "View on map"}
+                      {showInlineMap ? "Minimize Map" : "Expand Map"}
                     </button>
                   </div>
 
-                  {/* Expandable Interactive Map Embed */}
-                  <AnimatePresence>
-                    {showInlineMap && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: "auto", marginTop: 16 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                        className="w-full overflow-hidden rounded-2xl border border-neutral-200/50 dark:border-white/5 shadow-inner"
+                  {/* Always Visible, Animatable Interactive Map Embed */}
+                  <motion.div
+                    animate={{ 
+                      height: showInlineMap ? 450 : 200 
+                    }}
+                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                    className="w-full overflow-hidden rounded-2xl border border-neutral-200/50 dark:border-white/5 shadow-inner mt-4"
+                  >
+                    <iframe
+                      title="Property Location Map"
+                      width="100%"
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                      frameBorder="0"
+                      scrolling="no"
+                      marginHeight={0}
+                      marginWidth={0}
+                      className={`w-full block h-[calc(100%-55px)] ${theme === "light" ? "grayscale-0" : "invert-[0.9] hue-rotate-[180deg] contrast-[0.9] opacity-80"}`}
+                    />
+                    <div className={`p-4 text-center border-t text-xs font-medium uppercase tracking-wider h-[55px] flex items-center justify-center
+                      ${theme === "light"
+                        ? "bg-neutral-50 border-neutral-200 text-neutral-500"
+                        : "bg-[#1A1A1A]/50 border-white/5 text-white/50"}`}
+                    >
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.location)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline hover:text-amber-500 transition-colors"
                       >
-                        <iframe
-                          title="Property Location Map"
-                          width="100%"
-                          height="350"
-                          src={`https://maps.google.com/maps?q=${encodeURIComponent(property.location)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
-                          frameBorder="0"
-                          scrolling="no"
-                          marginHeight={0}
-                          marginWidth={0}
-                          className={`w-full block ${theme === "light" ? "grayscale-0" : "invert-[0.9] hue-rotate-[180deg] contrast-[0.9] opacity-80"}`}
-                        />
-                        <div className={`p-4 text-center border-t text-xs font-medium uppercase tracking-wider
-                          ${theme === "light"
-                            ? "bg-neutral-50 border-neutral-200 text-neutral-500"
-                            : "bg-[#161616]/50 border-white/5 text-white/50"}`}
-                        >
-                          <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.location)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline hover:text-amber-500 transition-colors"
-                          >
-                            Open in Google Maps ↗
-                          </a>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        Open in Google Maps ↗
+                      </a>
+                    </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
 
             {/* Floor Plans */}
-            <div className="space-y-5">
+            <div id="floor-plans" className="space-y-5">
               <h2 className="text-xl font-bold tracking-tight">Floor Plans</h2>
               <div className={`rounded-[2rem] border overflow-hidden p-6 md:p-8 flex flex-col items-center gap-8 shadow-md relative
                 ${theme === "light" 
                   ? "bg-white border-neutral-200/80 text-neutral-800" 
-                  : "bg-[#111111]/30 border-white/5 text-white"}`}
+                  : "bg-[#1A1A1A]/30 border-white/5 text-white"}`}
               >
                 
                 {/* Right floating view controls */}
@@ -1282,7 +1876,7 @@ export default function PropertyDetailPage({
                     onClick={() => setFloorPlanView("2D")}
                     className={`w-12 h-12 rounded-full border flex items-center justify-center font-bold text-xs cursor-pointer shadow-md transition-all duration-300 active:scale-95
                       ${floorPlanView === "2D"
-                        ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/25"
+                        ? "bg-[#EFBF04] border-[#EFBF04] text-[#1D1D1F] shadow-lg shadow-amber-500/20"
                         : theme === "light"
                           ? "bg-white border-neutral-200 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50"
                           : "bg-[#1c1c1c] border-white/10 text-white/70 hover:text-white hover:bg-neutral-900"}`}
@@ -1296,7 +1890,7 @@ export default function PropertyDetailPage({
                     onClick={() => setFloorPlanView("3D")}
                     className={`w-12 h-12 rounded-full border flex items-center justify-center font-bold text-xs cursor-pointer shadow-md transition-all duration-300 active:scale-95
                       ${floorPlanView === "3D"
-                        ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/25"
+                        ? "bg-[#EFBF04] border-[#EFBF04] text-[#1D1D1F] shadow-lg shadow-amber-500/20"
                         : theme === "light"
                           ? "bg-white border-neutral-200 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50"
                           : "bg-[#1c1c1c] border-white/10 text-white/70 hover:text-white hover:bg-neutral-900"}`}
@@ -1310,7 +1904,7 @@ export default function PropertyDetailPage({
                     onClick={() => setFloorPlanView("360")}
                     className={`w-12 h-12 rounded-full border flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 active:scale-95
                       ${floorPlanView === "360"
-                        ? "bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-600/25"
+                        ? "bg-[#EFBF04] border-[#EFBF04] text-[#1D1D1F] shadow-lg shadow-amber-500/20"
                         : theme === "light"
                           ? "bg-white border-neutral-200 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50"
                           : "bg-[#1c1c1c] border-white/10 text-white/70 hover:text-white hover:bg-neutral-900"}`}
@@ -1395,7 +1989,7 @@ export default function PropertyDetailPage({
                           }}
                           className={`w-8 h-8 rounded-full border flex items-center justify-center cursor-pointer active:scale-95 transition-all duration-300
                             ${isAutoRotating 
-                              ? "bg-indigo-600 border-indigo-600 text-white" 
+                              ? "bg-[#EFBF04] border-[#EFBF04] text-[#1D1D1F]" 
                               : "border-white/20 hover:bg-white/10 text-white"}`}
                           title="Auto Rotate"
                         >
@@ -1458,7 +2052,7 @@ export default function PropertyDetailPage({
                         onClick={() => setFloorPlanUnit("Feet")}
                         className={`px-4 py-1.5 rounded-full font-bold text-[9px] tracking-widest uppercase transition-all duration-300 cursor-pointer
                           ${floorPlanUnit === "Feet"
-                            ? "bg-indigo-600 text-white shadow-sm"
+                            ? "bg-[#EFBF04] text-[#1D1D1F] shadow-sm"
                             : "text-neutral-500 hover:text-neutral-800 dark:text-white/40 dark:hover:text-white"}`}
                       >
                         Feet
@@ -1467,7 +2061,7 @@ export default function PropertyDetailPage({
                         onClick={() => setFloorPlanUnit("Meter")}
                         className={`px-4 py-1.5 rounded-full font-bold text-[9px] tracking-widest uppercase transition-all duration-300 cursor-pointer
                           ${floorPlanUnit === "Meter"
-                            ? "bg-indigo-600 text-white shadow-sm"
+                            ? "bg-[#EFBF04] text-[#1D1D1F] shadow-sm"
                             : "text-neutral-500 hover:text-neutral-800 dark:text-white/40 dark:hover:text-white"}`}
                       >
                         Meter
@@ -1483,7 +2077,7 @@ export default function PropertyDetailPage({
                         Furnished
                       </span>
                       <div className={`w-9 h-5 rounded-full p-0.5 relative transition-all duration-300 flex items-center
-                        ${floorPlanFurnished ? "bg-indigo-600" : "bg-neutral-300 dark:bg-neutral-800"}`}
+                        ${floorPlanFurnished ? "bg-[#EFBF04]" : "bg-neutral-300 dark:bg-neutral-800"}`}
                       >
                         <motion.div
                           layout
@@ -1503,7 +2097,7 @@ export default function PropertyDetailPage({
                   >
                     <button
                       onClick={handlePrevRoom}
-                      className="cursor-pointer text-neutral-400 hover:text-indigo-600 dark:hover:text-amber-500 transition-colors p-1"
+                      className="cursor-pointer text-neutral-400 hover:text-[#EFBF04] transition-colors p-1"
                       title="Previous Room"
                     >
                       ←
@@ -1513,7 +2107,7 @@ export default function PropertyDetailPage({
                     </span>
                     <button
                       onClick={handleNextRoom}
-                      className="cursor-pointer text-neutral-400 hover:text-indigo-600 dark:hover:text-amber-500 transition-colors p-1"
+                      className="cursor-pointer text-neutral-400 hover:text-[#EFBF04] transition-colors p-1"
                       title="Next Room"
                     >
                       →
@@ -1546,20 +2140,20 @@ export default function PropertyDetailPage({
                         <div
                           key={room.id}
                           onClick={() => setActiveRoomIndex(idx)}
-                          className={`border rounded-xl p-3 w-[100px] flex flex-col items-center text-center gap-2 cursor-pointer transition-all duration-300 active:scale-97 shrink-0
+                          className={`border rounded-xl p-3 w-[100px] flex flex-col items-center text-center gap-2 cursor-pointer transition-all duration-300 active:scale-97 shrink-0 active-room-chip
                             ${isActive
-                              ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/25"
+                              ? "bg-[#EFBF04] border-[#EFBF04] text-black shadow-md shadow-amber-500/20 font-bold"
                               : theme === "light"
                                 ? "bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50/50"
                                 : "bg-[#181818] border-white/5 text-white/80 hover:bg-[#202020]"}`}
                         >
-                          <div className={isActive ? "text-white" : "text-indigo-600 dark:text-amber-500"}>
+                          <div className={isActive ? "text-black" : theme === "light" ? "text-[#EFBF04]" : "text-amber-500"}>
                             {renderRoomIcon(room.icon)}
                           </div>
                           <span className="text-[9px] font-bold uppercase tracking-wider truncate w-full">
                             {room.label}
                           </span>
-                          <span className={`text-[9px] truncate w-full ${isActive ? "text-white/80" : "opacity-60"}`}>
+                          <span className={`text-[9px] truncate w-full ${isActive ? "text-black/60 font-bold" : "opacity-60"}`}>
                             {floorPlanUnit === "Meter" ? room.mDim : room.fDim}
                           </span>
                         </div>
@@ -1582,151 +2176,653 @@ export default function PropertyDetailPage({
 
               </div>
             </div>
+
+            {/* Plot Documents */}
+            <div id="plot-documents" className="space-y-5">
+              <h2 className="text-xl font-bold tracking-tight">Plot Documents</h2>
+              <div className={`rounded-[2rem] border overflow-hidden p-6 md:p-8 flex flex-col gap-0 shadow-md relative transition-all duration-500
+                ${theme === "light" 
+                  ? "bg-white border-neutral-200/80 text-neutral-800" 
+                  : "bg-[#1A1A1A]/30 border-white/5 text-white"}`}
+              >
+              {/* Header */}
+              <button
+                onClick={() => setIsPlotDocsOpen(!isPlotDocsOpen)}
+                className="w-full flex items-center justify-between cursor-pointer focus:outline-none select-none text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-300
+                    ${theme === "light" 
+                      ? "bg-[#EFBF04]/10 border-[#EFBF04]/25 text-[#EFBF04]" 
+                      : "bg-[#EFBF04]/10 border-[#EFBF04]/20 text-[#EFBF04] shadow-[0_0_15px_rgba(239,191,4,0.1)]"}`}
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                  </div>
+                  <span className="text-base font-bold tracking-tight">Approvals & Certificates</span>
+                </div>
+                
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors
+                  ${theme === "light" ? "hover:bg-neutral-100 text-neutral-500" : "hover:bg-white/5 text-white/50"}`}
+                >
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isPlotDocsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </button>
+
+              {/* Collapsible content */}
+              <AnimatePresence initial={false}>
+                {isPlotDocsOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden w-full"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-neutral-200/10 dark:border-white/5 mt-6 w-full">
+                      {plotDocuments.map((doc, idx) => (
+                        <div
+                          key={idx}
+                          className={`p-4 rounded-2xl border flex items-center justify-between transition-all duration-300 group
+                            ${theme === "light"
+                              ? "bg-neutral-50/50 border-neutral-200/60 hover:bg-neutral-50 hover:border-[#EFBF04]/30"
+                              : "bg-[#161616]/30 border-white/5 hover:bg-[#1c1c1c]/45 hover:border-[#EFBF04]/20"}`}
+                        >
+                          <div className="flex items-center gap-3.5 min-w-0">
+                            {/* File Icon Container */}
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300
+                              ${theme === "light"
+                                ? "bg-[#EFBF04]/8 border-[#EFBF04]/20 text-[#EFBF04]"
+                                : "bg-[#EFBF04]/8 border-[#EFBF04]/15 text-[#EFBF04]"}`}
+                            >
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            </div>
+                            
+                            {/* Details */}
+                            <div className="min-w-0">
+                              <span className="block text-xs font-bold truncate leading-tight">
+                                {doc.name}
+                              </span>
+                              <span className={`block text-[10px] tracking-wide mt-1 transition-colors
+                                ${theme === "light" ? "text-neutral-400 font-semibold" : "text-white/30 font-medium"}`}
+                              >
+                                {doc.size}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Download button */}
+                          <a
+                            href={`#download-${doc.file}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              // download simulation
+                              alert(`Downloading ${doc.name}...`);
+                            }}
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-300 cursor-pointer active:scale-95
+                              ${theme === "light"
+                                ? "bg-white border-neutral-200 text-neutral-500 hover:text-[#EFBF04] hover:border-[#EFBF04]/30"
+                                : "bg-[#202020]/40 border-white/5 text-white/50 hover:text-[#EFBF04] hover:border-[#EFBF04]/20 hover:bg-[#EFBF04]/5"}`}
+                            title={`Download ${doc.name}`}
+                          >
+                            <svg className="w-4.5 h-4.5 fill-none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            </div>
+
+            {/* ── Mortgage Calculator Section ── */}
+            <div id="mortgage-calculator" className="space-y-5 pt-4">
+              <h2 className="text-xl font-bold tracking-tight">Mortgage Calculator</h2>
+              <div className={`rounded-[2rem] border p-8 space-y-8 shadow-sm relative transition-all duration-500
+                ${theme === "light" 
+                  ? "bg-neutral-50/50 border-neutral-200/70 text-neutral-800 shadow-neutral-100" 
+                  : "bg-[#1A1A1A]/45 border-white/8 text-white"}`}
+              >
+                {/* Inputs Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Down Payment slider */}
+                  <div className="space-y-3.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-[10px] uppercase tracking-wider opacity-60 font-bold">Down Payment</span>
+                      <span className="font-bold">{mortgageDownPaymentPercent}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={20}
+                      max={80}
+                      step={5}
+                      value={mortgageDownPaymentPercent}
+                      onChange={(e) => setMortgageDownPaymentPercent(Number(e.target.value))}
+                      className="w-full accent-[#EFBF04] h-1.5 bg-neutral-200 dark:bg-white/10 rounded-lg cursor-pointer appearance-none"
+                    />
+                    <div className="flex justify-between text-[9px] opacity-40 font-semibold">
+                      <span>Min 20%</span>
+                      <span>Max 80%</span>
+                    </div>
+                  </div>
+
+                  {/* Interest Rate slider */}
+                  <div className="space-y-3.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-[10px] uppercase tracking-wider opacity-60 font-bold">Interest Rate</span>
+                      <span className="font-bold">{mortgageInterestRate}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={2}
+                      max={8}
+                      step={0.1}
+                      value={mortgageInterestRate}
+                      onChange={(e) => setMortgageInterestRate(Number(e.target.value))}
+                      className="w-full accent-[#EFBF04] h-1.5 bg-neutral-200 dark:bg-white/10 rounded-lg cursor-pointer appearance-none"
+                    />
+                    <div className="flex justify-between text-[9px] opacity-40 font-semibold">
+                      <span>2%</span>
+                      <span>8%</span>
+                    </div>
+                  </div>
+
+                  {/* Loan Term slider */}
+                  <div className="space-y-3.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-[10px] uppercase tracking-wider opacity-60 font-bold">Loan Term</span>
+                      <span className="font-bold">{mortgageTermYears} Years</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={5}
+                      max={25}
+                      step={5}
+                      value={mortgageTermYears}
+                      onChange={(e) => setMortgageTermYears(Number(e.target.value))}
+                      className="w-full accent-[#EFBF04] h-1.5 bg-neutral-200 dark:bg-white/10 rounded-lg cursor-pointer appearance-none"
+                    />
+                    <div className="flex justify-between text-[9px] opacity-40 font-semibold">
+                      <span>5 Yrs</span>
+                      <span>25 Yrs</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Output calculations and summaries */}
+                {(() => {
+                  const P = property.priceVal || 0;
+                  const downPaymentAmount = P * (mortgageDownPaymentPercent / 100);
+                  const loanAmount = P - downPaymentAmount;
+                  const monthlyInterest = (mortgageInterestRate / 12) / 100;
+                  const totalPayments = mortgageTermYears * 12;
+                  
+                  let monthlyPayment = 0;
+                  if (monthlyInterest > 0) {
+                    monthlyPayment = loanAmount * (monthlyInterest * Math.pow(1 + monthlyInterest, totalPayments)) / (Math.pow(1 + monthlyInterest, totalPayments) - 1);
+                  } else {
+                    monthlyPayment = loanAmount / totalPayments;
+                  }
+
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch pt-6 border-t border-neutral-200/10 dark:border-white/5">
+                      {/* Breakdown numbers */}
+                      <div className="space-y-3.5 flex flex-col justify-center">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="opacity-70">Property Price</span>
+                          <span className="font-bold">{formatPrice(P)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="opacity-70">Down Payment Amount</span>
+                          <span className="font-bold">{formatPrice(downPaymentAmount)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="opacity-70">Total Loan Amount</span>
+                          <span className="font-bold">{formatPrice(loanAmount)}</span>
+                        </div>
+                      </div>
+
+                      {/* Highlighted Monthly Payment Card */}
+                      <div className={`rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-1 shadow-sm border
+                        ${theme === "light"
+                          ? "bg-amber-50/40 border-amber-100 text-amber-900"
+                          : "bg-white/5 border-white/5 text-white"}`}
+                      >
+                        <span className="text-[10px] uppercase tracking-widest opacity-60 font-extrabold">Estimated Payment</span>
+                        <span className="text-2xl font-black text-[#EFBF04] mt-1">
+                          {formatPrice(Math.round(monthlyPayment))}
+                        </span>
+                        <span className="text-[9px] opacity-45 font-semibold">per month</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+
           </div>
 
           {/* Right Column (Sidebar Box) */}
-          <div className="lg:sticky lg:top-28 self-start space-y-6">
+          <div id="provided-by" className="lg:sticky lg:top-28 self-start space-y-4">
             
-            {/* Dark themed Contact / Inquiry Sidebar Card */}
-            <div className="bg-[#111111] border border-white/8 text-white rounded-[2.2rem] p-9 shadow-[0_20px_50px_rgba(0,0,0,0.7)] flex flex-col items-center text-center gap-7 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-white/3 rounded-full blur-2xl pointer-events-none" />
-              
-              {/* Home badge logo */}
-              <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shadow-md">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </div>
-
-              <div className="space-y-2.5">
-                <h3 className="text-xl font-bold tracking-tight">Like this property?</h3>
-                <p className="text-xs text-white/50 leading-relaxed font-light px-2">
-                  We'd love to help you explore this home. Reach out to get more details or book a private viewing.
-                </p>
-              </div>
-
-              {/* Bullet Features */}
-              <div className="w-full flex flex-col gap-3 font-semibold text-xs tracking-wider uppercase text-white/80">
-                {["Verified Property Listings", "Quality Living Spaces", "Smart Real Estate Choice"].map((feat) => (
-                  <div key={feat} className="w-full bg-[#1b1b1b] border border-white/5 rounded-xl px-4 py-3 text-left flex items-center gap-3">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    <span className="truncate">{feat}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="w-full flex flex-col gap-3">
-                <div className="flex gap-3 w-full">
-                  <a
-                    href="tel:+97145558888"
-                    className="flex-1 py-3.5 bg-neutral-900 border border-white/10 hover:border-white/25 text-white hover:bg-neutral-800 text-[10px] tracking-widest font-extrabold uppercase rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            {/* Property Agent Sidebar Card (No Avatar) - Now Developer Branding Header */}
+            <div className={`relative rounded-[2.2rem] border p-8 md:p-9 flex flex-col items-center text-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500
+              ${theme === "light"
+                ? "bg-white border-neutral-200 text-neutral-800"
+                : "bg-[#1A1A1A]/30 border-white/5 text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)]"}`}
+            >
+              {/* Developer Branding - Horizontal Layout (Image 1 style) */}
+              <div className={`w-full border rounded-[1.5rem] p-4 flex items-center justify-between gap-4 transition-all duration-500
+                ${theme === "light"
+                  ? "bg-neutral-50/50 border-neutral-200/80 shadow-sm"
+                  : "bg-black/20 border-white/5 shadow-inner"}`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  {/* Left: Square logo container */}
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center border shrink-0 transition-all duration-500 shadow-xs
+                    ${theme === "light" 
+                      ? "bg-white border-neutral-200" 
+                      : "bg-[#161616] border-white/10"}`}
                   >
-                    <PhoneIcon />
-                    <span>Call</span>
-                  </a>
-                  <button
-                    onClick={() => setIsChatOpen(prev => !prev)}
-                    className={`flex-1 py-3.5 border text-white text-[10px] tracking-widest font-extrabold uppercase rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer
-                      ${isChatOpen
-                        ? "bg-indigo-600 border-indigo-600 shadow-lg shadow-indigo-600/25"
-                        : "bg-neutral-900 border-white/10 hover:border-white/25 hover:bg-neutral-800"}`}
-                  >
-                    <ChatBubbleIcon />
-                    <span>Chat</span>
-                  </button>
-                </div>
-                <button
-                  onClick={() => setIsInquiryModalOpen(true)}
-                  className="w-full py-4 bg-white text-black hover:bg-neutral-200 text-[11px] tracking-widest font-extrabold uppercase rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-md"
-                >
-                  <MailIcon />
-                  <span>Email Inquiry</span>
-                </button>
-              </div>
-            </div>
-            {/* ── Inline Chat Panel ── */}
-            <AnimatePresence>
-              {isChatOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.97 }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="bg-[#111111] border border-white/10 rounded-[2rem] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.7)] flex flex-col"
-                  style={{ height: "420px" }}
-                >
-                  {/* Chat Header */}
-                  <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 bg-[#0e0e0e] shrink-0">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs shadow-md">
-                          AA
-                        </div>
-                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-[#0e0e0e]" />
-                      </div>
-                      <div>
-                        <p className="text-white text-xs font-bold tracking-wide">Property Agent</p>
-                        <p className="text-emerald-400 text-[10px] font-semibold">● Online now</p>
-                      </div>
+                    <div className="scale-85 origin-center">
+                      <DeveloperLogo developer={property.developer || "Exclusive"} theme={theme} />
                     </div>
+                  </div>
+                  
+                  {/* Middle: Details */}
+                  <div className="text-left min-w-0">
+                    <span className={`block text-[9px] uppercase tracking-wider font-extrabold opacity-45`}>
+                      Developer
+                    </span>
                     <button
-                      onClick={() => setIsChatOpen(false)}
-                      className="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 hover:text-white transition-all cursor-pointer"
+                      onClick={() => setIsDevModalOpen(true)}
+                      className={`block text-[13px] font-black tracking-tight hover:underline text-left truncate cursor-pointer transition-all active:scale-97
+                        ${theme === "light" ? "text-[#1D1D1F] hover:text-[#EFBF04]" : "text-white hover:text-[#EFBF04]"}`}
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      {getDeveloperFriendlyName(property.developer || "Exclusive")}
                     </button>
                   </div>
-                  {/* Messages */}
-                  <div ref={chatScrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ scrollbarWidth: "none" }}>
-                    {chatMessages.map((msg, i) => (
-                      <div key={i} className={`flex items-end gap-2 ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
-                        {msg.from === "agent" && (
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mb-1">
-                            AA
-                          </div>
-                        )}
-                        <div className={`max-w-[78%] rounded-2xl px-3.5 py-2.5 ${
-                          msg.from === "user"
-                            ? "bg-indigo-600 text-white rounded-br-sm"
-                            : "bg-white/8 text-white/90 rounded-bl-sm"
-                        }`}>
-                          <p className="text-[12px] leading-relaxed">{msg.text}</p>
-                          <p className={`text-[9px] mt-1 ${msg.from === "user" ? "text-indigo-200/60 text-right" : "text-white/30"}`}>{msg.time}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Input */}
-                  <div className="px-4 py-3 border-t border-white/8 bg-[#0e0e0e] shrink-0">
-                    <div className="flex items-center gap-2 bg-white/6 rounded-xl px-3 py-2 border border-white/8 focus-within:border-indigo-500/50 transition-colors">
-                      <input
-                        type="text"
-                        value={chatInput}
-                        onChange={e => setChatInput(e.target.value)}
-                        onKeyDown={e => e.key === "Enter" && sendChatMessage()}
-                        placeholder="Type a message…"
-                        className="flex-1 bg-transparent text-white text-xs placeholder-white/25 focus:outline-none"
-                      />
-                      <button
-                        onClick={sendChatMessage}
-                        disabled={!chatInput.trim()}
-                        className="w-7 h-7 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-all cursor-pointer shrink-0"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
 
+                {/* Right: View details button */}
+                <button
+                  onClick={() => {
+                    const devSlug = (property.developer || "Exclusive").toLowerCase().replace(/\s+/g, "-");
+                    router.push(`/developers/${devSlug}`);
+                  }}
+                  className="px-4 py-2 bg-[#EFBF04] hover:bg-[#EFBF04]/90 text-black rounded-full font-bold text-[10px] active:scale-95 transition-all shadow-sm shrink-0 whitespace-nowrap cursor-pointer"
+                >
+                  View Details
+                </button>
+              </div>
+
+              {/* Call & Chat Buttons */}
+              <div className="flex gap-3 w-full">
+                {/* Call Button */}
+                <a
+                  href={`tel:${propertyAgent.phone}`}
+                  className={`flex-1 py-3 border rounded-xl font-semibold text-xs tracking-normal transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95
+                    ${theme === "light"
+                      ? "bg-[#F5F5F7] border-[#D2D2D7] text-[#1D1D1F] hover:bg-[#EFBF04]/8 hover:border-[#EFBF04]/40 hover:text-[#1D1D1F]"
+                      : "bg-[#1C1C1E] border-[#38383A] text-[#F5F5F7] hover:bg-[#161617] hover:border-[#EFBF04]/30"}`}
+                >
+                  <PhoneIcon />
+                  <span>Call</span>
+                </a>
+                
+                {/* Chat Button */}
+                <button
+                  onClick={() => setIsChatOpen(prev => !prev)}
+                  className={`flex-1 py-3 border text-xs tracking-normal font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95
+                    ${isChatOpen
+                      ? "bg-[#EFBF04] border-[#EFBF04] text-[#1D1D1F] shadow-lg shadow-[#EFBF04]/25"
+                      : theme === "light"
+                        ? "bg-[#F5F5F7] border-[#D2D2D7] text-[#1D1D1F] hover:bg-[#EFBF04]/8 hover:border-[#EFBF04]/40"
+                        : "bg-[#1C1C1E] border-[#38383A] text-[#F5F5F7] hover:bg-[#161617] hover:border-[#EFBF04]/30"}`}
+                >
+                  <ChatBubbleIcon />
+                  <span>Chat</span>
+                </button>
+              </div>
+
+              {/* Email Inquiry Button */}
+              <button
+                onClick={() => setIsInquiryModalOpen(true)}
+                className="w-full py-3.5 text-xs tracking-normal font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-md shadow-amber-500/15 active:scale-95 bg-[#EFBF04] text-[#1D1D1F] hover:bg-[#EFBF04]/90"
+              >
+                <MailIcon />
+                <span>Email Inquiry</span>
+              </button>
+
+              {/* Acquisition Cost Button - BELOW and OUTSIDE the developer box */}
+              <button
+                onClick={() => setIsAcquisitionDropdownOpen(prev => !prev)}
+                className={`w-full py-3.5 text-xs tracking-normal font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95
+                  ${isAcquisitionDropdownOpen
+                    ? "bg-[#EFBF04]/10 border border-[#EFBF04] text-[#EFBF04] shadow-lg shadow-[#EFBF04]/5"
+                    : theme === "light"
+                      ? "bg-[#F5F5F7] border border-[#D2D2D7] text-[#1D1D1F] hover:bg-[#EFBF04]/8 hover:border-[#EFBF04]/40 shadow-sm"
+                      : "bg-[#1C1C1E] border border-[#38383A] text-[#F5F5F7] hover:bg-[#161617] hover:border-[#EFBF04]/30 shadow-md"}`}
+              >
+                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <rect x="3" y="5" width="18" height="11" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="10.5" r="2.5" />
+                  <path d="M6 8v-1h1M17 7h1v1M6 13v1h1M17 14h1v-1" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="4.5" y1="19" x2="19.5" y2="19" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="4.5" y1="22" x2="19.5" y2="22" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>Acquisition Cost</span>
+              </button>
+
+              {/* Dropdown Content */}
+              <AnimatePresence>
+                {isAcquisitionDropdownOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden w-full text-left"
+                  >
+                    <div className={`border rounded-2xl p-4.5 flex flex-col gap-4 transition-all duration-500
+                      ${theme === "light"
+                        ? "bg-neutral-50 border-neutral-200 text-neutral-900 shadow-sm"
+                        : "bg-black/25 border-white/5 text-white"}`}
+                    >
+                      <div className="flex items-center justify-between border-b border-neutral-200/10 dark:border-white/5 pb-2">
+                        <span className="text-[9px] uppercase tracking-[0.2em] opacity-55 font-black">Cost Breakdown</span>
+                        <button
+                          onClick={() => setIsAcquisitionDropdownOpen(false)}
+                          className="text-neutral-400 hover:text-neutral-200 text-[10px] uppercase font-bold tracking-wider cursor-pointer"
+                        >
+                          Close
+                        </button>
+                      </div>
+
+                      {/* Cash vs Mortgage Toggle */}
+                      <div className={`flex rounded-xl p-1 border transition-all duration-300
+                        ${theme === "light" ? "bg-neutral-100 border-neutral-200" : "bg-black/40 border-white/5"}`}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => setAcquisitionPaymentType("cash")}
+                          className={`flex-1 py-1.5 rounded-lg text-[10px] font-extrabold transition-all duration-300 cursor-pointer
+                            ${acquisitionPaymentType === "cash"
+                              ? "bg-[#EFBF04] text-[#1D1D1F] shadow-md shadow-[#EFBF04]/10"
+                              : theme === "light" ? "text-neutral-500 hover:text-neutral-900" : "text-neutral-400 hover:text-neutral-300"}`}
+                        >
+                          Cash
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAcquisitionPaymentType("mortgage")}
+                          className={`flex-1 py-1.5 rounded-lg text-[10px] font-extrabold transition-all duration-300 cursor-pointer
+                            ${acquisitionPaymentType === "mortgage"
+                              ? "bg-[#EFBF04] text-[#1D1D1F] shadow-md shadow-[#EFBF04]/10"
+                              : theme === "light" ? "text-neutral-500 hover:text-neutral-900" : "text-neutral-400 hover:text-neutral-300"}`}
+                        >
+                          Mortgage
+                        </button>
+                      </div>
+
+                      {/* Cost Calculations */}
+                      {(() => {
+                        const P = property.priceVal || 0;
+                        const dldFee = P * 0.04;
+                        const agencyFee = P * 0.021; // 2% + 5% VAT = 2.1%
+                        const trusteeFee = P >= 500000 ? 4200 : 2100;
+                        const titleDeedFee = 250;
+                        
+                        // Mortgage items
+                        const loanVal = P * 0.80;
+                        const mortgageRegFee = loanVal * 0.0025;
+                        const mortgageAdminFee = 290;
+                        const bankValuationFee = 3150;
+                        
+                        const purchasePriceDisplay = acquisitionPaymentType === "cash" ? P : P * 0.20; // Down payment if mortgage
+                        
+                        const secondaryCosts = dldFee + agencyFee + trusteeFee + titleDeedFee + 
+                          (acquisitionPaymentType === "mortgage" ? (mortgageRegFee + mortgageAdminFee + bankValuationFee) : 0);
+                        
+                        const totalRequired = purchasePriceDisplay + secondaryCosts;
+
+                        return (
+                          <div className="space-y-4">
+                            {/* Price Section */}
+                            <div className={`p-4 rounded-2xl border transition-all duration-300
+                              ${theme === "light" ? "bg-neutral-100/50 border-neutral-200" : "bg-black/30 border-white/5"}`}
+                            >
+                              <div className="flex justify-between items-center mb-1 text-xs">
+                                <span className="opacity-65">Property Price</span>
+                                <span className="font-bold">{formatPrice(P)}</span>
+                              </div>
+                              {acquisitionPaymentType === "mortgage" && (
+                                <div className="flex justify-between items-center text-[10px] text-neutral-400">
+                                  <span>Down Payment (20%)</span>
+                                  <span>{formatPrice(purchasePriceDisplay)}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Breakdown List */}
+                            <div className="space-y-2.5 px-0.5">
+                              <h4 className="text-[9px] uppercase tracking-wider opacity-40 font-black">Government & Agency</h4>
+                              
+                              <div className="flex justify-between text-[11px]">
+                                <span className="opacity-75">DLD Transfer Fee (4%)</span>
+                                <span className="font-semibold">{formatPrice(dldFee)}</span>
+                              </div>
+
+                              <div className="flex justify-between text-[11px]">
+                                <span className="opacity-75">Agency Comm. (2.1%)</span>
+                                <span className="font-semibold">{formatPrice(agencyFee)}</span>
+                              </div>
+
+                              <div className="flex justify-between text-[11px]">
+                                <span className="opacity-75">Trustee Registration</span>
+                                <span className="font-semibold">{formatPrice(trusteeFee)}</span>
+                              </div>
+
+                              <div className="flex justify-between text-[11px]">
+                                <span className="opacity-75">Title Deed Fee</span>
+                                <span className="font-semibold">{formatPrice(titleDeedFee)}</span>
+                              </div>
+
+                              {acquisitionPaymentType === "mortgage" && (
+                                <>
+                                  <div className="border-t border-neutral-200/10 dark:border-white/5 my-1.5" />
+                                  <h4 className="text-[9px] uppercase tracking-wider opacity-40 font-black">Mortgage Costs</h4>
+                                  
+                                  <div className="flex justify-between text-[11px]">
+                                    <span className="opacity-75">Mortgage Registration</span>
+                                    <span className="font-semibold">{formatPrice(mortgageRegFee)}</span>
+                                  </div>
+
+                                  <div className="flex justify-between text-[11px]">
+                                    <span className="opacity-75">Bank Valuation Fee</span>
+                                    <span className="font-semibold">{formatPrice(bankValuationFee)}</span>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+
+                            {/* Divider */}
+                            <div className="border-t border-neutral-200/10 dark:border-white/5 pt-3" />
+
+                            {/* Total Upfront Cash Required */}
+                            <div className="flex justify-between items-center px-0.5">
+                              <div className="flex flex-col">
+                                <span className="text-[11px] font-black uppercase tracking-wider">Total Cash Req.</span>
+                                <span className="text-[8px] opacity-50 mt-0.5">
+                                  {acquisitionPaymentType === "cash" 
+                                    ? "Price + secondary fees" 
+                                    : "Downpayment + fees"}
+                                </span>
+                              </div>
+                              <span className="text-sm font-black text-[#EFBF04]">
+                                {formatPrice(totalRequired)}
+                              </span>
+                            </div>
+
+                            {acquisitionPaymentType === "mortgage" && (
+                              <div className={`p-2.5 rounded-lg text-[9px] leading-relaxed transition-all duration-300
+                                ${theme === "light" 
+                                  ? "bg-neutral-100 text-neutral-500 border border-neutral-200" 
+                                  : "bg-black/20 text-neutral-400 border border-white/5"}`}
+                              >
+                                <span className="font-semibold text-neutral-700 dark:text-neutral-300">Note: </span>
+                                Remaining {formatPrice(loanVal)} (80%) financed via mortgage.
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
         </div>
+
+        {/* ── More Like This Section (Google Chrome visual search style) ── */}
+        <section className="w-full border-t border-neutral-200/30 dark:border-white/5 pt-20 pb-16">
+          <div className="flex items-center justify-between mb-8">
+            <div className="space-y-1 text-left">
+              <span className={`text-[10px] font-bold uppercase tracking-[0.25em] ${theme === "light" ? "text-neutral-400" : "text-white/40"}`}>
+                Visual Matches
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-none">
+                More like this
+              </h2>
+            </div>
+            
+            <Link 
+              href="/properties" 
+              className={`px-5 py-2.5 rounded-full border text-xs tracking-wider uppercase font-bold transition-all duration-300 active:scale-95 flex items-center gap-2
+                ${theme === "light"
+                  ? "bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50 shadow-sm"
+                  : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white"
+                }`}
+            >
+              <span>View All</span>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {similarProperties.map(({ prop: p, score }, i) => {
+              const matchPercentage = Math.round(85 + (score / 7) * 14);
+              return (
+                <div
+                  key={p.id}
+                  onClick={() => {
+                    // Navigate to the property detail page and scroll back to top
+                    router.push(`/properties/${p.id}`);
+                    const container = pageContainerRef.current;
+                    if (container) {
+                      container.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
+                  className={`group relative rounded-[2rem] overflow-hidden border transition-all duration-500 cursor-pointer shadow-md text-left flex flex-col justify-between aspect-[3/4] bg-neutral-950
+                    ${theme === "light"
+                      ? "border-neutral-200/80 hover:border-neutral-350 hover:shadow-xl"
+                      : "border-white/10 hover:border-white/25 hover:shadow-2xl hover:shadow-amber-500/5"
+                    }`}
+                >
+                  {/* Property Image */}
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 z-0"
+                  />
+                  {/* Cinematic dark overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10" />
+
+                  {/* Top Badges Row */}
+                  <div className="relative z-20 p-5 flex justify-between items-start pointer-events-none">
+                    {/* Developer Logo Capsule */}
+                    {p.developer && (
+                      <div className="bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full flex items-center shadow-md">
+                        <DeveloperLogo developer={p.developer} theme="dark" />
+                      </div>
+                    )}
+
+                    {/* Google Chrome/Lens visual search style match score */}
+                    <div className="bg-[#EFBF04] text-[#1D1D1F] text-[9px] font-extrabold tracking-wider uppercase px-2.5 py-1.5 rounded-full flex items-center gap-1 shadow-md">
+                      <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                      </svg>
+                      <span>{matchPercentage}% Match</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Content Area */}
+                  <div className="relative z-20 p-5 pb-6">
+                    {/* Location Tag */}
+                    <div className="text-[10px] font-bold text-white/50 tracking-wider uppercase mb-1 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 text-[#EFBF04] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                      </svg>
+                      <span className="truncate max-w-[150px]">{p.location.split(",")[0]}</span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-white text-base font-bold tracking-tight line-clamp-1 mb-1 transition-colors group-hover:text-[#EFBF04]">
+                      {p.title}
+                    </h3>
+
+                    {/* Price */}
+                    <p className="text-white text-xl font-black tracking-tight leading-none mb-3.5">
+                      {formatPrice(p.priceVal, p.type as "buy" | "rent")}
+                    </p>
+
+                    {/* Specs Row */}
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-white/80 border-t border-white/10 pt-3">
+                      {p.beds > 0 ? (
+                        <>
+                          <span className="flex items-center gap-1">
+                            <svg className="w-3.5 h-3.5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                            </svg>
+                            <span>{p.beds} Beds</span>
+                          </span>
+                          <span className="text-white/20">|</span>
+                          <span className="flex items-center gap-1">
+                            <svg className="w-3.5 h-3.5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                            </svg>
+                            <span>{p.baths} Baths</span>
+                          </span>
+                        </>
+                      ) : (
+                        <span className="flex items-center gap-1">
+                          <svg className="w-3.5 h-3.5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v18M3 9h18" />
+                          </svg>
+                          <span>{p.area}</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
 
         {/* ── FAQ Section ── */}
         <section className="w-full border-t border-neutral-200/30 dark:border-white/5 pt-24 pb-24">
@@ -1775,10 +2871,10 @@ export default function PropertyDetailPage({
       </main>
 
       {/* ── Footer Banner + Detailed Links ── */}
-      <div className={`relative w-full px-6 sm:px-10 md:px-14 lg:px-16 py-24 md:py-32 overflow-hidden border-t font-sans
+      <div className={`properties-footer relative w-full px-6 sm:px-10 md:px-14 lg:px-16 py-24 md:py-32 overflow-hidden border-t font-sans
         ${theme === "light" 
           ? "bg-neutral-50 border-neutral-200 text-neutral-900" 
-          : "bg-[#171717] border-white/5 text-white"}`}
+          : "bg-[#1A1A1A] border-white/5 text-white"}`}
       >
         {/* Ambient glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full bg-amber-500/5 blur-[120px] pointer-events-none z-5" />
@@ -1878,7 +2974,7 @@ export default function PropertyDetailPage({
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsInquiryModalOpen(false)}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-lg bg-[#171717] border border-white/10 rounded-[2.2rem] p-8 md:p-10 shadow-2xl text-left text-white max-h-[90vh] overflow-y-auto z-10"
+              className="inquiry-modal relative w-full max-w-lg bg-[#1A1A1A] border border-white/10 rounded-[2.2rem] p-8 md:p-10 shadow-2xl text-left text-white max-h-[90vh] overflow-y-auto z-10"
             >
               <button onClick={() => setIsInquiryModalOpen(false)} className="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -1920,7 +3016,7 @@ export default function PropertyDetailPage({
                     <textarea rows={3} value={inquiryMessage} onChange={e => setInquiryMessage(e.target.value)}
                       className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-white/30 resize-none" placeholder="Let us know what details you need..." />
                   </div>
-                  <button type="submit" className="w-full py-4 bg-white text-black text-[11px] tracking-[0.25em] uppercase font-bold rounded-xl hover:bg-neutral-200 cursor-pointer shadow-md active:scale-97 transition-colors flex items-center justify-center gap-2">
+                  <button type="submit" className="w-full py-4 bg-[#EFBF04] text-[#1D1D1F] text-[11px] tracking-[0.25em] uppercase font-bold rounded-xl hover:bg-[#EFBF04]/90 cursor-pointer shadow-md active:scale-97 transition-colors flex items-center justify-center gap-2">
                     <span>Send Inquiry</span>
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </button>
@@ -1928,6 +3024,698 @@ export default function PropertyDetailPage({
               )}
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Developer Details Modal ── */}
+      <AnimatePresence>
+        {isDevModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsDevModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            
+            {/* Modal Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className={`dev-modal relative z-10 w-full max-w-lg overflow-hidden rounded-[2.2rem] border p-8 md:p-10 shadow-2xl font-sans text-left
+                ${theme === "light" 
+                  ? "bg-white border-neutral-200 text-neutral-900" 
+                  : "bg-[#1A1A1A] border-white/10 text-white"
+                }`}
+            >
+              <button 
+                onClick={() => setIsDevModalOpen(false)} 
+                className={`absolute top-6 right-6 w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer
+                  ${theme === "light" ? "bg-neutral-100 hover:bg-neutral-200 text-neutral-800" : "bg-white/5 hover:bg-white/10 text-white"}`}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <div className="flex flex-col gap-6">
+                {/* Brand Header */}
+                <div className="flex items-center gap-4 border-b border-neutral-200/10 dark:border-white/5 pb-5 mt-2">
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border shadow-sm shrink-0
+                    ${theme === "light" ? "bg-neutral-50 border-neutral-200" : "bg-black/30 border-white/10"}`}
+                  >
+                    <div className="scale-110">
+                      <DeveloperLogo developer={property.developer || "Exclusive"} theme={theme} />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black tracking-tight leading-tight">
+                      {getDeveloperFriendlyName(property.developer || "Exclusive")}
+                    </h3>
+                    <p className={`text-[10px] font-bold tracking-wider uppercase opacity-55 mt-1 ${theme === "light" ? "text-neutral-500" : "text-white/60"}`}>
+                      {getDeveloperOfficialName(property.developer || "Exclusive")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Brief description */}
+                <div className="space-y-4">
+                  <p className={`text-xs sm:text-sm font-light leading-relaxed ${theme === "light" ? "text-neutral-600" : "text-white/60"}`}>
+                    {getDeveloperBrief(property.developer || "Exclusive").desc}
+                  </p>
+
+                  {/* Founded and major projects */}
+                  <div className="grid grid-cols-2 gap-4 pt-4">
+                    <div className={`p-4 rounded-2xl border
+                      ${theme === "light" ? "bg-neutral-50 border-neutral-200/50" : "bg-black/20 border-white/5"}`}
+                    >
+                      <span className="block text-[8px] uppercase tracking-widest font-extrabold opacity-40">Founded</span>
+                      <span className="block text-sm font-extrabold mt-1 text-[#EFBF04] dark:text-[#EFBF04]">
+                        {getDeveloperBrief(property.developer || "Exclusive").founded}
+                      </span>
+                    </div>
+
+                    <div className={`p-4 rounded-2xl border
+                      ${theme === "light" ? "bg-neutral-50 border-neutral-200/50" : "bg-black/20 border-white/5"}`}
+                    >
+                      <span className="block text-[8px] uppercase tracking-widest font-extrabold opacity-40">Status</span>
+                      <span className="block text-sm font-extrabold mt-1 text-emerald-500">
+                        Verified Partner
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Notable Projects */}
+                  <div className="space-y-3 pt-3">
+                    <h4 className="text-[10px] font-black tracking-widest uppercase opacity-45">Notable Landmarks & Communities</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {getDeveloperBrief(property.developer || "Exclusive").projects.map((proj) => (
+                        <span
+                          key={proj}
+                          className={`px-3 py-1.5 rounded-full text-[10px] font-bold tracking-normal border
+                            ${theme === "light" 
+                              ? "bg-white border-neutral-200 text-neutral-700" 
+                              : "bg-white/5 border-white/5 text-white/80"}`}
+                        >
+                          {proj}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 pt-4 border-t border-neutral-200/10 dark:border-white/5 mt-2">
+                  <button
+                    onClick={() => {
+                      setIsDevModalOpen(false);
+                      const devSlug = (property.developer || "Exclusive").toLowerCase().replace(/\s+/g, "-");
+                      router.push(`/developers/${devSlug}`);
+                    }}
+                    className={`flex-1 py-3 text-[10px] tracking-widest font-bold uppercase rounded-xl border transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95
+                      ${theme === "light"
+                        ? "bg-white border-neutral-200 text-neutral-800 hover:bg-neutral-50"
+                        : "bg-[#1A1A1A]/40 border-white/10 text-white hover:bg-white/5"}`}
+                  >
+                    View All Listings
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setIsDevModalOpen(false);
+                      setIsInquiryModalOpen(true);
+                    }}
+                    className="flex-1 py-3 text-[10px] tracking-widest font-bold uppercase rounded-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95 bg-[#EFBF04] text-[#1D1D1F] hover:bg-[#EFBF04]/90 shadow-md shadow-amber-500/10"
+                  >
+                    Inquire Builder
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Report Listing Modal ── */}
+      <AnimatePresence>
+        {isReportModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsReportModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            
+            {/* Modal Box */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className={`report-modal relative z-10 w-full max-w-md overflow-hidden rounded-[2.2rem] border p-8 shadow-2xl font-sans text-left
+                ${theme === "light" 
+                  ? "bg-white border-neutral-200 text-neutral-900" 
+                  : "bg-[#1A1A1A] border-white/10 text-white"
+                }`}
+            >
+              <button 
+                onClick={() => setIsReportModalOpen(false)} 
+                className={`absolute top-6 right-6 w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer
+                  ${theme === "light" ? "bg-neutral-100 hover:bg-neutral-200 text-neutral-800" : "bg-white/5 hover:bg-white/10 text-white"}`}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <div className="mb-6">
+                <span className={`text-[9px] uppercase tracking-[0.25em] block mb-1 font-bold ${theme === "light" ? "text-neutral-500" : "text-white/50"}`}>
+                  AA Traders Security
+                </span>
+                <h3 className="text-xl font-bold tracking-tight">Report Listing</h3>
+                <p className={`text-xs mt-1.5 leading-relaxed font-light ${theme === "light" ? "text-neutral-500" : "text-white/40"}`}>
+                  Help us keep AA Traders accurate. Please select the reason for reporting this property.
+                </p>
+              </div>
+              
+              {reportSubmitted ? (
+                <div className="py-12 text-center flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h4 className="text-lg font-bold">Report Received</h4>
+                  <p className={`text-xs font-light max-w-xs leading-relaxed ${theme === "light" ? "text-neutral-500" : "text-white/50"}`}>
+                    Our compliance team will investigate this listing immediately.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleReportSubmit} className="space-y-4">
+                  <div className="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
+                    {[
+                      "Inaccurate price / details",
+                      "Fake property / listing is not real",
+                      "Duplicate listing",
+                      "Offensive/inappropriate media",
+                      "Other"
+                    ].map((reason) => (
+                      <label 
+                        key={reason}
+                        className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all duration-200
+                          ${reportReason === reason 
+                            ? theme === "light" 
+                              ? "bg-neutral-50 border-neutral-400 font-semibold text-neutral-900"
+                              : "bg-white/5 border-white/30 font-semibold text-white"
+                            : theme === "light"
+                              ? "border-neutral-100 hover:bg-neutral-50 text-neutral-600"
+                              : "border-white/5 hover:bg-white/5 text-white/60"
+                          }`}
+                      >
+                        <input
+                          type="radio"
+                          name="reportReason"
+                          value={reason}
+                          checked={reportReason === reason}
+                          onChange={(e) => setReportReason(e.target.value)}
+                          className="accent-white cursor-pointer"
+                        />
+                        <span className="text-xs">{reason}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  {reportReason === "Other" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <textarea
+                        value={reportOtherText}
+                        onChange={(e) => setReportOtherText(e.target.value)}
+                        placeholder="Please tell us more..."
+                        className={`w-full mt-2 p-3.5 text-xs rounded-xl border focus:outline-none transition-all resize-none
+                          ${theme === "light"
+                            ? "bg-neutral-50 border-neutral-200 focus:border-neutral-450 text-neutral-900 focus:bg-white"
+                            : "bg-black/40 border-white/10 focus:border-white/30 text-white focus:bg-black/60"
+                          }`}
+                        rows={3}
+                        required
+                      />
+                    </motion.div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={!reportReason}
+                    className={`w-full py-4 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer active:scale-95 transition-all text-center
+                      ${!reportReason 
+                        ? theme === "light"
+                          ? "bg-neutral-100 text-neutral-400 border border-neutral-200 cursor-not-allowed"
+                          : "bg-white/5 text-white/30 border border-white/5 cursor-not-allowed"
+                        : "bg-[#EFBF04] text-[#1D1D1F] hover:bg-[#EFBF04]/90 shadow-md"
+                      }`}
+                  >
+                    Submit Report
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Toast Notifications ── */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
+            exit={{ opacity: 0, y: 20, scale: 0.9, x: "-50%" }}
+            className={`fixed bottom-24 left-1/2 z-50 px-6 py-4 text-[10px] sm:text-xs tracking-wider uppercase font-bold rounded-full border shadow-2xl backdrop-blur-md flex items-center gap-3 select-none
+              ${theme === "light"
+                ? "bg-white/95 border-neutral-200 text-neutral-800 shadow-neutral-200/50"
+                : "bg-[#1A1A1A]/95 border-white/10 text-white"
+              }`}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#EFBF04] animate-ping" />
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Facebook Messenger-style Chat Widget ── */}
+      {/* Chat Heads Column (Desktop only) */}
+      <div className="hidden md:flex fixed bottom-24 right-6 flex-col gap-3.5 z-40 select-none">
+        {chatHeads.map((agent) => (
+          <div key={agent.name} className="relative group">
+            <button
+              onClick={() => switchAgent(agent)}
+              className={`w-12 h-12 rounded-full bg-gradient-to-br from-[#EFBF04] to-[#B38F03] flex items-center justify-center text-white font-bold text-xs shadow-lg border-2 hover:scale-105 transition-all
+                ${chatAgent.name === agent.name && isChatOpen && !isChatMinimized
+                  ? "border-[#EFBF04] scale-105 shadow-[#EFBF04]/30"
+                  : theme === "light" ? "border-neutral-200" : "border-white/10"
+                }`}
+            >
+              {agent.initials}
+            </button>
+            
+            {/* Online indicator */}
+            <span className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-neutral-900" />
+            
+            {/* Unread indicator dot */}
+            {unreadAgents.includes(agent.name) && (
+              <span className="absolute top-0 right-0 w-3 h-3 bg-[#EFBF04] rounded-full border-2 border-neutral-900 animate-pulse" />
+            )}
+
+            {/* Hover Tooltip tooltip */}
+            <div className="absolute right-14 top-1/2 -translate-y-1/2 bg-neutral-900/95 border border-white/10 text-white text-[10px] tracking-wider uppercase font-bold px-3 py-1.5 rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 whitespace-nowrap shadow-xl">
+              {agent.name}
+            </div>
+
+            {/* Remove / Close chat head button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setChatHeads(prev => prev.filter(h => h.name !== agent.name));
+              }}
+              className="absolute -top-1 -left-1 w-5 h-5 bg-neutral-800 text-white hover:bg-neutral-700 rounded-full flex items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md border border-white/10"
+              title="Close Conversation"
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Floating Compose / Bubble Toggle Button */}
+      <button
+        onClick={() => {
+          setIsChatOpen(prev => !prev);
+          setIsChatMinimized(false);
+          // Default to chat state if we click to open
+          if (!isChatOpen) {
+            setChatState("chat");
+          }
+        }}
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 active:scale-95 cursor-pointer hover:scale-105
+          ${isChatOpen && !isChatMinimized
+            ? "bg-neutral-800 border border-white/10 hover:bg-neutral-750 text-white"
+            : "bg-[#EFBF04] hover:bg-[#F3C924] text-[#1D1D1F]"
+          }`}
+        title="Toggle Chat"
+      >
+        {isChatOpen && !isChatMinimized ? (
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        ) : (
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        )}
+        
+        {/* Unread badge count indicator */}
+        {unreadAgents.length > 0 && !(isChatOpen && !isChatMinimized) && (
+          <span className="absolute -top-1 -right-1 w-6 h-6 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-neutral-900 animate-bounce">
+            {unreadAgents.length}
+          </span>
+        )}
+      </button>
+
+      {/* Floating Messenger popup window */}
+      <AnimatePresence>
+        {isChatOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.95 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className={`fixed z-40 shadow-2xl border flex flex-col overflow-hidden transition-all duration-300 font-sans
+              ${isChatMinimized
+                ? "bottom-6 right-24 w-[280px] h-[54px] rounded-t-2xl"
+                : "bottom-24 right-6 w-[360px] h-[520px] rounded-[2.2rem]"
+              }
+              ${theme === "light"
+                ? "bg-white border-neutral-200 text-neutral-900"
+                : "bg-[#0b0709]/95 border-white/10 text-white backdrop-blur-md"
+              }
+              max-md:bottom-0 max-md:right-0 max-md:w-full max-md:h-full max-md:rounded-none max-md:inset-0
+            `}
+          >
+            {/* ── Active Conversation Screen ── */}
+            {chatState === "chat" && (
+              <div className="flex flex-col h-full overflow-hidden">
+                {/* Header */}
+                <div className={`flex items-center justify-between px-5 py-3 shrink-0 border-b select-none
+                  ${theme === "light" ? "bg-neutral-50 border-neutral-150" : "bg-neutral-900/60 border-white/5"}`}>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <button
+                      onClick={() => setChatState("list")}
+                      className={`p-1.5 rounded-full hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-colors text-neutral-400 hover:text-inherit`}
+                      title="All Chats"
+                    >
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    
+                    <div className="relative shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#EFBF04] to-[#B38F03] flex items-center justify-center text-white font-bold text-xs shadow-md">
+                        {chatAgent.initials}
+                      </div>
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-neutral-900" />
+                    </div>
+                    
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="font-bold text-xs truncate max-w-[120px]">{chatAgent.name}</span>
+                        {chatAgent.verified && (
+                          <svg className="w-3.5 h-3.5 text-[#EFBF04] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 00.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                          </svg>
+                        )}
+                      </div>
+                      <p className="text-[9px] opacity-50 truncate">{chatAgent.title}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setIsChatMinimized(prev => !prev)}
+                      className="p-1.5 rounded-full hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-colors text-neutral-400 hover:text-inherit"
+                      title={isChatMinimized ? "Restore" : "Minimize"}
+                    >
+                      {isChatMinimized ? (
+                        <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
+                        </svg>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => { setIsChatOpen(false); setIsChatMinimized(false); }}
+                      className="p-1.5 rounded-full hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-colors text-neutral-400 hover:text-inherit"
+                      title="Close"
+                    >
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {!isChatMinimized && (
+                  <>
+                    {/* Agent Status Strip */}
+                    <div className={`flex items-center justify-between px-5 py-2 border-b shrink-0 select-none
+                      ${theme === "light" ? "bg-neutral-50/50 border-neutral-100" : "bg-white/3 border-white/5"}`}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-emerald-400 text-[10px] font-semibold">Online</span>
+                        <span className="text-white/20 text-[10px]">·</span>
+                        <span className="opacity-50 text-[10px]">Responds {chatAgent.responseTime}</span>
+                      </div>
+                      <div className="flex items-center gap-1 select-none">
+                        {chatAgent.languages.map((lang: string) => (
+                          <span key={lang} className={`text-[9px] rounded-full px-2 py-0.5 font-bold ${theme === "light" ? "bg-neutral-100 text-neutral-600" : "bg-white/5 text-white/50"}`}>{lang}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Messages Window */}
+                    <div ref={chatScrollRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3.5 scrollbar-none">
+                      {chatMessages.map((msg, i) => (
+                        <div key={i} className={`flex items-end gap-2 ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
+                          {msg.from === "agent" && (
+                            <div className="w-6.5 h-6.5 rounded-full bg-gradient-to-br from-[#EFBF04] to-[#B38F03] flex items-center justify-center text-white text-[9px] font-bold shrink-0 mb-0.5">
+                              {chatAgent.initials}
+                            </div>
+                          )}
+                          <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 shadow-sm ${
+                            msg.from === "user"
+                              ? "bg-[#EFBF04] text-[#1D1D1F] font-medium rounded-br-sm"
+                              : theme === "light"
+                                ? "bg-neutral-100 text-neutral-800 rounded-bl-sm border border-neutral-200/50"
+                                : "bg-white/8 text-white/95 rounded-bl-sm border border-white/5"
+                          }`}>
+                            <p className="text-[12px] leading-relaxed break-words">{msg.text}</p>
+                            <p className={`text-[8.5px] mt-1 ${msg.from === "user" ? "text-[#1D1D1F]/60 text-right" : "opacity-45"}`}>{msg.time}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Input Field */}
+                    <div className={`px-4 py-3 border-t shrink-0 ${theme === "light" ? "bg-neutral-50/50 border-neutral-150" : "bg-neutral-900/60 border-white/8"}`}>
+                      <div className={`flex items-center gap-2 rounded-2xl px-3 py-2 border transition-all duration-300
+                        ${theme === "light"
+                          ? "bg-white border-neutral-250 focus-within:border-[#EFBF04] text-neutral-800"
+                          : "bg-white/5 border-white/8 focus-within:border-[#EFBF04]/50 text-white"
+                        }`}>
+                        <input
+                          type="text"
+                          value={chatInput}
+                          onChange={e => setChatInput(e.target.value)}
+                          onKeyDown={e => e.key === "Enter" && sendChatMessage()}
+                          placeholder={`Message ${chatAgent.name.split(" ")[0]}…`}
+                          className="flex-1 bg-transparent text-xs placeholder-neutral-450 focus:outline-none"
+                        />
+                        <button
+                          onClick={sendChatMessage}
+                          disabled={!chatInput.trim()}
+                          className="w-7 h-7 rounded-xl bg-[#EFBF04] hover:bg-[#F3C924] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-[#1D1D1F] transition-all cursor-pointer shrink-0 shadow-md"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* ── Chats List Screen ── */}
+            {chatState === "list" && (
+              <div className="flex flex-col h-full overflow-hidden select-none">
+                {/* Header */}
+                <div className={`flex items-center justify-between px-5 py-4 shrink-0 border-b
+                  ${theme === "light" ? "bg-neutral-50 border-neutral-150" : "bg-neutral-900/60 border-white/5"}`}>
+                  <h3 className="text-lg font-black uppercase tracking-wider">Chats</h3>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => setIsChatMinimized(prev => !prev)}
+                      className="p-1.5 rounded-full hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-colors text-neutral-400 hover:text-inherit"
+                      title={isChatMinimized ? "Restore" : "Minimize"}
+                    >
+                      {isChatMinimized ? (
+                        <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6" />
+                        </svg>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => { setIsChatOpen(false); setIsChatMinimized(false); }}
+                      className="p-1.5 rounded-full hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-colors text-neutral-400 hover:text-inherit"
+                      title="Close"
+                    >
+                      <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {!isChatMinimized && (
+                  <>
+                    {/* Search Bar */}
+                    <div className="px-4 pt-3 pb-2">
+                      <div className={`flex items-center gap-2 rounded-full px-3.5 py-2.5 border transition-all duration-300
+                        ${theme === "light"
+                          ? "bg-neutral-50 border-neutral-200 focus-within:border-[#EFBF04] focus-within:bg-white text-neutral-800"
+                          : "bg-white/5 border-white/5 focus-within:border-[#EFBF04]/50 focus-within:bg-white/10 text-white"
+                        }`}>
+                        <svg className="w-4 h-4 text-neutral-450 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={e => setSearchQuery(e.target.value)}
+                          placeholder="Search Messenger…"
+                          className="flex-1 bg-transparent text-xs placeholder-neutral-450 focus:outline-none"
+                        />
+                        {searchQuery && (
+                          <button onClick={() => setSearchQuery("")} className="text-neutral-450 hover:text-inherit text-xs font-bold">×</button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Filter Tabs */}
+                    <div className="flex gap-1.5 px-4 pb-2 border-b border-neutral-200/40 dark:border-white/5">
+                      <button
+                        onClick={() => setActiveFilter("all")}
+                        className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors
+                          ${activeFilter === "all"
+                            ? "bg-[#EFBF04] text-[#1D1D1F] font-bold"
+                            : theme === "light"
+                              ? "bg-neutral-100 text-neutral-600 hover:bg-neutral-200/70"
+                              : "bg-white/5 text-white/60 hover:bg-white/10"
+                          }`}
+                      >
+                        All
+                      </button>
+                      <button
+                        onClick={() => setActiveFilter("unread")}
+                        className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-1.5
+                          ${activeFilter === "unread"
+                            ? "bg-[#EFBF04] text-[#1D1D1F] font-bold"
+                            : theme === "light"
+                              ? "bg-neutral-100 text-neutral-600 hover:bg-neutral-200/70"
+                              : "bg-white/5 text-white/60 hover:bg-white/10"
+                          }`}
+                      >
+                        Unread
+                        {unreadAgents.length > 0 && (
+                          <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Backup Callout Banner */}
+                    <div className={`mx-4 my-2.5 p-3 rounded-2xl border flex items-start gap-2.5
+                      ${theme === "light"
+                        ? "bg-[#EFBF04]/10 border-[#EFBF04]/30 text-[#604C02]"
+                        : "bg-amber-950/20 border-[#EFBF04]/20 text-[#FEE587]"
+                      }`}>
+                      <div className="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-[#EFBF04] shrink-0 mt-0.5">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="text-[10.5px] leading-relaxed">
+                        <p className="font-bold">Priority Advisor Access</p>
+                        <p className="opacity-80">Connect directly with verified brokers for instant premium viewings.</p>
+                      </div>
+                    </div>
+
+                    {/* Scrollable Agent List */}
+                    <div className="flex-1 overflow-y-auto divide-y divide-neutral-200/20 dark:divide-white/5 scrollbar-none pb-4">
+                      {filteredAgents.length === 0 ? (
+                        <div className="text-center py-10 opacity-55 text-xs font-medium">No active agents match your search.</div>
+                      ) : (
+                        filteredAgents.map((agent) => {
+                          const isUnread = unreadAgents.includes(agent.name);
+                          const lastMsg = mockLastMessages[agent.name] || { text: "No recent messages", time: "" };
+                          return (
+                            <div
+                              key={agent.name}
+                              onClick={() => switchAgent(agent)}
+                              className={`flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer
+                                ${theme === "light" ? "hover:bg-neutral-50" : "hover:bg-white/4"}
+                                ${chatAgent.name === agent.name ? theme === "light" ? "bg-[#EFBF04]/10" : "bg-[#EFBF04]/10" : ""}
+                              `}
+                            >
+                              {/* Avatar wrapper */}
+                              <div className="relative shrink-0">
+                                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#EFBF04] to-[#B38F03] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                                  {agent.initials}
+                                </div>
+                                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-neutral-900" />
+                              </div>
+
+                              {/* Message previews */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1 mb-0.5">
+                                  <span className={`text-[12.5px] truncate max-w-[150px] ${isUnread ? "font-black" : "font-bold"}`}>{agent.name}</span>
+                                  {agent.verified && (
+                                    <svg className="w-3.5 h-3.5 text-[#EFBF04] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 00.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                    </svg>
+                                  )}
+                                  {lastMsg.time && (
+                                    <span className="text-[9px] opacity-40 ml-auto shrink-0 select-none">{lastMsg.time}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1 justify-between">
+                                  <p className={`text-[11.5px] truncate max-w-[180px]
+                                    ${isUnread 
+                                      ? theme === "light" ? "text-neutral-900 font-extrabold" : "text-white font-extrabold"
+                                      : "opacity-45"
+                                    }`}>
+                                    {lastMsg.text}
+                                  </p>
+                                  {isUnread && (
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#EFBF04] shrink-0 ml-1.5" />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </motion.div>
         )}
       </AnimatePresence>
 

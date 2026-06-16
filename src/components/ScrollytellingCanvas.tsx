@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useTransform, useMotionValueEvent, AnimatePresence, useMotionValue, animate, useScroll, MotionValue } from "framer-motion";
+import { usePreferences } from "@/components/PreferencesContext";
 
 interface ScrollSection {
   title: string;
@@ -52,6 +53,7 @@ const SECTIONS: ScrollSection[] = [
 
 
 export default function ScrollytellingCanvas() {
+  const { t } = usePreferences();
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState(0);
 
@@ -435,9 +437,9 @@ export default function ScrollytellingCanvas() {
       {/* Main Scrollytelling Hero Section Container */}
       <div
         ref={containerRef}
-        className="relative h-screen w-full overflow-hidden bg-[#030102] flex items-center justify-center"
+        className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#030102]"
       >
-        {/* Edge Vignette Overlays: Blends the canvas rendering edges seamlessly into the #030102 background */}
+        {/* Edge Vignette Overlays */}
         <div className="absolute inset-0 z-20 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(3,1,2,0)_30%,rgba(3,1,2,0.75)_75%,rgba(3,1,2,1)_95%)]" />
 
         {/* Quiet Background Image Canvas Scroll Animation for Hero Section */}
@@ -471,7 +473,7 @@ export default function ScrollytellingCanvas() {
             </div>
             {/* Badge text */}
             <span className="text-[10px] md:text-xs text-[#334155] font-semibold tracking-wide">
-              3,500+ Pro Users
+              {t("3,500+ Pro Users")}
             </span>
           </div>
 
@@ -479,28 +481,28 @@ export default function ScrollytellingCanvas() {
             style={{ textShadow: "0 2px 8px rgba(0,0,0,0.9)" }}
             className="text-[11px] sm:text-xs md:text-sm lg:text-base tracking-[0.4em] uppercase text-white/60 mb-4 font-semibold"
           >
-            BEGIN YOUR JOURNEY WITH AA REAL ESTATE
+            {t("BEGIN YOUR JOURNEY WITH AA REAL ESTATE")}
           </span>
           <h2
             style={{ textShadow: "0 4px 20px rgba(0,0,0,0.9), 0 10px 40px rgba(0,0,0,0.5)" }}
             className="text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[5.5rem] font-bold tracking-tight text-white/95 max-w-6xl leading-[1.1] mb-10"
           >
-            Luxury Real Estate<br />Across the UAE
+            {t("Luxury Real Estate Across the UAE")}
           </h2>
           <div className="flex flex-col sm:flex-row gap-4 pointer-events-auto">
             <button
               onClick={() => {
                 window.dispatchEvent(new CustomEvent("scrollToSection", { detail: 1 }));
               }}
-              className="px-8 py-3.5 bg-white text-black text-xs font-semibold tracking-[0.2em] uppercase rounded-full cursor-pointer btn-animate-primary"
+              className="px-8 py-3 bg-white text-black text-[14px] font-medium tracking-normal rounded-full cursor-pointer btn-animate-primary shadow-lg"
             >
-              Explore Properties
+              {t("Explore Properties")}
             </button>
             <button
               onClick={() => setIsInquiryOpen(true)}
-              className="px-8 py-3.5 bg-transparent border border-white/20 text-white text-xs font-semibold tracking-[0.2em] uppercase rounded-full cursor-pointer btn-animate-secondary"
+              className="px-8 py-3 bg-transparent border border-white/25 text-white text-[14px] font-medium tracking-normal rounded-full cursor-pointer btn-animate-secondary shadow-lg"
             >
-              Book A Consultation
+              {t("Book A Consultation")}
             </button>
           </div>
         </motion.div>
@@ -573,21 +575,21 @@ export default function ScrollytellingCanvas() {
             </div>
 
             {/* Cinematic Text Content Overlay */}
-            <div className="relative z-20 w-full h-full flex flex-col justify-end p-8 sm:p-12 md:p-20 lg:p-28">
+            <div className="relative z-20 w-full h-full flex flex-col justify-end items-center p-8 sm:p-12 md:p-20 lg:p-28">
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="max-w-2xl text-left"
+                className="max-w-2xl text-center"
               >
                 <span className="text-[11px] sm:text-xs md:text-sm lg:text-base tracking-[0.3em] text-white/50 uppercase font-semibold block mb-4">
-                  Why Us?
+                  {t("Why Us?")}
                 </span>
                 <h2 className="text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[5.5rem] font-bold tracking-tight text-white mb-6 leading-tight">
-                  Why AA Real Estate?
+                  {t("Why AA Real Estate?")}
                 </h2>
                 <p className="text-lg sm:text-xl md:text-2xl text-white/80 leading-relaxed font-light">
-                  Your life's changing. Don't just find a place — find what's next. We help you move forward with clarity, confidence, and the right agent by your side.
+                  {t("Your life's changing. Don't just find a place — find what's next. We help you move forward with clarity, confidence, and the right agent by your side.")}
                 </p>
               </motion.div>
             </div>
@@ -607,14 +609,14 @@ export default function ScrollytellingCanvas() {
                   playsInline
                   className="w-full h-full object-cover"
                 />
-                {/* Premium overlay to blend video with light luxury design and maintain high readability */}
-                <div className="absolute inset-0 bg-[#F7F7F7]/88 backdrop-blur-[1.5px] z-10 pointer-events-none" />
+                {/* Premium overlay to blend video with active theme and maintain high readability */}
+                <div className="absolute inset-0 backdrop-blur-[1.5px] z-10 pointer-events-none bg-[#F7F7F7]/88" />
               </div>
 
               {/* Soft ambient corner vignette blobs */}
-              <div className="absolute top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full bg-[#e3e3e3]/30 blur-[90px] pointer-events-none z-20" />
-              <div className="absolute bottom-[-10%] right-[-10%] w-[55%] h-[55%] rounded-full bg-[#dfdfdf]/30 blur-[100px] pointer-events-none z-20" />
-              <div className="absolute top-[30%] right-[-5%] w-[35%] h-[40%] rounded-full bg-[#e8e8e8]/20 blur-[80px] pointer-events-none z-20" />
+              <div className="absolute top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full blur-[90px] pointer-events-none z-20 bg-[#e3e3e3]/30" />
+              <div className="absolute bottom-[-10%] right-[-10%] w-[55%] h-[55%] rounded-full blur-[100px] pointer-events-none z-20 bg-[#dfdfdf]/30" />
+              <div className="absolute top-[30%] right-[-5%] w-[35%] h-[40%] rounded-full blur-[80px] pointer-events-none z-20 bg-[#e8e8e8]/20" />
 
               <div className="relative z-30 max-w-4xl w-full text-center flex flex-col items-center justify-center gap-6">
                 {/* Heading */}
@@ -623,55 +625,42 @@ export default function ScrollytellingCanvas() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   viewport={{ once: true }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#171717] text-center leading-tight mb-4"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-center leading-tight mb-4 text-[#171717]"
                 >
-                  This isn’t just about real estate.
+                  {t("This isn’t just about real estate.")}
                 </motion.h2>
 
                 {/* Animating Body Text */}
-                <p className="text-[1.2rem] sm:text-[1.5rem] md:text-[1.8rem] lg:text-[2.2rem] xl:text-[2.5rem] leading-[1.3] tracking-[-0.015em] font-normal text-[#0a0a0a] text-center max-w-4xl">
-                  {([
-                    { text: "It’s", bold: false, italic: false },
-                    { text: "about", bold: false, italic: false },
-                    { text: "identity.", bold: true, italic: false },
-                    { text: "Progress.", bold: true, italic: false },
-                    { text: "Getting", bold: false, italic: false },
-                    { text: "unstuck.", bold: true, italic: false },
-                    { text: "You’re", bold: false, italic: false },
-                    { text: "not", bold: false, italic: false },
-                    { text: "just", bold: false, italic: false },
-                    { text: "looking", bold: false, italic: false },
-                    { text: "for", bold: false, italic: false },
-                    { text: "a", bold: false, italic: false },
-                    { text: "place.", bold: false, italic: false },
-                    { text: "You’re", bold: false, italic: false },
-                    { text: "looking", bold: false, italic: false },
-                    { text: "for", bold: false, italic: false },
-                    { text: "alignment.", bold: true, italic: false },
-                    { text: "That’s", bold: false, italic: false },
-                    { text: "what", bold: false, italic: false },
-                    { text: "we", bold: false, italic: false },
-                    { text: "help", bold: false, italic: false },
-                    { text: "you", bold: false, italic: false },
-                    { text: "find.", bold: true, italic: false },
-                  ] as { text: string; bold: boolean; italic: boolean }[]).map((w, i, arr) => (
-                    <RevealWord
-                      key={i}
-                      word={w.text}
-                      bold={w.bold}
-                      italic={w.italic}
-                      index={i}
-                      total={arr.length}
-                      scrollProgress={section3ScrollYProgress}
-                    />
-                  ))}
+                <p className="text-[1.2rem] sm:text-[1.5rem] md:text-[1.8rem] lg:text-[2.2rem] xl:text-[2.5rem] leading-[1.3] tracking-[-0.015em] font-normal text-center max-w-4xl text-[#0a0a0a]">
+                  {t("It’s about identity. Progress. Getting unstuck. You’re not just looking for a place. You’re looking for alignment. That’s what we help you find.")
+                    .split(" ")
+                    .map((word, i, arr) => {
+                      const isBold = word.includes("identity") || word.includes("Progress") || word.includes("unstuck") || 
+                                     word.includes("alignment") || word.includes("find") ||
+                                     word.includes("بالهوية") || word.includes("بالتقدم") || word.includes("الركود") || word.includes("التوافق") || word.includes("العثور") ||
+                                     word.includes("индивидуальность") || word.includes("Прогресс") || word.includes("вперед") || word.includes("гармонию") || word.includes("обрести") ||
+                                     word.includes("bản sắc") || word.includes("tiến bộ") || word.includes("bước") || word.includes("đồng điệu") || word.includes("thấy") ||
+                                     word.includes("kimlikle") || word.includes("Gelişimle") || word.includes("kurtulmakla") || word.includes("uyum") || word.includes("yardımcı");
+
+                      return (
+                        <RevealWord
+                          key={i}
+                          word={word}
+                          bold={isBold}
+                          italic={false}
+                          index={i}
+                          total={arr.length}
+                          scrollProgress={section3ScrollYProgress}
+                        />
+                      );
+                    })}
                 </p>
               </div>
             </div>
           </div>
 
           {/* ── Section 4: Our Services ── */}
-          <div className="relative w-full bg-white px-6 sm:px-10 md:px-14 lg:px-16 py-16 md:py-24 overflow-hidden text-[#171717] font-sans">
+          <div className="relative w-full px-6 sm:px-10 md:px-14 lg:px-16 py-16 md:py-24 overflow-hidden font-sans bg-white text-[#171717]">
 
 
 
@@ -681,7 +670,7 @@ export default function ScrollytellingCanvas() {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
                 <div className="flex flex-col gap-4 max-w-2xl">
                   {/* Badge */}
-                  <div className="flex items-center gap-2 text-[#878787]">
+                  <div className="flex items-center gap-2 text-neutral-400">
                     <svg className="w-3.5 h-3.5 text-[#171717]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <circle cx="12" cy="12" r="9" />
                       <circle cx="12" cy="12" r="3" fill="currentColor" />
@@ -691,14 +680,14 @@ export default function ScrollytellingCanvas() {
                     </span>
                   </div>
                   {/* Title */}
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#171717] leading-none">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] text-[#171717]">
                     Real Estate, <br className="hidden sm:inline" />
                     Rewired.
                   </h2>
                 </div>
 
                 {/* Right description text */}
-                <p className="text-sm sm:text-base text-[#878787] font-normal max-w-xs leading-relaxed md:pb-2">
+                <p className="text-sm sm:text-base font-normal max-w-xs leading-relaxed md:pb-2 text-[#878787]">
                   Built to simplify your home search with clear insights, better options, and confident decisions.
                 </p>
               </div>
@@ -892,7 +881,7 @@ export default function ScrollytellingCanvas() {
               <div className="flex justify-center mt-8 md:mt-12 w-full">
                 <button
                   onClick={() => setIsInquiryOpen(true)}
-                  className="px-8 py-4 bg-[#171717] text-white text-[11px] tracking-[0.25em] uppercase rounded-full hover:bg-neutral-800 active:scale-95 transition-all duration-300 font-sans cursor-pointer flex items-center gap-3 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                  className="px-8 py-3.5 text-[14px] tracking-normal rounded-full active:scale-95 transition-all duration-300 font-sans cursor-pointer flex items-center gap-3 shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-[#171717] text-white hover:bg-neutral-800 font-medium"
                 >
                   Start to Search
                   <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -906,7 +895,7 @@ export default function ScrollytellingCanvas() {
           </div>
 
           {/* ── Section 5: Trust & Confidence ── */}
-          <div className="relative w-full bg-white px-6 sm:px-10 md:px-14 lg:px-16 py-16 md:py-24 overflow-hidden text-[#171717] font-sans">
+          <div className="relative w-full px-6 sm:px-10 md:px-14 lg:px-16 py-16 md:py-24 overflow-hidden font-sans bg-white text-[#171717]">
 
 
 
@@ -917,20 +906,20 @@ export default function ScrollytellingCanvas() {
                 <div className="flex flex-col gap-4 max-w-2xl">
                   {/* Badge */}
                   <div className="flex items-center gap-2 text-[#878787]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#878787] inline-block" />
+                    <span className="w-1.5 h-1.5 rounded-full inline-block bg-[#878787]" />
                     <span className="text-[10px] md:text-[11px] font-medium tracking-[0.25em] uppercase">
                       Trust & Confidence
                     </span>
                   </div>
                   {/* Title */}
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-bold tracking-tight text-[#171717] leading-none">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.15] text-[#171717]">
                     Confidence behind <br className="hidden sm:inline" />
                     every property decision
                   </h2>
                 </div>
 
                 {/* Right description text */}
-                <p className="text-sm sm:text-base text-[#878787] font-normal max-w-xs leading-relaxed md:pb-2">
+                <p className="text-sm sm:text-base font-normal max-w-xs leading-relaxed md:pb-2 text-[#878787]">
                   Built to make modern home discovery simple, transparent, and more confident for every user.
                 </p>
               </div>
@@ -941,44 +930,44 @@ export default function ScrollytellingCanvas() {
                 {/* Column 1: Left Stats & Sub-card */}
                 <div className="lg:col-span-1 flex flex-col gap-6">
                   {/* Stats Box */}
-                  <div className="hidden lg:flex bg-[#F8F8F8] rounded-[2rem] p-6 flex-col gap-5 flex-grow justify-center">
-                    <h3 className="text-lg font-bold text-[#171717] tracking-tight mb-1">
+                  <div className="hidden lg:flex rounded-[2rem] p-6 flex-col gap-5 flex-grow justify-center bg-[#F8F8F8]">
+                    <h3 className="text-lg font-bold tracking-tight mb-1 text-[#171717]">
                       Real Results
                     </h3>
 
                     {/* Stat 1 */}
-                    <div className="bg-white rounded-2xl p-5 shadow-sm border border-neutral-100/50">
-                      <span className="text-[9px] uppercase tracking-[0.1em] font-semibold text-[#878787] block mb-1">
+                    <div className="rounded-2xl p-5 shadow-sm border bg-white border-neutral-100/50">
+                      <span className="text-[9px] uppercase tracking-[0.1em] font-semibold block mb-1 text-[#878787]">
                         Total Value
                       </span>
-                      <span className="text-2xl sm:text-3xl font-bold text-[#171717] tracking-tight">
+                      <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#171717]">
                         $4.6M+
                       </span>
                     </div>
 
                     {/* Stat 2 */}
-                    <div className="bg-white rounded-2xl p-5 shadow-sm border border-neutral-100/50">
-                      <span className="text-[9px] uppercase tracking-[0.1em] font-semibold text-[#878787] block mb-1">
+                    <div className="rounded-2xl p-5 shadow-sm border bg-white border-neutral-100/50">
+                      <span className="text-[9px] uppercase tracking-[0.1em] font-semibold block mb-1 text-[#878787]">
                         Active Homes
                       </span>
-                      <span className="text-2xl sm:text-3xl font-bold text-[#171717] tracking-tight">
+                      <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#171717]">
                         320+
                       </span>
                     </div>
 
                     {/* Stat 3 */}
-                    <div className="bg-white rounded-2xl p-5 shadow-sm border border-neutral-100/50">
-                      <span className="text-[9px] uppercase tracking-[0.1em] font-semibold text-[#878787] block mb-1">
+                    <div className="rounded-2xl p-5 shadow-sm border bg-white border-neutral-100/50">
+                      <span className="text-[9px] uppercase tracking-[0.1em] font-semibold block mb-1 text-[#878787]">
                         Happy Clients
                       </span>
-                      <span className="text-2xl sm:text-3xl font-bold text-[#171717] tracking-tight">
+                      <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#171717]">
                         98%
                       </span>
                     </div>
                   </div>
 
                   {/* Bottom Card - Built for Better Living */}
-                  <div className="relative rounded-[2rem] p-6 overflow-hidden min-h-[220px] flex flex-col justify-between group shadow-sm border border-neutral-100 bg-white">
+                  <div className="relative rounded-[2rem] p-6 overflow-hidden min-h-[220px] flex flex-col justify-between group shadow-sm border bg-white border-neutral-100">
                     {/* Background Image at Bottom */}
                     <img
                       src="/villa_exterior.png"
@@ -988,10 +977,10 @@ export default function ScrollytellingCanvas() {
                     <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none" />
 
                     <div className="relative z-20">
-                      <h4 className="text-base font-bold text-[#171717] mb-2 tracking-tight">
+                      <h4 className="text-base font-bold mb-2 tracking-tight text-[#171717]">
                         Built for Better Living
                       </h4>
-                      <p className="text-[11px] text-[#878787] font-normal leading-relaxed">
+                      <p className="text-[11px] font-normal leading-relaxed text-[#878787]">
                         We do more than list homes - we create a smoother way to discover spaces that feel right for your lifestyle.
                       </p>
                     </div>
@@ -1000,10 +989,10 @@ export default function ScrollytellingCanvas() {
                     <div className="relative z-20 mt-4">
                       <button
                         onClick={() => setIsInquiryOpen(true)}
-                        className="px-5 py-2.5 bg-[#171717] text-white text-[10px] tracking-[0.15em] uppercase rounded-full hover:bg-neutral-800 active:scale-95 transition-all duration-300 font-sans cursor-pointer flex items-center gap-3 font-semibold shadow-md"
+                        className="px-6 py-3 text-[14px] tracking-normal rounded-full active:scale-95 transition-all duration-300 font-sans cursor-pointer flex items-center gap-3 font-medium shadow-md bg-[#171717] text-white hover:bg-neutral-800"
                       >
                         Contact Us
-                        <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-black">
+                        <span className="w-5 h-5 rounded-full flex items-center justify-center bg-white text-black">
                           <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                           </svg>
@@ -1037,7 +1026,7 @@ export default function ScrollytellingCanvas() {
 
                 {/* Column 3: Right Side, Loved by people with auto-scroll marquee */}
                 <div className="lg:col-span-1 flex flex-col justify-between">
-                  <h3 className="text-base font-bold text-[#171717] mb-4 tracking-tight leading-tight max-w-[200px]">
+                  <h3 className="text-base font-bold mb-4 tracking-tight leading-tight max-w-[200px] text-[#171717]">
                     Loved by people who found their home
                   </h3>
 
@@ -1147,8 +1136,7 @@ export default function ScrollytellingCanvas() {
 
           </div>
 
-          {/* ── Section 6: Testimonials ── */}
-          <div className="relative w-full bg-white px-6 sm:px-10 md:px-14 lg:px-16 py-16 md:py-24 overflow-hidden text-[#171717] font-sans border-t border-neutral-100/50">
+          <div className="relative w-full px-6 sm:px-10 md:px-14 lg:px-16 py-16 md:py-24 overflow-hidden font-sans border-t bg-white text-[#171717] border-neutral-100/50">
 
 
             <div className="relative z-10 w-full max-w-none flex flex-col gap-12 md:gap-16">
@@ -1158,20 +1146,20 @@ export default function ScrollytellingCanvas() {
                 <div className="flex flex-col gap-4 max-w-2xl">
                   {/* Badge */}
                   <div className="flex items-center gap-2 text-[#878787]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#878787] inline-block" />
+                    <span className="w-1.5 h-1.5 rounded-full inline-block bg-[#878787]" />
                     <span className="text-[10px] md:text-[11px] font-medium tracking-[0.25em] uppercase">
                       Trusted by Leaders
                     </span>
                   </div>
                   {/* Title */}
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-bold tracking-tight text-[#171717] leading-none">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.15] text-[#171717]">
                     Loved by founders <br className="hidden sm:inline" />
                     & partners
                   </h2>
                 </div>
 
                 {/* Right description text */}
-                <p className="text-sm sm:text-base text-[#878787] font-normal max-w-xs leading-relaxed md:pb-2">
+                <p className="text-sm sm:text-base font-normal max-w-xs leading-relaxed md:pb-2 text-[#878787]">
                   Read real experiences from business leaders and founders who found their home and investment portfolio with us.
                 </p>
               </div>
@@ -1188,334 +1176,25 @@ export default function ScrollytellingCanvas() {
 
                   {/* List 1 */}
                   <div className="flex flex-row gap-6 shrink-0 pr-6">
-                    {/* Card 1: Benedict Kurz */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar1.png" alt="Benedict Kurz" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Benedict Kurz</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Co-Founder Knowunity</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “We were able to find our dream office space and two premium penthouses with AA RealEstate...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          What impressed us most was the unique combination of speed, discretion, and the team's deep access to off-market luxury listings in Dubai. Every property introduced was not only outstanding but also aligned with our corporate culture and long-term vision.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="flex items-center gap-2 text-[#2C4A70] font-semibold text-xs tracking-wider">
-                          <span className="w-5 h-5 rounded bg-[#2C4A70] text-white flex items-center justify-center font-bold text-[10px]">K</span>
-                          <span>Knowunity</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 2: Laurent Martinot */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar2.png" alt="Laurent Martinot" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Laurent Martinot</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder Sunrise</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “If luxury property hunting were an Olympic sport, AA Real Estate would already have several gold medals...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          Efficient, sharp, and always looking out for our interests — our advisor somehow managed to make viewings feel like coffee with a friend (but with results!). Sophie made the whole purchase quick, smooth, and surprisingly enjoyable.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="text-[#2C4A70] font-semibold text-xs tracking-wider flex items-center gap-1">
-                          <span>sun</span>
-                          <span className="text-amber-500 font-bold">*</span>
-                          <span>rise</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 3: Ali Mahlodji */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar3.png" alt="Ali Mahlodji" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Ali Mahlodji</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder futureOne</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “Our experience with this villa acquisition process was nothing short of extraordinary...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          The speed and efficiency with which our new waterfront villa was identified and closed was beyond our expectations. AA real estatenot just helpful, they anticipated every legal detail. We highly recommend them to anyone looking for a swift and discrete transaction.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="flex items-center gap-1.5 text-black font-bold text-xs tracking-wider">
-                          <span className="w-2.5 h-2.5 rounded-full bg-black"></span>
-                          <span>futureOne</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 4: Sebastian Haupt */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar4.png" alt="Sebastian Haupt" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Sebastian Haupt</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder Sell&Stay</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “Outstanding real estate services. We've already purchased several key investment units...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          And the yields have been excellent every time. Most recently, we successfully acquired a full floor in a premium development through their support — a perfect addition to our portfolio. We couldn't be happier with the returns.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="flex items-center gap-2 text-blue-600 font-semibold text-xs tracking-wider">
-                          <div className="flex gap-0.5 items-end h-3">
-                            <span className="w-1 h-3 bg-blue-600 rounded-full rotate-12"></span>
-                            <span className="w-1 h-3 bg-blue-500 rounded-full rotate-12"></span>
-                            <span className="w-1 h-3 bg-blue-400 rounded-full rotate-12"></span>
-                          </div>
-                          <span>Sell&Stay</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 5: Vlado Stanic */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar5.png" alt="Vlado Stanic" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Vlado Stanic</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder OnZero</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “AA realestate delivered outstanding relocation support for our executive team...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          Achieving swift, diverse, and highly efficient housing placements, their consultations were instrumental in securing top-tier villas for our team. The ability to understand our unique needs and match them was impressive.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <span className="px-3.5 py-1 bg-black text-white rounded-full font-bold text-[9px] uppercase tracking-wider shadow">
-                          OnZero
-                        </span>
-                      </div>
-                    </div>
+                    {TESTIMONIALS.map((t, idx) => (
+                      <TestimonialCard key={idx} {...t} />
+                    ))}
                   </div>
 
                   {/* List 2 (Duplicate for Seamless Loop) */}
                   <div className="flex flex-row gap-6 shrink-0 pr-6">
-                    {/* Card 1: Benedict Kurz */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar1.png" alt="Benedict Kurz" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Benedict Kurz</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Co-Founder Knowunity</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “We were able to find our dream office space and two premium penthouses with AA real estate team...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          What impressed us most was the unique combination of speed, discretion, and the team's deep access to off-market luxury listings in Dubai. Every property introduced was not only outstanding but also aligned with our corporate culture and long-term vision.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="flex items-center gap-2 text-[#2C4A70] font-semibold text-xs tracking-wider">
-                          <span className="w-5 h-5 rounded bg-[#2C4A70] text-white flex items-center justify-center font-bold text-[10px]">K</span>
-                          <span>Knowunity</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 2: Laurent Martinot */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar2.png" alt="Laurent Martinot" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Laurent Martinot</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder Sunrise</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “If luxury property hunting were an Olympic sport, AA Real Estate would already have several gold medals...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          Efficient, sharp, and always looking out for our interests — our advisor somehow managed to make viewings feel like coffee with a friend (but with results!). Sophie made the whole purchase quick, smooth, and surprisingly enjoyable.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="text-[#2C4A70] font-semibold text-xs tracking-wider flex items-center gap-1">
-                          <span>sun</span>
-                          <span className="text-amber-500 font-bold">*</span>
-                          <span>rise</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 3: Ali Mahlodji */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar3.png" alt="Ali Mahlodji" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Ali Mahlodji</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder futureOne</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “Our experience with this villa acquisition process was nothing short of extraordinary...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          The speed and efficiency with which our new waterfront villa was identified and closed was beyond our expectations. AA Real Estate team was not just helpful, they anticipated every legal detail. We highly recommend them to anyone looking for a swift and discrete transaction.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="flex items-center gap-1.5 text-black font-bold text-xs tracking-wider">
-                          <span className="w-2.5 h-2.5 rounded-full bg-black"></span>
-                          <span>futureOne</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 4: Sebastian Haupt */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar4.png" alt="Sebastian Haupt" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Sebastian Haupt</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder Sell&Stay</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “Outstanding real estate services. We've already purchased several key investment units...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          And the yields have been excellent every time. Most recently, we successfully acquired a full floor in a premium development through their support — a perfect addition to our portfolio. We couldn't be happier with the returns.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <div className="flex items-center gap-2 text-blue-600 font-semibold text-xs tracking-wider">
-                          <div className="flex gap-0.5 items-end h-3">
-                            <span className="w-1 h-3 bg-blue-600 rounded-full rotate-12"></span>
-                            <span className="w-1 h-3 bg-blue-500 rounded-full rotate-12"></span>
-                            <span className="w-1 h-3 bg-blue-400 rounded-full rotate-12"></span>
-                          </div>
-                          <span>Sell&Stay</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card 5: Vlado Stanic */}
-                    <div className="bg-[#F8F8F8] rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border border-neutral-100/30 transition-shadow">
-                      <div>
-                        {/* Header: Avatar, Name, Role */}
-                        <div className="flex items-center gap-4 mb-8">
-                          <img src="/avatar5.png" alt="Vlado Stanic" className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-bold text-[#171717]">Vlado Stanic</span>
-                            <span className="text-[10px] text-[#878787] font-medium uppercase tracking-wider">CEO & Founder OnZero</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <h3 className="text-lg sm:text-xl font-medium text-[#2C4A70] leading-relaxed mb-4 tracking-tight">
-                          “AA Real Estate delivered outstanding relocation support for our executive team...”
-                        </h3>
-                        {/* Body */}
-                        <p className="text-[11.5px] text-[#878787] leading-relaxed font-normal">
-                          Achieving swift, diverse, and highly efficient housing placements, their consultations were instrumental in securing top-tier villas for our team. The ability to understand our unique needs and match them was impressive.
-                        </p>
-                      </div>
-
-                      {/* Brand Logo */}
-                      <div className="mt-8 flex items-center justify-start border-t border-neutral-200/50 pt-6">
-                        <span className="px-3.5 py-1 bg-black text-white rounded-full font-bold text-[9px] uppercase tracking-wider shadow">
-                          OnZero
-                        </span>
-                      </div>
-                    </div>
+                    {TESTIMONIALS.map((t, idx) => (
+                      <TestimonialCard key={`dup-${idx}`} {...t} />
+                    ))}
                   </div>
+
                 </div>
               </div>
             </div>
           </div>
 
           {/* ── Section 7: Footer Banner ── */}
-          <div className="relative w-full bg-[#171717] px-6 sm:px-10 md:px-14 lg:px-16 py-24 md:py-32 overflow-hidden text-white font-sans border-t border-white/5">
+          <div className="relative w-full bg-[#1A1A1A] px-6 sm:px-10 md:px-14 lg:px-16 py-24 md:py-32 overflow-hidden text-white font-sans border-t border-white/5">
 
             {/* Background Image Banner */}
             <div className="absolute inset-0 z-0">
@@ -1524,7 +1203,7 @@ export default function ScrollytellingCanvas() {
                 alt="Footer Banner Background"
                 className="w-full h-full object-cover opacity-75"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/95 via-[#171717]/80 to-[#171717] z-10 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A]/95 via-[#1A1A1A]/80 to-[#1A1A1A] z-10 pointer-events-none" />
             </div>
 
             {/* Subtle ambient lighting effect inside the dark banner */}
@@ -1554,7 +1233,7 @@ export default function ScrollytellingCanvas() {
               <div className="mt-4">
                 <button
                   onClick={() => setIsInquiryOpen(true)}
-                  className="px-8 py-4 bg-white text-black text-[11px] tracking-[0.25em] uppercase rounded-full hover:bg-neutral-200 active:scale-95 transition-all duration-300 font-semibold cursor-pointer flex items-center gap-3 shadow-lg hover:shadow-white/10 hover:-translate-y-0.5"
+                  className="px-8 py-3.5 bg-white text-black text-[14px] tracking-normal rounded-full hover:bg-neutral-200 active:scale-95 transition-all duration-300 font-medium cursor-pointer flex items-center gap-3 shadow-lg hover:shadow-white/10 hover:-translate-y-0.5"
                 >
                   Get In Touch
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -2052,6 +1731,9 @@ interface TextOverlayProps {
 
 const TextOverlay: React.FC<TextOverlayProps> = ({ section, progress }) => {
   const { title, subtitle, start, end } = section;
+  const { t } = usePreferences();
+  const transTitle = t(title);
+  const transSubtitle = t(subtitle);
 
   const range = end - start;
   const fadeInEnd = start + range * 0.25;
@@ -2086,7 +1768,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({ section, progress }) => {
     start === 0.0 ? [1.0, 1.0, 0] : [0, 1.0, 1.0, 0]
   );
 
-  const words = title.split(" ");
+  const words = transTitle.split(" ");
   const N = words.length;
 
   return (
@@ -2103,7 +1785,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({ section, progress }) => {
         </div>
         {/* Badge text */}
         <span className="text-[10px] md:text-xs text-[#334155] font-semibold tracking-wide">
-          3,500+ Pro Users
+          {t("3,500+ Pro Users")}
         </span>
       </motion.div>
 
@@ -2116,7 +1798,7 @@ const TextOverlay: React.FC<TextOverlayProps> = ({ section, progress }) => {
         }}
         className="text-[11px] sm:text-xs md:text-sm lg:text-base uppercase text-white mb-6 font-semibold"
       >
-        {subtitle}
+        {transSubtitle}
       </motion.span>
 
       <h2
@@ -2138,6 +1820,28 @@ const TextOverlay: React.FC<TextOverlayProps> = ({ section, progress }) => {
           />
         ))}
       </h2>
+
+      <motion.div
+        style={{ opacity: chipOpacity, y: subY }}
+        className="flex flex-col sm:flex-row gap-4 pointer-events-auto mt-10"
+      >
+        <button
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent("scrollToSection", { detail: 1 }));
+          }}
+          className="px-8 py-3 bg-white text-black text-[14px] font-medium tracking-normal rounded-full cursor-pointer btn-animate-primary shadow-lg"
+        >
+          Explore Properties
+        </button>
+        <button
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent("openInquiryModal"));
+          }}
+          className="px-8 py-3 bg-transparent border border-white/25 text-white text-[14px] font-medium tracking-normal rounded-full cursor-pointer btn-animate-secondary shadow-lg"
+        >
+          Book A Consultation
+        </button>
+      </motion.div>
     </div>
   );
 };
@@ -2239,11 +1943,11 @@ const RevealWord: React.FC<RevealWordProps> = ({ word, bold, italic, index, tota
   );
   const filter = useTransform(blurVal, (v) => `blur(${v}px)`);
 
-  // Colour: middle grey → near-black
+  // Colour: grey → dark (light theme Section 3)
   const color = useTransform(
     scrollProgress,
     [wordStart, wordEnd],
-    ["#737373", "#171717"]
+    ["#737373", "#0a0a0a"]
   );
 
   return (
@@ -2252,6 +1956,134 @@ const RevealWord: React.FC<RevealWordProps> = ({ word, bold, italic, index, tota
         {word}
       </motion.span>
     </span>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   Testimonial Helper Component & Data Arrays
+───────────────────────────────────────────── */
+interface Testimonial {
+  avatar: string;
+  name: string;
+  role: string;
+  quote: string;
+  body: string;
+  logoId: "knowunity" | "sunrise" | "futureone" | "sellstay" | "onzero";
+}
+
+const TESTIMONIALS: Testimonial[] = [
+  {
+    avatar: "/avatar1.png",
+    name: "Benedict Kurz",
+    role: "CEO & Co-Founder Knowunity",
+    quote: "“We were able to find our dream office space and two premium penthouses with AA Real Estate...”",
+    body: "What impressed us most was the unique combination of speed, discretion, and the team's deep access to off-market luxury listings in Dubai. Every property introduced was not only outstanding but also aligned with our corporate culture and long-term vision.",
+    logoId: "knowunity"
+  },
+  {
+    avatar: "/avatar2.png",
+    name: "Laurent Martinot",
+    role: "CEO & Founder Sunrise",
+    quote: "“If luxury property hunting were an Olympic sport, AA Real Estate would already have several gold medals...”",
+    body: "Efficient, sharp, and always looking out for our interests — our advisor somehow managed to make viewings feel like coffee with a friend (but with results!). Sophie made the whole purchase quick, smooth, and surprisingly enjoyable.",
+    logoId: "sunrise"
+  },
+  {
+    avatar: "/avatar3.png",
+    name: "Ali Mahlodji",
+    role: "CEO & Founder futureOne",
+    quote: "“Our experience with this villa acquisition process was nothing short of extraordinary...”",
+    body: "The speed and efficiency with which our new waterfront villa was identified and closed was beyond our expectations. AA Real Estate was not just helpful, they anticipated every legal detail. We highly recommend them to anyone looking for a swift and discrete transaction.",
+    logoId: "futureone"
+  },
+  {
+    avatar: "/avatar4.png",
+    name: "Sebastian Haupt",
+    role: "CEO & Founder Sell&Stay",
+    quote: "“Outstanding real estate services. We've already purchased several key investment units...”",
+    body: "And the yields have been excellent every time. Most recently, we successfully acquired a full floor in a premium development through their support — a perfect addition to our portfolio. We couldn't be happier with the returns.",
+    logoId: "sellstay"
+  },
+  {
+    avatar: "/avatar5.png",
+    name: "Vlado Stanic",
+    role: "CEO & Founder OnZero",
+    quote: "“AA Real Estate delivered outstanding relocation support for our executive team...”",
+    body: "Achieving swift, diverse, and highly efficient housing placements, their consultations were instrumental in securing top-tier villas for our team. The ability to understand our unique needs and match them was impressive.",
+    logoId: "onzero"
+  }
+];
+
+const RenderLogo = ({ logoId }: { logoId: string }) => {
+  switch (logoId) {
+    case "knowunity":
+      return (
+        <div className="flex items-center gap-2 font-semibold text-xs tracking-wider text-[#2C4A70]">
+          <span className="w-5 h-5 rounded text-white flex items-center justify-center font-bold text-[10px] bg-[#2C4A70]">K</span>
+          <span>Knowunity</span>
+        </div>
+      );
+    case "sunrise":
+      return (
+        <div className="font-semibold text-xs tracking-wider flex items-center gap-1 text-[#2C4A70]">
+          <span>sun</span>
+          <span className="text-amber-500 font-bold">*</span>
+          <span>rise</span>
+        </div>
+      );
+    case "futureone":
+      return (
+        <div className="flex items-center gap-1.5 font-bold text-xs tracking-wider text-black">
+          <span className="w-2.5 h-2.5 rounded-full bg-black"></span>
+          <span>futureOne</span>
+        </div>
+      );
+    case "sellstay":
+      return (
+        <div className="flex items-center gap-2 font-semibold text-xs tracking-wider text-[#2C4A70]">
+          <div className="flex gap-0.5 items-end h-3">
+            <span className="w-1 h-3 rounded-full rotate-12 bg-[#2C4A70]"></span>
+            <span className="w-1 h-3 rounded-full rotate-12 bg-[#436794]"></span>
+            <span className="w-1 h-3 rounded-full rotate-12 bg-[#5d85b5]"></span>
+          </div>
+          <span>Sell&Stay</span>
+        </div>
+      );
+    case "onzero":
+      return (
+        <span className="px-3.5 py-1 rounded-full font-bold text-[9px] uppercase tracking-wider shadow bg-black text-white">
+          OnZero
+        </span>
+      );
+    default:
+      return null;
+  }
+};
+
+const TestimonialCard: React.FC<Testimonial> = ({ avatar, name, role, quote, body, logoId }) => {
+  return (
+    <div className="rounded-[2rem] p-8 w-[380px] sm:w-[420px] shrink-0 flex flex-col justify-between min-h-[460px] shadow-sm hover:shadow-md border bg-[#F8F8F8] border-neutral-100/30 text-[#171717] transition-all duration-500">
+      <div>
+        <div className="flex items-center gap-4 mb-8">
+          <img src={avatar} alt={name} className="w-11 h-11 rounded-full object-cover border border-white shadow-sm" />
+          <div className="flex flex-col">
+            <span className="text-sm font-bold text-[#171717]">{name}</span>
+            <span className="text-[10px] font-medium uppercase tracking-wider text-[#878787]">{role}</span>
+          </div>
+        </div>
+
+        <h3 className="text-lg sm:text-xl font-medium leading-relaxed mb-4 tracking-tight text-[#2C4A70]">
+          {quote}
+        </h3>
+        <p className="text-[11.5px] leading-relaxed font-normal text-[#878787]">
+          {body}
+        </p>
+      </div>
+
+      <div className="mt-8 flex items-center justify-start border-t pt-6 border-neutral-100">
+        <RenderLogo logoId={logoId} />
+      </div>
+    </div>
   );
 };
 

@@ -2,101 +2,102 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeContext";
+import { PreferencesProvider } from "@/components/PreferencesContext";
 
-const interTight = localFont({
+const roboto = localFont({
   src: [
     {
-      path: "./fonts/InterTight-Thin.ttf",
+      path: "./fonts/Roboto-Thin.ttf",
       weight: "100",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-ThinItalic.ttf",
+      path: "./fonts/Roboto-ThinItalic.ttf",
       weight: "100",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-ExtraLight.ttf",
+      path: "./fonts/Roboto-ExtraLight.ttf",
       weight: "200",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-ExtraLightItalic.ttf",
+      path: "./fonts/Roboto-ExtraLightItalic.ttf",
       weight: "200",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-Light.ttf",
+      path: "./fonts/Roboto-Light.ttf",
       weight: "300",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-LightItalic.ttf",
+      path: "./fonts/Roboto-LightItalic.ttf",
       weight: "300",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-Regular.ttf",
+      path: "./fonts/Roboto-Regular.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-Italic.ttf",
+      path: "./fonts/Roboto-Italic.ttf",
       weight: "400",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-Medium.ttf",
+      path: "./fonts/Roboto-Medium.ttf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-MediumItalic.ttf",
+      path: "./fonts/Roboto-MediumItalic.ttf",
       weight: "500",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-SemiBold.ttf",
+      path: "./fonts/Roboto-SemiBold.ttf",
       weight: "600",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-SemiBoldItalic.ttf",
+      path: "./fonts/Roboto-SemiBoldItalic.ttf",
       weight: "600",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-Bold.ttf",
+      path: "./fonts/Roboto-Bold.ttf",
       weight: "700",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-BoldItalic.ttf",
+      path: "./fonts/Roboto-BoldItalic.ttf",
       weight: "700",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-ExtraBold.ttf",
+      path: "./fonts/Roboto-ExtraBold.ttf",
       weight: "800",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-ExtraBoldItalic.ttf",
+      path: "./fonts/Roboto-ExtraBoldItalic.ttf",
       weight: "800",
       style: "italic",
     },
     {
-      path: "./fonts/InterTight-Black.ttf",
+      path: "./fonts/Roboto-Black.ttf",
       weight: "900",
       style: "normal",
     },
     {
-      path: "./fonts/InterTight-BlackItalic.ttf",
+      path: "./fonts/Roboto-BlackItalic.ttf",
       weight: "900",
       style: "italic",
     },
   ],
-  variable: "--font-inter-tight",
+  variable: "--font-roboto",
 });
 
 export const metadata: Metadata = {
@@ -108,12 +109,14 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-  }>) {
+}>) {
   return (
-    <html lang="en" className={`${interTight.variable} h-full antialiased dark overflow-hidden`}>
-      <body className="h-full bg-[#030102] text-white/90 font-sans selection:bg-white/20 selection:text-white overflow-hidden">
+    <html lang="en" className={`${roboto.variable} h-full antialiased dark overflow-hidden`}>
+      <body className="h-full bg-[#0A0A0A] text-white/90 font-sans selection:bg-white/20 selection:text-white overflow-hidden">
         <ThemeProvider>
-          {children}
+          <PreferencesProvider>
+            {children}
+          </PreferencesProvider>
         </ThemeProvider>
       </body>
     </html>

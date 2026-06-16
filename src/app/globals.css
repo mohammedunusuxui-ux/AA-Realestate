@@ -2,44 +2,44 @@
 
 /* ── Dark Mode (default) ── */
 :root, .dark {
-  --bg-primary:     #030102;
-  --bg-secondary:   #111111;
-  --bg-card:        #171717;
-  --bg-nav:         #171717;
-  --border-subtle:  rgba(255,255,255,0.08);
-  --text-primary:   rgba(255,255,255,0.92);
-  --text-secondary: rgba(255,255,255,0.50);
+  --bg-primary:     #0A0A0A;
+  --bg-secondary:   #1A1A1A;
+  --bg-card:        #1A1A1A;
+  --bg-nav:         #1A1A1A;
+  --border-subtle:  #333333;
+  --text-primary:   #F0F0F0;
+  --text-secondary: #A0A0A0;
   --text-muted:     rgba(255,255,255,0.25);
-  --accent:         #C8994A;
-  --scrollbar-track: #030102;
+  --accent:         #A57754;
+  --scrollbar-track: #0A0A0A;
   --scrollbar-thumb: rgba(255,255,255,0.10);
   --scrollbar-thumb-hover: rgba(255,255,255,0.25);
 }
 
-/* ── Light Mode — matched to home page Section 4 ── */
+/* ── Light Mode ── */
 .light {
-  --bg-primary:     #FFFFFF;
-  --bg-secondary:   #F5F5F5;
-  --bg-card:        #FFFFFF;
-  --bg-nav:         rgba(255,255,255,0.96);
-  --border-subtle:  rgba(23,23,23,0.10);
-  --text-primary:   #171717;
-  --text-secondary: #878787;
+  --bg-primary:     #FAFAFA;
+  --bg-secondary:   #F0F0F0;
+  --bg-card:        #F0F0F0;
+  --bg-nav:         #F0F0F0;
+  --border-subtle:  #DDDDDD;
+  --text-primary:   #121212;
+  --text-secondary: #666666;
   --text-muted:     #B0B0B0;
-  --accent:         #171717;
-  --accent-hover:   #333333;
-  --btn-default-bg:     #171717;
-  --btn-default-text:   #FFFFFF;
+  --accent:         #A57754;
+  --accent-hover:   #8e6343;
+  --btn-default-bg:     #121212;
+  --btn-default-text:   #FAFAFA;
   --btn-hover-bg:       #333333;
   --btn-active-bg:      #000000;
-  --scrollbar-track: #F5F5F5;
+  --scrollbar-track: #FAFAFA;
   --scrollbar-thumb: rgba(23,23,23,0.12);
   --scrollbar-thumb-hover: rgba(23,23,23,0.28);
 }
 
 
 @theme {
-  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 /* Custom Scrollbar for Luxury Aesthetics */
@@ -66,7 +66,7 @@
 }
 
 html, body, button, input, select, textarea {
-  font-family: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-roboto), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 html, body {
@@ -186,453 +186,1072 @@ select:-webkit-autofill:focus {
 }
 
 /* ═══════════════════════════════════════════════
-   LIGHT MODE — Properties Page (Section 4 palette)
-═══════════════════════════════════════════════ */
+   LIGHT MODE — Properties Page (Contrast Overrides)
+   ═══════════════════════════════════════════════ */
 
-/* Page wrapper */
+/* Page background, base colors & CSS Variables mapping */
 .light .properties-page {
   background-color: #FFFFFF !important;
-  color: #171717 !important;
+  color: #1D1D1F !important;
 }
 
-
-/* ── Page heading (breadcrumbs + title) & general light mode text color mappings ── */
-.light .properties-page h1 {
-  color: #171717 !important;
-}
-.light .properties-page p {
-  color: #878787 !important;
-}
-.light .properties-page a[href="/"] {
-  color: #B0B0B0 !important;
-}
-.light .properties-page .text-white {
-  color: #171717 !important;
-}
-.light .properties-page .text-white\/90 {
-  color: #1C1C1C !important;
-}
-.light .properties-page .text-white\/80 {
-  color: #2E2E2E !important;
-}
-.light .properties-page .text-white\/75 {
-  color: #3C3C3C !important;
-}
-.light .properties-page .text-white\/70 {
-  color: #555555 !important;
-}
-.light .properties-page .text-white\/60 {
-  color: #666666 !important;
-}
-.light .properties-page .text-white\/55 {
-  color: #707070 !important;
-}
-.light .properties-page .text-white\/50 {
-  color: #7C7C7C !important;
-}
-.light .properties-page .text-white\/45 {
-  color: #888888 !important;
-}
-.light .properties-page .text-white\/40 {
-  color: #949494 !important;
-}
-.light .properties-page .text-white\/30 {
-  color: #A5A5A5 !important;
-}
-.light .properties-page .text-white\/25 {
-  color: #B2B2B2 !important;
-}
-.light .properties-page .text-white\/20 {
-  color: #C0C0C0 !important;
-}
-.light .properties-page .text-white\/10 {
-  color: #E2E2E2 !important;
-}
-.light .properties-page .bg-white\/3.rounded-\[2rem\] {
-  background-color: #F8F8F8 !important;
-  border-color: rgba(23, 23, 23, 0.08) !important;
+/* ── Typography and Text Colors ── */
+.light .properties-page h1,
+.light .properties-page h2,
+.light .properties-page h3,
+.light .properties-page h4,
+.light .properties-page h5,
+.light .properties-page h6,
+.light .properties-page .text-neutral-900,
+.light .properties-page .text-neutral-800,
+.light .properties-page .text-black,
+.light .properties-page .text-neutral-950 {
+  color: #1D1D1F !important;
 }
 
-/* Ensure header elements remain white/light in light mode since header is dark themed */
-.light .properties-page header .text-white { color: #FFFFFF !important; }
-.light .properties-page header .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
-.light .properties-page header .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
-.light .properties-page header .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
-.light .properties-page header .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
-.light .properties-page header .text-white\/55 { color: rgba(255, 255, 255, 0.55) !important; }
-.light .properties-page header .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
-.light .properties-page header .text-white\/45 { color: rgba(255, 255, 255, 0.45) !important; }
-.light .properties-page header .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
-.light .properties-page header .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
-.light .properties-page header .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
-.light .properties-page header .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
-.light .properties-page header .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+.light .properties-page p,
+.light .properties-page span,
+.light .properties-page svg,
+.light .properties-page .text-neutral-600,
+.light .properties-page .text-neutral-500,
+.light .properties-page .text-neutral-450,
+.light .properties-page .text-neutral-400 {
+  color: #6E6E73 !important;
+}
 
-/* ── Filter Sidebar ── */
-.light aside {
+/* ── Active highlights and Accent icons ── */
+.light .properties-page .text-indigo-600,
+.light .properties-page .text-indigo-700,
+.light .properties-page .text-amber-700,
+.light .properties-page a.text-indigo-600,
+.light .properties-page button.text-indigo-600 {
+  color: #EFBF04 !important;
+}
+
+/* Link color overrides (slightly darker gold/amber for text readability) */
+.light .properties-page button.text-indigo-600,
+.light .properties-page a.text-indigo-600,
+.light .properties-page button.hover\:text-indigo-850:hover,
+.light .properties-page a.hover\:text-indigo-850:hover,
+.light .properties-page button.text-indigo-700,
+.light .properties-page a.text-indigo-700,
+.light .properties-page button.hover\:text-indigo-800:hover,
+.light .properties-page a.hover\:text-indigo-800:hover,
+.light .properties-page button.hover\:text-indigo-700:hover,
+.light .properties-page a.hover\:text-indigo-700:hover {
+  color: #cda402 !important;
+}
+
+/* ── Borders, Outlines & Dividers ── */
+.light .properties-page .border,
+.light .properties-page .border-t,
+.light .properties-page .border-b,
+.light .properties-page .border-r,
+.light .properties-page .border-l,
+.light .properties-page .border-white\/5,
+.light .properties-page .border-white\/10,
+.light .properties-page .border-white\/20,
+.light .properties-page .border-neutral-200,
+.light .properties-page .border-neutral-200\/50,
+.light .properties-page .border-neutral-200\/80,
+.light .properties-page .divide-neutral-200\/70 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #D2D2D7 !important;
+}
+
+/* ── Section backgrounds, grouped content areas ── */
+.light .properties-page aside,
+.light .properties-page .bg-neutral-50\/50,
+.light .properties-page #prices-trends,
+.light .properties-page #provided-by .bg-neutral-50\/50,
+.light .properties-page .cost-breakdown-card,
+.light .properties-page .properties-footer {
+  background-color: #F5F5F7 !important;
+  border-color: #D2D2D7 !important;
+}
+
+/* ── Active tabs, Active pills, Primary gold actions ── */
+.light .properties-page .active-pill,
+.light .properties-page button.active-pill,
+.light .properties-page .active-category-pill,
+.light .properties-page button.active-category-pill,
+.light .properties-page .active-view,
+.light .properties-page button.active-view,
+.light .properties-page button.bg-indigo-600,
+.light .properties-page a.bg-indigo-600,
+.light .properties-page button.bg-indigo-750,
+.light .properties-page .bg-indigo-600,
+.light .properties-page input[type="range"]::-webkit-slider-thumb {
+  background-color: #EFBF04 !important;
+  border-color: #EFBF04 !important;
+  color: #1D1D1F !important;
+}
+
+/* Force text inside active/gold highlighted tags to be Near Black */
+.light .properties-page .active-pill *,
+.light .properties-page .active-category-pill *,
+.light .properties-page .active-view *,
+.light .properties-page button.bg-\[\#EFBF04\] *,
+.light .properties-page a.bg-\[\#EFBF04\] *,
+.light .properties-page .active-room-chip *,
+.light .properties-page [class*="bg-[#EFBF04]"] * {
+  color: #1D1D1F !important;
+}
+
+.light .properties-page button.bg-indigo-600:hover,
+.light .properties-page a.bg-indigo-600:hover,
+.light .properties-page button.bg-indigo-750:hover,
+.light .properties-page button.active-pill:hover,
+.light .properties-page button.active-category-pill:hover {
+  background-color: #EFBF04 !important;
+  opacity: 0.9 !important;
+  color: #1D1D1F !important;
+}
+
+/* Inactive pills & buttons (Soft White or Off White) */
+.light .properties-page .inactive-pill,
+.light .properties-page button.inactive-pill,
+.light .properties-page .inactive-category-pill,
+.light .properties-page button.inactive-category-pill,
+.light .properties-page .view-switcher-btn {
+  background-color: #F5F5F7 !important;
+  border-color: #D2D2D7 !important;
+  color: #6E6E73 !important;
+}
+
+.light .properties-page .inactive-pill:hover,
+.light .properties-page button.inactive-pill:hover,
+.light .properties-page .inactive-category-pill:hover,
+.light .properties-page button.inactive-category-pill:hover,
+.light .properties-page .view-switcher-btn:hover {
+  background-color: #FAFAFA !important;
+  border-color: #6E6E73 !important;
+  color: #1D1D1F !important;
+}
+
+/* Details Subnavigation active tabs */
+.light .properties-page .sticky {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom-color: #D2D2D7 !important;
+}
+.light .properties-page .sticky button {
+  color: #6E6E73 !important;
+}
+.light .properties-page .sticky button.text-indigo-600 {
+  color: #EFBF04 !important;
+  font-weight: 800 !important;
+}
+.light .properties-page .sticky .bg-indigo-600 {
+  background-color: #EFBF04 !important;
+}
+
+/* Cards, widgets, input backgrounds (Soft White #FAFAFA) */
+.light .properties-page .property-card-list,
+.light .properties-page .property-card-list .flex-1,
+.light .properties-page #provided-by > div,
+.light .properties-page .bg-white.border-neutral-200\/80,
+.light .properties-page .view-switcher-menu,
+.light .properties-page .inquiry-modal {
+  background-color: #FAFAFA !important;
+  border-color: #D2D2D7 !important;
+}
+
+.light .properties-page input,
+.light .properties-page select,
+.light .properties-page textarea {
+  background-color: #FAFAFA !important;
+  border-color: #D2D2D7 !important;
+  color: #1D1D1F !important;
+}
+.light .properties-page input:focus,
+.light .properties-page select:focus,
+.light .properties-page textarea:focus {
+  border-color: #EFBF04 !important;
+  box-shadow: 0 0 0 2px rgba(239, 191, 4, 0.15) !important;
   background-color: #FFFFFF !important;
-  border: 1px solid rgba(23,23,23,0.10) !important;
-  box-shadow: 0 4px 30px rgba(0,0,0,0.06) !important;
-}
-.light aside h3 {
-  color: #171717 !important;
-}
-.light aside label {
-  color: #B0B0B0 !important;
-}
-.light aside button.text-white\/60 {
-  color: #878787 !important;
-}
-.light aside button.text-white\/60:hover {
-  color: #171717 !important;
-}
-.light aside input[type="text"] {
-  background-color: #F5F5F5 !important;
-  border-color: rgba(23,23,23,0.10) !important;
-  color: #171717 !important;
-}
-.light aside input::placeholder {
-  color: #B0B0B0 !important;
-}
-.light aside select {
-  background-color: #F5F5F5 !important;
-  border-color: rgba(23,23,23,0.10) !important;
-  color: #878787 !important;
-}
-.light aside .border-t {
-  border-color: rgba(23,23,23,0.08) !important;
-}
-.light aside svg {
-  color: #B0B0B0 !important;
 }
 
-/* ── Pill Buttons (Filter sidebar) ── */
-/* Inactive pill */
-.light aside button.rounded-lg:not(.bg-white) {
-  background-color: #F5F5F5 !important;
-  border-color: rgba(23, 23, 23, 0.12) !important;
-  color: #878787 !important;
-}
-.light aside button.rounded-lg:not(.bg-white):hover {
-  background-color: #EFEFEF !important;
-  border-color: rgba(23, 23, 23, 0.20) !important;
-  color: #171717 !important;
-}
-/* Active pill — Section 4 style: filled dark */
-.light aside button.rounded-lg.bg-white {
-  background-color: #171717 !important;
-  border-color: #171717 !important;
-  color: #FFFFFF !important;
-}
-.light aside button.rounded-lg.bg-white:hover {
-  background-color: #333333 !important;
-  border-color: #333333 !important;
-}
-.light aside button.rounded-lg.bg-white:active {
-  background-color: #000000 !important;
-  border-color: #000000 !important;
-  transform: scale(0.97);
+.light .properties-page input::placeholder,
+.light .properties-page textarea::placeholder {
+  color: #6E6E73 !important;
+  opacity: 0.8 !important;
 }
 
-/* ── Category pills top bar ── */
-.light .category-pill-bar {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  border-color: rgba(23, 23, 23, 0.08) !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05) !important;
+/* Details section highlights/cashback/tags badges */
+.light .properties-page .bg-amber-50,
+.light .properties-page .bg-indigo-50,
+.light .properties-page .bg-indigo-50\/40,
+.light .properties-page .bg-indigo-500\/10 {
+  background-color: rgba(239, 191, 4, 0.1) !important;
+  border-color: rgba(239, 191, 4, 0.25) !important;
+  color: #cda402 !important;
 }
-/* Active category pill */
-.light .category-pill-bar button.bg-white,
-.light .category-pill-bar button.text-black {
-  background-color: #171717 !important;
-  border-color: #171717 !important;
-  color: #FFFFFF !important;
+.light .properties-page .bg-amber-50 span,
+.light .properties-page .bg-indigo-50 span,
+.light .properties-page .bg-indigo-50\/40 span,
+.light .properties-page .bg-indigo-500\/10 span {
+  color: #cda402 !important;
 }
-.light .category-pill-bar button.bg-white span,
-.light .category-pill-bar button.text-black span {
-  color: #FFFFFF !important;
-}
-.light .category-pill-bar button.bg-white span.text-black\/50,
-.light .category-pill-bar button.text-black span.text-black\/50 {
-  color: rgba(255, 255, 255, 0.5) !important;
+.light .properties-page .bg-amber-50 * {
+  color: #cda402 !important;
 }
 
-/* Inactive category pill */
-.light .category-pill-bar button:not(.bg-white):not(.text-black) {
-  background-color: #F5F5F5 !important;
-  border-color: rgba(23, 23, 23, 0.10) !important;
-  color: #878787 !important;
-}
-.light .category-pill-bar button:not(.bg-white):not(.text-black) span,
-.light .category-pill-bar button:not(.bg-white):not(.text-black) svg {
-  color: #878787 !important;
-}
-.light .category-pill-bar button:not(.bg-white):not(.text-black) span.text-white\/30 {
-  color: rgba(23, 23, 23, 0.4) !important;
-}
-.light .category-pill-bar button:not(.bg-white):hover {
-  background-color: #EFEFEF !important;
-  color: #171717 !important;
-}
-.light .category-pill-bar button:not(.bg-white):hover span,
-.light .category-pill-bar button:not(.bg-white):hover svg {
-  color: #171717 !important;
-}
-.light .category-pill-bar button:not(.bg-white):hover span.text-white\/30 {
-  color: rgba(23, 23, 23, 0.6) !important;
+/* System slider adjustments */
+.light .properties-page input[type="range"] {
+  accent-color: #EFBF04 !important;
 }
 
-/* ── Property Cards ── */
-.light .property-card-container {
-  border-color: rgba(23, 23, 23, 0.08) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+/* Modals inputs & submit buttons styling */
+.light .properties-page .inquiry-modal button.bg-white,
+.light .properties-page .inquiry-modal button[type="submit"],
+.light .properties-page .report-modal button.bg-white,
+.light .properties-page .report-modal button[type="submit"] {
+  background-color: #EFBF04 !important;
+  color: #1D1D1F !important;
 }
-.light .property-card-container:hover {
-  border-color: rgba(23, 23, 23, 0.15) !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+.light .properties-page .inquiry-modal button.bg-white:hover,
+.light .properties-page .inquiry-modal button[type="submit"]:hover,
+.light .properties-page .report-modal button.bg-white:hover,
+.light .properties-page .report-modal button[type="submit"]:hover {
+  background-color: #EFBF04 !important;
+  opacity: 0.9 !important;
+  color: #1D1D1F !important;
 }
-/* Ensure text inside property cards remains white in light mode since cards are dark-themed */
-.light .properties-page .property-card-container .text-white { color: #FFFFFF !important; }
-.light .properties-page .property-card-container .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
-.light .properties-page .property-card-container .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
-.light .properties-page .property-card-container .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
-.light .properties-page .property-card-container .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
-.light .properties-page .property-card-container .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
-.light .properties-page .property-card-container .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
-.light .properties-page .property-card-container .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
-.light .properties-page .property-card-container .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
-.light .properties-page .property-card-container .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
-.light .properties-page .property-card-container .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
+.light .properties-page .inquiry-modal label,
+.light .properties-page .report-modal label {
+  color: #6E6E73 !important;
+}
+
+/* Detail page modals overrides */
+.light .properties-page .report-modal,
+.light .properties-page .dev-modal,
+.light .properties-page .fixed.z-50 > div.relative.z-10 {
+  background-color: #FAFAFA !important;
+  border-color: #D2D2D7 !important;
+  color: #1D1D1F !important;
+}
+
+/* Keep Grid Property Cards White Text in Light Mode (grid cards are always dark) */
+.light .property-card-container .text-white { color: #FFFFFF !important; }
+.light .property-card-container .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
+.light .property-card-container .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
+.light .property-card-container .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
+.light .property-card-container .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+.light .property-card-container .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+.light .property-card-container .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
+.light .property-card-container .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
+.light .property-card-container .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
+.light .property-card-container .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
+.light .property-card-container .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
 .light .property-card-container .absolute.bottom-0 h3,
 .light .property-card-container .absolute.bottom-0 p,
 .light .property-card-container .absolute.bottom-0 span,
 .light .property-card-container .absolute.bottom-0 svg {
   color: #FFFFFF !important;
 }
-.light .property-card-container .absolute.bottom-0 button:hover svg {
-  color: #171717 !important;
+
+/* ── Header Navigation Overrides ── */
+.light .properties-page header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom-color: #D2D2D7 !important;
+}
+.light .properties-page header nav {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #D2D2D7 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+.light .properties-page header nav a {
+  color: #6E6E73 !important;
+}
+.light .properties-page header nav a:hover,
+.light .properties-page header nav a.text-white {
+  color: #1D1D1F !important;
 }
 
-/* ── View Switcher Dropdown (Light Mode) ── */
-.light .properties-page .view-switcher-btn {
-  background-color: #F5F5F5 !important;
-  border-color: rgba(23, 23, 23, 0.10) !important;
-  color: #878787 !important;
+/* Header Dropdowns */
+.light .properties-page header .absolute.z-50 > div {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-color: #D2D2D7 !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.15) !important;
+  color: #1D1D1F !important;
 }
-.light .properties-page .view-switcher-btn:hover {
-  background-color: #EFEFEF !important;
-  color: #171717 !important;
+.light .properties-page header .absolute.z-50 h4 {
+  color: #1D1D1F !important;
 }
-.light .properties-page .view-switcher-btn span,
-.light .properties-page .view-switcher-btn svg {
-  color: inherit !important;
+.light .properties-page header .absolute.z-50 a {
+  color: #6E6E73 !important;
 }
-
-.light .properties-page .view-switcher-menu {
-  background-color: #FFFFFF !important;
-  border-color: rgba(23, 23, 23, 0.10) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+.light .properties-page header .absolute.z-50 a:hover {
+  color: #cda402 !important;
 }
 
-/* Inactive item in menu */
-.light .properties-page .view-switcher-menu button {
-  color: #878787 !important;
-  background-color: transparent !important;
+/* Scrolled promo card */
+.light .properties-page header .absolute.z-50 .bg-gradient-to-br {
+  background: #F5F5F7 !important;
+  border-color: #D2D2D7 !important;
 }
-.light .properties-page .view-switcher-menu button:hover {
-  background-color: #F5F5F5 !important;
-  color: #171717 !important;
+.light .properties-page header .absolute.z-50 .bg-gradient-to-br h5 {
+  color: #1D1D1F !important;
 }
-.light .properties-page .view-switcher-menu button span,
-.light .properties-page .view-switcher-menu button svg {
-  color: inherit !important;
+.light .properties-page header .absolute.z-50 .bg-gradient-to-br p {
+  color: #6E6E73 !important;
 }
-
-/* Active item in menu */
-.light .properties-page .view-switcher-menu button.active-view {
-  background-color: #171717 !important;
-  color: #FFFFFF !important;
-}
-.light .properties-page .view-switcher-menu button.active-view span,
-.light .properties-page .view-switcher-menu button.active-view svg {
-  color: #FFFFFF !important;
+.light .properties-page header .absolute.z-50 .bg-gradient-to-br a {
+  background-color: #EFBF04 !important;
+  color: #1D1D1F !important;
 }
 
-/* ── Property Card List View Light Mode Overrides ── */
-.light .properties-page .property-card-list {
-  background-color: #FFFFFF !important;
-  border-color: rgba(23, 23, 23, 0.08) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+/* Header Buttons (Theme switcher, Saved list trigger, Login trigger) */
+.light .properties-page header button {
+  background-color: #FAFAFA !important;
+  border-color: #D2D2D7 !important;
+  color: #6E6E73 !important;
 }
-.light .properties-page .property-card-list:hover {
-  border-color: rgba(23, 23, 23, 0.15) !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+.light .properties-page header button:hover {
+  background-color: #F5F5F7 !important;
+  color: #1D1D1F !important;
 }
-/* Force right details container to white background */
-.light .properties-page .property-card-list > div.flex-1 {
-  background-color: #FFFFFF !important;
-  backdrop-filter: none !important;
+.light .properties-page header button.px-6.py-2 {
+  border-color: #D2D2D7 !important;
+  color: #1D1D1F !important;
+  background-color: #FAFAFA !important;
 }
-/* Force headings & main text to dark charcoal */
-.light .properties-page .property-card-list h3,
-.light .properties-page .property-card-list .text-white,
-.light .properties-page .property-card-list .text-white\/90,
-.light .properties-page .property-card-list .text-white\/80 {
-  color: #171717 !important;
-}
-/* Force specifications, location and subtitle text to neutral dark-gray */
-.light .properties-page .property-card-list p,
-.light .properties-page .property-card-list span:not(.text-black):not(.text-amber-400):not(.text-white),
-.light .properties-page .property-card-list .text-white\/50 {
-  color: #555555 !important;
-}
-/* Developer tag pill background */
-.light .properties-page .property-card-list span.bg-white\/10 {
-  background-color: #F5F5F5 !important;
-  color: #555555 !important;
+.light .properties-page header button.px-6.py-2:hover {
+  background-color: #F5F5F7 !important;
 }
 
-/* List View Call/WhatsApp action buttons (Dark Mode default - dark bg, white text) */
-.properties-page .property-card-list .list-action-btn {
-  background-color: #1f1f1f !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: none !important;
+/* Detail page sidebar secondary Call/Chat Outline overrides */
+.light .properties-page #provided-by a.border-indigo-600\/35,
+.light .properties-page #provided-by button.border-indigo-600\/35 {
+  border-color: #D2D2D7 !important;
+  color: #1D1D1F !important;
+  background-color: #FAFAFA !important;
 }
-.properties-page .property-card-list .list-action-btn:hover {
-  background-color: #2e2e2e !important;
-  color: #FFFFFF !important;
-}
-.properties-page .property-card-list .list-action-btn svg {
-  color: #FFFFFF !important;
-}
-.properties-page .property-card-list .list-action-btn:hover svg {
-  color: #FFFFFF !important;
-}
-.properties-page .property-card-list a.list-action-btn span,
-.properties-page .property-card-list a.list-action-btn:hover span {
-  color: #FFFFFF !important;
+.light .properties-page #provided-by a.border-indigo-600\/35:hover,
+.light .properties-page #provided-by button.border-indigo-600\/35:hover {
+  background-color: #F5F5F7 !important;
 }
 
-/* List View Call/WhatsApp action buttons (Light Mode override - matching primary style) */
-.light .properties-page .property-card-list .list-action-btn {
-  background-color: #171717 !important;
-  color: #FFFFFF !important;
-  border: none !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+/* Footer bottom alignment overrides */
+.light .properties-page .properties-footer {
+  border-top-color: #D2D2D7 !important;
 }
-.light .properties-page .property-card-list .list-action-btn:hover {
-  background-color: #333333 !important;
-  color: #FFFFFF !important;
+.light .properties-page .properties-footer .text-white {
+  color: #6E6E73 !important;
 }
-.light .properties-page .property-card-list .list-action-btn svg {
-  color: #FFFFFF !important;
+.light .properties-page .properties-footer h2,
+.light .properties-page .properties-footer h3,
+.light .properties-page .properties-footer h4,
+.light .properties-page .properties-footer a.text-white {
+  color: #1D1D1F !important;
 }
-.light .properties-page .property-card-list .list-action-btn:hover svg {
-  color: #FFFFFF !important;
+.light .properties-page .properties-footer a {
+  color: #6E6E73 !important;
 }
-.light .properties-page .property-card-list a.list-action-btn span,
-.light .properties-page .property-card-list a.list-action-btn:hover span {
-  color: #FFFFFF !important;
+.light .properties-page .properties-footer a:hover {
+  color: #cda402 !important;
 }
 
-/* ── Smooth Fade In Animation ── */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fade-in {
-  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-/* ── Sidebar Select Options ── */
-.light aside select option {
-  background-color: #FFFFFF !important;
-  color: #171717 !important;
+/* ═══════════════════════════════════════════════
+   DARK MODE — Properties Page (Contrast Overrides)
+   ═══════════════════════════════════════════════ */
+
+/* Page background, base colors & CSS Variables mapping */
+.dark .properties-page {
+  background-color: #000000 !important;
+  color: #F5F5F7 !important;
 }
 
-/* ── FAQ Accordion ── */
-/* Separators */
-.light .properties-page .divide-white\/8 > * + * {
-  border-color: rgba(23, 23, 23, 0.08) !important;
+/* ── Typography and Text Colors ── */
+.dark .properties-page h1,
+.dark .properties-page h2,
+.dark .properties-page h3,
+.dark .properties-page h4,
+.dark .properties-page h5,
+.dark .properties-page h6,
+.dark .properties-page .text-white,
+.dark .properties-page .text-white\/90,
+.dark .properties-page .text-neutral-100 {
+  color: #F5F5F7 !important;
 }
-/* Section pre-header */
-.light .properties-page p.text-white\/30 {
-  color: #B0B0B0 !important;
+
+.dark .properties-page p,
+.dark .properties-page span,
+.dark .properties-page svg,
+.dark .properties-page .text-white\/60,
+.dark .properties-page .text-white\/50,
+.dark .properties-page .text-neutral-400,
+.dark .properties-page .text-neutral-500 {
+  color: #98989D !important;
 }
-/* Question text */
-.light .properties-page span.text-white\/80 {
-  color: #171717 !important;
+
+/* ── Active highlights and Accent icons ── */
+.dark .properties-page .text-indigo-600,
+.dark .properties-page .text-indigo-700,
+.dark .properties-page .text-amber-500,
+.dark .properties-page .text-amber-700,
+.dark .properties-page a.text-indigo-600,
+.dark .properties-page button.text-indigo-600 {
+  color: #EFBF04 !important;
 }
-.light .properties-page button:hover span.text-white\/80 {
+
+/* Link color overrides */
+.dark .properties-page button.text-indigo-600,
+.dark .properties-page a.text-indigo-600,
+.dark .properties-page button.hover\:text-indigo-850:hover,
+.dark .properties-page a.hover\:text-indigo-850:hover,
+.dark .properties-page button.text-indigo-700,
+.dark .properties-page a.text-indigo-700,
+.dark .properties-page button.hover\:text-indigo-800:hover,
+.dark .properties-page a.hover\:text-indigo-800:hover,
+.dark .properties-page button.hover\:text-indigo-700:hover,
+.dark .properties-page a.hover\:text-indigo-700:hover {
+  color: #EFBF04 !important;
+}
+
+/* ── Borders, Outlines & Dividers ── */
+.dark .properties-page .border,
+.dark .properties-page .border-t,
+.dark .properties-page .border-b,
+.dark .properties-page .border-r,
+.dark .properties-page .border-l,
+.dark .properties-page .border-white\/5,
+.dark .properties-page .border-white\/10,
+.dark .properties-page .border-white\/20,
+.dark .properties-page .border-neutral-200,
+.dark .properties-page .border-neutral-200\/50,
+.dark .properties-page .border-neutral-200\/80,
+.dark .properties-page .divide-white\/10 > :not([hidden]) ~ :not([hidden]),
+.dark .properties-page .divide-neutral-200\/70 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #38383A !important;
+}
+
+/* ── Section backgrounds, grouped content areas ── */
+.dark .properties-page aside,
+.dark .properties-page .bg-neutral-900,
+.dark .properties-page .bg-\[\#111111\],
+.dark .properties-page .bg-white\/5,
+.dark .properties-page #prices-trends,
+.dark .properties-page #provided-by .bg-neutral-50\/50,
+.dark .properties-page .cost-breakdown-card,
+.dark .properties-page .properties-footer {
+  background-color: #161617 !important;
+  border-color: #38383A !important;
+}
+
+/* ── Active tabs, Active pills, Primary gold actions ── */
+.dark .properties-page .active-pill,
+.dark .properties-page button.active-pill,
+.dark .properties-page .active-category-pill,
+.dark .properties-page button.active-category-pill,
+.dark .properties-page .active-view,
+.dark .properties-page button.active-view,
+.dark .properties-page button.bg-indigo-600,
+.dark .properties-page a.bg-indigo-600,
+.dark .properties-page button.bg-indigo-750,
+.dark .properties-page .bg-indigo-600,
+.dark .properties-page input[type="range"]::-webkit-slider-thumb {
+  background-color: #EFBF04 !important;
+  border-color: #EFBF04 !important;
   color: #000000 !important;
 }
-/* Answer text */
-.light .properties-page .text-white\/45 {
-  color: #878787 !important;
-}
-/* Plus/Minus circular icon */
-.light .properties-page span[class*="border-white/10"] {
-  border-color: rgba(23, 23, 23, 0.12) !important;
-}
-.light .properties-page span.text-white\/40 {
-  color: #878787 !important;
-}
-.light .properties-page span.bg-white.text-black {
-  background-color: #171717 !important;
-  color: #FFFFFF !important;
+
+/* Force text inside active/gold highlighted tags to be Black */
+.dark .properties-page .active-pill *,
+.dark .properties-page .active-category-pill *,
+.dark .properties-page .active-view *,
+.dark .properties-page button.bg-\[\#EFBF04\] *,
+.dark .properties-page a.bg-\[\#EFBF04\] *,
+.dark .properties-page .active-room-chip *,
+.dark .properties-page [class*="bg-[#EFBF04]"] * {
+  color: #000000 !important;
 }
 
-/* ── Dark Footer Light Mode Contrast Fix ── */
-.light .properties-page .properties-footer .text-white { color: #FFFFFF !important; }
-.light .properties-page .properties-footer .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
-.light .properties-page .properties-footer .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
-.light .properties-page .properties-footer .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
-.light .properties-page .properties-footer .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
-.light .properties-page .properties-footer .text-white\/55 { color: rgba(255, 255, 255, 0.55) !important; }
-.light .properties-page .properties-footer .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
-.light .properties-page .properties-footer .text-white\/45 { color: rgba(255, 255, 255, 0.45) !important; }
-.light .properties-page .properties-footer .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
-.light .properties-page .properties-footer .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
-.light .properties-page .properties-footer .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
-.light .properties-page .properties-footer .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
-.light .properties-page .properties-footer .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
-.light .properties-page .properties-footer .border-t { border-color: rgba(255, 255, 255, 0.1) !important; }
-.light .properties-page .properties-footer a { color: rgba(255, 255, 255, 0.5); }
-.light .properties-page .properties-footer a:hover { color: #FFFFFF !important; }
-
-/* ── Dark Inquiry Modal Light Mode Contrast Fix ── */
-.light .properties-page .inquiry-modal {
-  background-color: #171717 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-.light .properties-page .inquiry-modal .text-white { color: #FFFFFF !important; }
-.light .properties-page .inquiry-modal .text-white\/90 { color: rgba(255, 255, 255, 0.9) !important; }
-.light .properties-page .inquiry-modal .text-white\/80 { color: rgba(255, 255, 255, 0.8) !important; }
-.light .properties-page .inquiry-modal .text-white\/70 { color: rgba(255, 255, 255, 0.7) !important; }
-.light .properties-page .inquiry-modal .text-white\/60 { color: rgba(255, 255, 255, 0.6) !important; }
-.light .properties-page .inquiry-modal .text-white\/50 { color: rgba(255, 255, 255, 0.5) !important; }
-.light .properties-page .inquiry-modal .text-white\/40 { color: rgba(255, 255, 255, 0.4) !important; }
-.light .properties-page .inquiry-modal .text-white\/30 { color: rgba(255, 255, 255, 0.3) !important; }
-.light .properties-page .inquiry-modal .text-white\/25 { color: rgba(255, 255, 255, 0.25) !important; }
-.light .properties-page .inquiry-modal .text-white\/20 { color: rgba(255, 255, 255, 0.2) !important; }
-.light .properties-page .inquiry-modal .text-white\/10 { color: rgba(255, 255, 255, 0.1) !important; }
-.light .properties-page .inquiry-modal label {
-  color: rgba(255, 255, 255, 0.4) !important;
-}
-.light .properties-page .inquiry-modal input,
-.light .properties-page .inquiry-modal textarea {
-  background-color: rgba(3, 1, 2, 0.6) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #FFFFFF !important;
-}
-.light .properties-page .inquiry-modal input:focus,
-.light .properties-page .inquiry-modal textarea:focus {
-  border-color: rgba(255, 255, 255, 0.3) !important;
+.dark .properties-page button.bg-indigo-600:hover,
+.dark .properties-page a.bg-indigo-600:hover,
+.dark .properties-page button.bg-indigo-750:hover,
+.dark .properties-page button.active-pill:hover,
+.dark .properties-page button.active-category-pill:hover {
+  background-color: #EFBF04 !important;
+  opacity: 0.9 !important;
+  color: #000000 !important;
 }
 
+/* Inactive pills & buttons */
+.dark .properties-page .inactive-pill,
+.dark .properties-page button.inactive-pill,
+.dark .properties-page .inactive-category-pill,
+.dark .properties-page button.inactive-category-pill,
+.dark .properties-page .view-switcher-btn {
+  background-color: #161617 !important;
+  border-color: #38383A !important;
+  color: #98989D !important;
+}
+
+.dark .properties-page .inactive-pill:hover,
+.dark .properties-page button.inactive-pill:hover,
+.dark .properties-page .inactive-category-pill:hover,
+.dark .properties-page button.inactive-category-pill:hover,
+.dark .properties-page .view-switcher-btn:hover {
+  background-color: #1C1C1E !important;
+  border-color: #98989D !important;
+  color: #F5F5F7 !important;
+}
+
+/* Details Subnavigation active tabs */
+.dark .properties-page .sticky {
+  background-color: rgba(22, 22, 23, 0.9) !important;
+  border-bottom-color: #38383A !important;
+}
+.dark .properties-page .sticky button {
+  color: #98989D !important;
+}
+.dark .properties-page .sticky button.text-indigo-600,
+.dark .properties-page .sticky button.text-amber-500,
+.dark .properties-page .sticky button.text-\[\#C8994A\] {
+  color: #EFBF04 !important;
+  font-weight: 800 !important;
+}
+.dark .properties-page .sticky .bg-indigo-600,
+.dark .properties-page .sticky .bg-amber-500,
+.dark .properties-page .sticky .bg-\[\#C8994A\] {
+  background-color: #EFBF04 !important;
+}
+
+/* Cards, widgets, input backgrounds */
+.dark .properties-page .property-card-list,
+.dark .properties-page .property-card-list .flex-1,
+.dark .properties-page #provided-by > div,
+.dark .properties-page .bg-white.border-neutral-200\/80,
+.dark .properties-page .view-switcher-menu,
+.dark .properties-page .inquiry-modal {
+  background-color: #1C1C1E !important;
+  border-color: #38383A !important;
+}
+
+.dark .properties-page input,
+.dark .properties-page select,
+.dark .properties-page textarea {
+  background-color: #1C1C1E !important;
+  border-color: #38383A !important;
+  color: #F5F5F7 !important;
+}
+.dark .properties-page input:focus,
+.dark .properties-page select:focus,
+.dark .properties-page textarea:focus {
+  border-color: #EFBF04 !important;
+  box-shadow: 0 0 0 2px rgba(239, 191, 4, 0.15) !important;
+  background-color: #161617 !important;
+}
+
+.dark .properties-page input::placeholder,
+.dark .properties-page textarea::placeholder {
+  color: #98989D !important;
+  opacity: 0.8 !important;
+}
+
+/* Details section highlights/cashback/tags badges */
+.dark .properties-page .bg-amber-50,
+.dark .properties-page .bg-indigo-50,
+.dark .properties-page .bg-indigo-50\/40,
+.dark .properties-page .bg-indigo-500\/10 {
+  background-color: rgba(239, 191, 4, 0.1) !important;
+  border-color: rgba(239, 191, 4, 0.25) !important;
+  color: #EFBF04 !important;
+}
+.dark .properties-page .bg-amber-50 span,
+.dark .properties-page .bg-indigo-50 span,
+.dark .properties-page .bg-indigo-50\/40 span,
+.dark .properties-page .bg-indigo-500\/10 span {
+  color: #EFBF04 !important;
+}
+.dark .properties-page .bg-amber-50 * {
+  color: #EFBF04 !important;
+}
+
+/* System slider adjustments */
+.dark .properties-page input[type="range"] {
+  accent-color: #EFBF04 !important;
+}
+
+/* Modals inputs & submit buttons styling */
+.dark .properties-page .inquiry-modal button.bg-white,
+.dark .properties-page .inquiry-modal button[type="submit"],
+.dark .properties-page .report-modal button.bg-white,
+.dark .properties-page .report-modal button[type="submit"] {
+  background-color: #EFBF04 !important;
+  color: #000000 !important;
+}
+.dark .properties-page .inquiry-modal button.bg-white:hover,
+.dark .properties-page .inquiry-modal button[type="submit"]:hover,
+.dark .properties-page .report-modal button.bg-white:hover,
+.dark .properties-page .report-modal button[type="submit"]:hover {
+  background-color: #EFBF04 !important;
+  opacity: 0.9 !important;
+  color: #000000 !important;
+}
+.dark .properties-page .inquiry-modal label,
+.dark .properties-page .report-modal label {
+  color: #98989D !important;
+}
+
+/* Detail page modals overrides */
+.dark .properties-page .report-modal,
+.dark .properties-page .dev-modal,
+.dark .properties-page .fixed.z-50 > div.relative.z-10 {
+  background-color: #1C1C1E !important;
+  border-color: #38383A !important;
+  color: #F5F5F7 !important;
+}
+
+/* ── Header Navigation Overrides ── */
+.dark.properties-page header,
+.dark .properties-page header {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  border-bottom-color: #38383A !important;
+}
+.dark.properties-page header nav,
+.dark .properties-page header nav {
+  background-color: rgba(22, 22, 23, 0.95) !important;
+  border-color: #38383A !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+.dark.properties-page header nav a,
+.dark .properties-page header nav a {
+  color: #98989D !important;
+}
+.dark.properties-page header nav a:hover,
+.dark .properties-page header nav a.text-white {
+  color: #F5F5F7 !important;
+}
+
+/* Header Dropdowns */
+.dark.properties-page header .absolute.z-50 > div,
+.dark .properties-page header .absolute.z-50 > div {
+  background-color: rgba(28, 28, 30, 0.98) !important;
+  border-color: #38383A !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5) !important;
+  color: #F5F5F7 !important;
+}
+.dark.properties-page header .absolute.z-50 h4,
+.dark .properties-page header .absolute.z-50 h4 {
+  color: #F5F5F7 !important;
+}
+.dark.properties-page header .absolute.z-50 a,
+.dark .properties-page header .absolute.z-50 a {
+  color: #98989D !important;
+}
+.dark.properties-page header .absolute.z-50 a:hover,
+.dark .properties-page header .absolute.z-50 a:hover {
+  color: #EFBF04 !important;
+}
+
+/* Scrolled promo card */
+.dark.properties-page header .absolute.z-50 .bg-gradient-to-br,
+.dark .properties-page header .absolute.z-50 .bg-gradient-to-br {
+  background: #161617 !important;
+  border-color: #38383A !important;
+}
+.dark.properties-page header .absolute.z-50 .bg-gradient-to-br h5,
+.dark .properties-page header .absolute.z-50 .bg-gradient-to-br h5 {
+  color: #F5F5F7 !important;
+}
+.dark.properties-page header .absolute.z-50 .bg-gradient-to-br p,
+.dark .properties-page header .absolute.z-50 .bg-gradient-to-br p {
+  color: #98989D !important;
+}
+.dark.properties-page header .absolute.z-50 .bg-gradient-to-br a,
+.dark .properties-page header .absolute.z-50 .bg-gradient-to-br a {
+  background-color: #EFBF04 !important;
+  color: #000000 !important;
+}
+
+/* Header Buttons */
+.dark.properties-page header button,
+.dark .properties-page header button {
+  background-color: #1C1C1E !important;
+  border-color: #38383A !important;
+  color: #98989D !important;
+}
+.dark.properties-page header button:hover,
+.dark .properties-page header button:hover {
+  background-color: #161617 !important;
+  color: #F5F5F7 !important;
+}
+.dark.properties-page header button.px-6.py-2,
+.dark .properties-page header button.px-6.py-2 {
+  border-color: #38383A !important;
+  color: #F5F5F7 !important;
+  background-color: #1C1C1E !important;
+}
+.dark.properties-page header button.px-6.py-2:hover,
+.dark .properties-page header button.px-6.py-2:hover {
+  background-color: #161617 !important;
+}
+
+/* Detail page sidebar secondary Call/Chat Outline overrides */
+.dark .properties-page #provided-by a.border-indigo-600\/35,
+.dark .properties-page #provided-by button.border-indigo-600\/35 {
+  border-color: #38383A !important;
+  color: #F5F5F7 !important;
+  background-color: #1C1C1E !important;
+}
+.dark .properties-page #provided-by a.border-indigo-600\/35:hover,
+.dark .properties-page #provided-by button.border-indigo-600\/35:hover {
+  background-color: #161617 !important;
+}
+
+/* Footer bottom alignment overrides */
+.dark .properties-page .properties-footer {
+  border-top-color: #38383A !important;
+  background-color: #161617 !important;
+}
+.dark .properties-page .properties-footer .text-white {
+  color: #98989D !important;
+}
+.dark .properties-page .properties-footer h2,
+.dark .properties-page .properties-footer h3,
+.dark .properties-page .properties-footer h4,
+.dark .properties-page .properties-footer a.text-white {
+  color: #F5F5F7 !important;
+}
+.dark .properties-page .properties-footer a {
+  color: #98989D !important;
+}
+.dark .properties-page .properties-footer a:hover {
+  color: #EFBF04 !important;
+}
+
+/* ═══════════════════════════════════════════════
+   LIGHT MODE — Admin Dashboard Overrides
+   ═══════════════════════════════════════════════ */
+
+/* Main layout wrapper (dark sidebar / light content mixed theme to match EVOHUS) */
+.light .admin-dashboard {
+  background-color: #F4F5F7 !important;
+  color: #171717 !important;
+}
+
+/* Header (top bar) */
+.light .admin-dashboard header {
+  background-color: #FFFFFF !important;
+  border-color: rgba(23, 23, 23, 0.08) !important;
+}
+
+.light .admin-dashboard header input {
+  background-color: #F4F5F7 !important;
+  border-color: rgba(23, 23, 23, 0.08) !important;
+  color: #171717 !important;
+}
+
+.light .admin-dashboard header input::placeholder {
+  color: rgba(23, 23, 23, 0.35) !important;
+}
+
+/* Background replacements for dashboard card modules (keep sidebar dark) */
+.light .admin-dashboard main .bg-\[\#0d0d0d\] { background-color: #FFFFFF !important; }
+.light .admin-dashboard main .bg-\[\#111111\] { background-color: #FFFFFF !important; }
+.light .admin-dashboard main .bg-\[\#1a1a1a\] { background-color: #F4F5F7 !important; }
+
+/* Text Color mapping inside main content & header (excluding sidebar) */
+.light .admin-dashboard main .text-white { color: #171717 !important; }
+.light .admin-dashboard main .text-white\/90 { color: rgba(23, 23, 23, 0.95) !important; }
+.light .admin-dashboard main .text-white\/85 { color: rgba(23, 23, 23, 0.9) !important; }
+.light .admin-dashboard main .text-white\/80 { color: rgba(23, 23, 23, 0.85) !important; }
+.light .admin-dashboard main .text-white\/60 { color: rgba(23, 23, 23, 0.75) !important; }
+.light .admin-dashboard main .text-white\/50 { color: rgba(23, 23, 23, 0.65) !important; }
+.light .admin-dashboard main .text-white\/45 { color: rgba(23, 23, 23, 0.6) !important; }
+.light .admin-dashboard main .text-white\/40 { color: rgba(23, 23, 23, 0.55) !important; }
+.light .admin-dashboard main .text-white\/35 { color: rgba(23, 23, 23, 0.5) !important; }
+.light .admin-dashboard main .text-white\/30 { color: rgba(23, 23, 23, 0.45) !important; }
+.light .admin-dashboard main .text-white\/25 { color: rgba(23, 23, 23, 0.4) !important; }
+.light .admin-dashboard main .text-white\/20 { color: rgba(23, 23, 23, 0.35) !important; }
+.light .admin-dashboard main .text-white\/15 { color: rgba(23, 23, 23, 0.3) !important; }
+.light .admin-dashboard main .text-white\/10 { color: rgba(23, 23, 23, 0.2) !important; }
+
+.light .admin-dashboard header .text-white { color: #171717 !important; }
+.light .admin-dashboard header .text-white\/80 { color: rgba(23, 23, 23, 0.85) !important; }
+.light .admin-dashboard header .text-white\/40 { color: rgba(23, 23, 23, 0.55) !important; }
+.light .admin-dashboard header .text-white\/30 { color: rgba(23, 23, 23, 0.45) !important; }
+.light .admin-dashboard header .text-white\/15 { color: rgba(23, 23, 23, 0.3) !important; }
+
+/* Background opacities and borders */
+.light .admin-dashboard main .bg-white\/5 { background-color: rgba(23, 23, 23, 0.05) !important; }
+.light .admin-dashboard main .bg-white\/8 { background-color: rgba(23, 23, 23, 0.08) !important; }
+.light .admin-dashboard main .bg-white\/10 { background-color: rgba(23, 23, 23, 0.1) !important; }
+.light .admin-dashboard main .bg-white\/\[0\.02\] { background-color: rgba(23, 23, 23, 0.02) !important; }
+.light .admin-dashboard main .bg-white\/\[0\.04\] { background-color: rgba(23, 23, 23, 0.04) !important; }
+.light .admin-dashboard main .hover\:bg-white\/5:hover { background-color: rgba(23, 23, 23, 0.05) !important; }
+.light .admin-dashboard main .hover\:bg-white\/10:hover { background-color: rgba(23, 23, 23, 0.1) !important; }
+
+/* Border color mapping */
+.light .admin-dashboard main .border-white\/10 { border-color: rgba(23, 23, 23, 0.1) !important; }
+.light .admin-dashboard main .border-white\/\[0\.05\] { border-color: rgba(23, 23, 23, 0.05) !important; }
+.light .admin-dashboard main .border-white\/\[0\.06\] { border-color: rgba(23, 23, 23, 0.06) !important; }
+.light .admin-dashboard main .border-white\/\[0\.07\] { border-color: rgba(23, 23, 23, 0.08) !important; }
+.light .admin-dashboard main .border-white\/\[0\.03\] { border-color: rgba(23, 23, 23, 0.04) !important; }
+.light .admin-dashboard main .border-white\/\[0\.04\] { border-color: rgba(23, 23, 23, 0.05) !important; }
+.light .admin-dashboard main .border-white\/\[0\.15\] { border-color: rgba(23, 23, 23, 0.15) !important; }
+.light .admin-dashboard main .divide-white\/\[0\.03\] > :not([hidden]) ~ :not([hidden]) { border-color: rgba(23, 23, 23, 0.05) !important; }
+
+/* Keep bronze status badge text and backgrounds */
+.light .admin-dashboard [class*="text-[#A57754]"] {
+  color: #A57754 !important;
+}
+.light .admin-dashboard [class*="bg-[#A57754]/15"] {
+  background-color: rgba(165, 119, 84, 0.15) !important;
+}
+
+/* Card custom styles & lists */
+.light .admin-dashboard main .relative.bg-\[\#111111\] {
+  background-color: #FFFFFF !important;
+  border-color: rgba(23, 23, 23, 0.08) !important;
+}
+
+/* Charts overrides */
+.light .admin-dashboard main .group\/bar:hover .group-hover\/bar\:bg-white\/20 {
+  background-color: rgba(23, 23, 23, 0.2) !important;
+}
+.light .admin-dashboard main svg circle[stroke="#1a1a1a"] {
+  stroke: rgba(23, 23, 23, 0.08) !important;
+}
+
+/* Trend and category badge colors */
+.light .admin-dashboard main .text-emerald-400 { color: #059669 !important; }
+.light .admin-dashboard main .text-red-400 { color: #dc2626 !important; }
+.light .admin-dashboard main .text-amber-400 { color: #d97706 !important; }
+.light .admin-dashboard main .text-sky-400 { color: #0284c7 !important; }
+.light .admin-dashboard main .text-purple-400 { color: #7c3aed !important; }
+
+/* Force standard dark elements that shouldn't change */
+.light .admin-dashboard main .bg-gradient-to-br.from-\[\#A57754\] {
+  background-image: linear-gradient(to bottom right, #A57754, #8e6343) !important;
+}
+.light .admin-dashboard main .bg-gradient-to-br.from-\[\#A57754\] * {
+  color: #FAFAFA !important;
+}
+.light .admin-dashboard main #btn-add-property {
+  color: #FAFAFA !important;
+}
+
+/* Typography Design System Elements */
+h1 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+}
+h2 {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+h3 {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+h4 {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+h5 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.007em;
+}
+h6 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+}
+
+/* Typography Design System Utility Classes */
+.text-display-xl {
+  font-size: 72px !important;
+  font-weight: 700 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.035em !important;
+}
+.text-display-l {
+  font-size: 60px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.03em !important;
+}
+.text-h1 {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.022em !important;
+}
+.text-h2 {
+  font-size: 40px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+}
+.text-h3 {
+  font-size: 32px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.015em !important;
+}
+.text-h4 {
+  font-size: 24px !important;
+  font-weight: 500 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.01em !important;
+}
+.text-h5 {
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.007em !important;
+}
+.text-h6 {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.005em !important;
+}
+.text-body-large {
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.005em !important;
+}
+.text-body-medium {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.47 !important;
+  letter-spacing: -0.011em !important;
+}
+.text-body-small {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.43 !important;
+  letter-spacing: -0.006em !important;
+}
+.text-caption {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.33 !important;
+  letter-spacing: 0em !important;
+}
+.text-button-large {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+}
+.text-button-medium {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+}
+.text-button-small {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+}
+.text-navigation {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.005em !important;
+}
+.text-input-text {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+}
+.text-footer-text {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.005em !important;
+}
+
+/* ── Standard Tailwind Utility Overrides to Match Apple Design System ── */
+.text-7xl {
+  font-size: 72px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.035em !important;
+}
+.text-6xl {
+  font-size: 60px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.03em !important;
+}
+.text-5xl {
+  font-size: 48px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.022em !important;
+}
+.text-4xl {
+  font-size: 40px !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+}
+.text-3xl {
+  font-size: 32px !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.015em !important;
+}
+.text-2xl {
+  font-size: 24px !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.01em !important;
+}
+.text-xl {
+  font-size: 20px !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.007em !important;
+}
+.text-lg {
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.005em !important;
+}
+.text-base {
+  font-size: 16px !important;
+  line-height: 1.47 !important;
+  letter-spacing: -0.011em !important;
+}
+.text-sm {
+  font-size: 14px !important;
+  line-height: 1.43 !important;
+  letter-spacing: -0.006em !important;
+}
+.text-xs {
+  font-size: 12px !important;
+  line-height: 1.33 !important;
+  letter-spacing: 0em !important;
+}
+
+/* Custom Arbitrary Sizes overrides from scrollytelling canvas */
+.text-\[4\.5rem\] {
+  font-size: 72px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.035em !important;
+}
+.text-\[5\.5rem\] {
+  font-size: 80px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.035em !important;
+}
+
+/* Restrict extreme font weights to match Apple's elegant Bold (700) ceiling */
+.font-black, .font-extrabold {
+  font-weight: 700 !important;
+}
 
