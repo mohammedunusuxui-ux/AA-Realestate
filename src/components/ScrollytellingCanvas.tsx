@@ -631,7 +631,7 @@ export default function ScrollytellingCanvas() {
                 </motion.h2>
 
                 {/* Animating Body Text */}
-                <p className="text-[1.2rem] sm:text-[1.5rem] md:text-[1.8rem] lg:text-[2.2rem] xl:text-[2.5rem] leading-[1.3] tracking-[-0.015em] font-normal text-center max-w-4xl text-[#0a0a0a]">
+                <p className="w-full text-[1.2rem] sm:text-[1.5rem] md:text-[1.8rem] lg:text-[2.2rem] xl:text-[2.5rem] leading-[1.3] tracking-[-0.015em] font-normal text-center max-w-4xl text-[#0a0a0a]">
                   {t("It’s about identity. Progress. Getting unstuck. You’re not just looking for a place. You’re looking for alignment. That’s what we help you find.")
                     .split(" ")
                     .map((word, i, arr) => {

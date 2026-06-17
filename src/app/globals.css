@@ -575,8 +575,8 @@ select:-webkit-autofill:focus {
 }
 
 .dark .properties-page p,
-.dark .properties-page span,
-.dark .properties-page svg,
+.dark .properties-page span:not([class*="text-"]):not([class*="text-"] *),
+.dark .properties-page svg:not([class*="text-"]):not([class*="text-"] *),
 .dark .properties-page .text-white\/60,
 .dark .properties-page .text-white\/50,
 .dark .properties-page .text-neutral-400,
@@ -921,6 +921,37 @@ select:-webkit-autofill:focus {
   color: #EFBF04 !important;
 }
 
+/* Fix visibility of text and icons inside Floor Plans in Dark Mode */
+.dark .properties-page #floor-plans span {
+  color: #F5F5F7 !important;
+}
+.dark .properties-page #floor-plans .active-room-chip span {
+  color: #000000 !important;
+}
+.dark .properties-page #floor-plans .active-room-chip span:nth-child(3) {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+.dark .properties-page #floor-plans svg {
+  color: #EFBF04 !important;
+}
+.dark .properties-page #floor-plans .active-room-chip svg {
+  color: #000000 !important;
+}
+.dark .properties-page #floor-plans button svg {
+  color: currentColor !important;
+}
+.dark .properties-page #floor-plans .flex-wrap span {
+  color: #98989D !important; /* "Furnished" toggle label text */
+}
+
+/* Fix visibility of text and icons inside Plot Documents in Dark Mode */
+.dark .properties-page #plot-documents span {
+  color: #F5F5F7 !important;
+}
+.dark .properties-page #plot-documents span.text-white\/30 {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
 /* ═══════════════════════════════════════════════
    LIGHT MODE — Admin Dashboard Overrides
    ═══════════════════════════════════════════════ */
@@ -1254,4 +1285,296 @@ h6 {
 .font-black, .font-extrabold {
   font-weight: 700 !important;
 }
+
+/* Force Dark Mode theme for property cards in mobile view (max-width: 767px) */
+@media (max-width: 767px) {
+  /* 1. Ensure the card containers have dark backgrounds and borders */
+  .properties-page .property-card-container,
+  .properties-page .property-card-list {
+    background-color: #0a0a0a !important; /* bg-neutral-950 */
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .properties-page .property-card-container:hover,
+  .properties-page .property-card-list:hover {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+  }
+
+  /* For list view, force the content inner block to be dark transparent */
+  .properties-page .property-card-list > div:nth-child(2),
+  .properties-page .property-card-list .bg-white {
+    background-color: rgba(26, 26, 26, 0.4) !important; /* bg-neutral-900/40 */
+  }
+
+  /* Developer Logo capsule wrapper on mobile list card */
+  .properties-page .property-card-list .bg-neutral-50 {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Force Emaar, Nakheel, Damac etc DeveloperLogo text/fill to white on mobile */
+  .properties-page .property-card-container .text-neutral-900,
+  .properties-page .property-card-list .text-neutral-900 {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+  }
+
+  /* 2. Specific styles for mobile card content details */
+  
+  /* Titles and Headers */
+  .properties-page .property-card-container h3,
+  .properties-page .property-card-list h3 {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  .properties-page .property-card-container h3:hover,
+  .properties-page .property-card-list h3:hover {
+    color: #EFBF04 !important;
+  }
+  
+  /* Prices and Highlight texts */
+  .properties-page .property-card-container .text-xl,
+  .properties-page .property-card-container .text-2xl,
+  .properties-page .property-card-list .text-2xl,
+  .properties-page .property-card-list .text-3xl {
+    color: #ffffff !important;
+  }
+  
+  /* Spans inside mobile specs and location */
+  .properties-page .property-card-container span,
+  .properties-page .property-card-list span {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+  
+  /* Price/sqft block and other detail spans */
+  .properties-page .property-card-container .text-white\/85 span,
+  .properties-page .property-card-list .text-white\/85 span {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+  
+  /* Specifications subtext / metadata / listed age / highlights */
+  .properties-page .property-card-list p,
+  .properties-page .property-card-list .text-neutral-500,
+  .properties-page .property-card-list .text-neutral-450 {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  /* Location text and other muted spans */
+  .properties-page .property-card-container .text-white\/40 span,
+  .properties-page .property-card-list .text-white\/40 span,
+  .properties-page .property-card-container .text-white\/40,
+  .properties-page .property-card-list .text-white\/40 {
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* SVGs/icons inside property cards on mobile */
+  .properties-page .property-card-container svg,
+  .properties-page .property-card-list svg {
+    color: #ffffff !important;
+    fill: currentColor !important;
+  }
+
+  /* Dividers and borders inside mobile cards */
+  .properties-page .property-card-container .border-t,
+  .properties-page .property-card-container .border-b,
+  .properties-page .property-card-list .border-t,
+  .properties-page .property-card-list .border-b {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* 3. Call and WhatsApp button overrides on mobile */
+  
+  /* Call button link container */
+  .properties-page .property-card-container a[href^="tel:"],
+  .properties-page .property-card-list a[href^="tel:"] {
+    color: #EFBF04 !important;
+    border-color: #EFBF04 !important;
+    background-color: transparent !important;
+  }
+  
+  .properties-page .property-card-container a[href^="tel:"]:hover,
+  .properties-page .property-card-list a[href^="tel:"]:hover {
+    background-color: rgba(239, 191, 4, 0.1) !important;
+  }
+  
+  /* Call button span text and phone icon */
+  .properties-page .property-card-container a[href^="tel:"] span,
+  .properties-page .property-card-list a[href^="tel:"] span {
+    color: #EFBF04 !important;
+  }
+  
+  .properties-page .property-card-container a[href^="tel:"] svg,
+  .properties-page .property-card-list a[href^="tel:"] svg {
+    color: #EFBF04 !important;
+    fill: currentColor !important;
+  }
+
+  /* WhatsApp button link container */
+  .properties-page .property-card-container a[href*="wa.me"],
+  .properties-page .property-card-list a[href*="wa.me"] {
+    background-color: #EFBF04 !important;
+    border-color: #EFBF04 !important;
+    color: #000000 !important;
+  }
+
+  .properties-page .property-card-container a[href*="wa.me"]:hover,
+  .properties-page .property-card-list a[href*="wa.me"]:hover {
+    background-color: #d1a703 !important;
+  }
+
+  /* WhatsApp button span text and icon */
+  .properties-page .property-card-container a[href*="wa.me"] span,
+  .properties-page .property-card-list a[href*="wa.me"] span {
+    color: #000000 !important;
+  }
+
+  .properties-page .property-card-container a[href*="wa.me"] svg,
+  .properties-page .property-card-list a[href*="wa.me"] svg {
+    color: #000000 !important;
+    fill: currentColor !important;
+  }
+}
+
+@import "tw-animate-css" optional;
+
+@theme inline {
+  --color-chart-2: var(--color-chart-2);
+  --color-chart-3: var(--color-chart-3);
+  --color-chart-4: var(--color-chart-4);
+  --color-chart-5: var(--color-chart-5);
+}
+
+:root {
+  --muted-foreground: var(--text-secondary, #666666);
+  --card: var(--bg-card, #F0F0F0);
+  --border: var(--border-subtle, #DDDDDD);
+  --secondary: var(--bg-secondary, #F0F0F0);
+  --accent-foreground: var(--text-primary, #121212);
+
+  --component-inactive-color: var(--muted-foreground);
+  --component-bg: var(--card);
+  --component-shadow: var(--border);
+  --component-active-bg: var(--secondary);
+  --component-line-inactive-color: var(--border);
+  --component-active-color-default: var(--accent-foreground);
+}
+
+.dark {
+  --muted-foreground: var(--text-secondary, #A0A0A0);
+  --card: var(--bg-card, #1A1A1A);
+  --border: var(--border-subtle, #333333);
+  --secondary: var(--bg-secondary, #1A1A1A);
+  --accent-foreground: var(--text-primary, #F0F0F0);
+
+  --component-inactive-color: var(--muted-foreground);
+  --component-bg: var(--card);
+  --component-shadow: var(--border);
+  --component-active-bg: var(--secondary);
+  --component-line-inactive-color: var(--muted-foreground);
+  --component-active-color-default: var(--accent-foreground);
+}
+
+@keyframes iconBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-0.3em);
+  }
+  40% {
+    transform: translateY(0);
+  }
+  60% {
+    transform: translateY(-0.1em);
+  }
+  80% {
+    transform: translateY(0);
+  }
+}
+
+/* Premium Mobile Menu Component Styles */
+.menu {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--component-bg);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05), 0 -1px 0 var(--component-shadow);
+  padding: 0.75rem 1rem;
+  border-radius: 1.5rem 1.5rem 0 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .menu {
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4), 0 -1px 0 var(--component-shadow);
+}
+
+.menu__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--component-inactive-color);
+  font-size: 0.75rem;
+  font-weight: 500;
+  position: relative;
+  padding: 0.5rem;
+  flex: 1;
+  transition: color 0.3s ease;
+}
+
+.menu__item.active {
+  color: var(--component-active-color);
+}
+
+.menu__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.menu__item.active .menu__icon {
+  animation: iconBounce 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.menu__text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  opacity: 0.6;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.menu__text.active {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* Sliding/Width Active Line Accent indicator */
+.menu__item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--lineWidth, 0px);
+  height: 3px;
+  background-color: var(--component-active-color);
+  border-radius: 1.5px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+
 

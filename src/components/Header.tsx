@@ -6,53 +6,54 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeContext";
 import { usePreferences, LanguageCode, CurrencyCode } from "@/components/PreferencesContext";
+import { PROPERTIES_DATA } from "@/data/properties";
 
 const POPULAR_LANGUAGES = [
   { name: "English",          code: "en", region: "US", flagIso: "us" },
-  { name: "Русский",           code: "ru", region: "RU", flagIso: "ru" },
-  { name: "Tiếng Việt",       code: "vi", region: "VN", flagIso: "vn" },
-  { name: "Türkçe",            code: "tr", region: "TR", flagIso: "tr" },
-  { name: "Español",           code: "es", region: "ES", flagIso: "es" },
+  { name: "Ð ÑƒÑÑÐºÐ¸Ð¹",           code: "ru", region: "RU", flagIso: "ru" },
+  { name: "Tiáº¿ng Viá»‡t",       code: "vi", region: "VN", flagIso: "vn" },
+  { name: "TÃ¼rkÃ§e",            code: "tr", region: "TR", flagIso: "tr" },
+  { name: "EspaÃ±ol",           code: "es", region: "ES", flagIso: "es" },
 ];
 
 const ALL_LANGUAGES = [
-  { name: "العربية",            code: "ar", region: "AR", flagIso: "sa" },
-  { name: "български",          code: "bg", region: "BG", flagIso: "bg" },
-  { name: "Čeština",            code: "cz", region: "CZ", flagIso: "cz" },
+  { name: "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©",            code: "ar", region: "AR", flagIso: "sa" },
+  { name: "Ð±ÑŠÐ»Ð³Ð°Ñ€ÑÐºÐ¸",          code: "bg", region: "BG", flagIso: "bg" },
+  { name: "ÄŒeÅ¡tina",            code: "cz", region: "CZ", flagIso: "cz" },
   { name: "Dansk",              code: "dk", region: "DK", flagIso: "dk" },
   { name: "Deutsch",            code: "de", region: "DE", flagIso: "de" },
-  { name: "ελληνικά",           code: "el", region: "EL", flagIso: "gr" },
+  { name: "ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬",           code: "el", region: "EL", flagIso: "gr" },
   { name: "English",            code: "en", region: "US", flagIso: "us" },
-  { name: "Español",            code: "es", region: "ES", flagIso: "es" },
+  { name: "EspaÃ±ol",            code: "es", region: "ES", flagIso: "es" },
   { name: "Suomeksi",           code: "fi", region: "FI", flagIso: "fi" },
-  { name: "Français",           code: "fr", region: "FR", flagIso: "fr" },
-  { name: "हिन्दी",              code: "hi", region: "IN", flagIso: "in" },
+  { name: "FranÃ§ais",           code: "fr", region: "FR", flagIso: "fr" },
+  { name: "à¤¹à¤¿à¤¨à¥à¤¦à¥€",              code: "hi", region: "IN", flagIso: "in" },
   { name: "Magyar",             code: "hu", region: "HU", flagIso: "hu" },
   { name: "Bahasa Indonesia",   code: "id", region: "ID", flagIso: "id" },
   { name: "Italiano",           code: "it", region: "IT", flagIso: "it" },
-  { name: "日本語",              code: "ja", region: "JA", flagIso: "jp" },
-  { name: "한국어",              code: "ko", region: "KR", flagIso: "kr" },
+  { name: "æ—¥æœ¬èªž",              code: "ja", region: "JA", flagIso: "jp" },
+  { name: "í•œêµ­ì–´",              code: "ko", region: "KR", flagIso: "kr" },
   { name: "Nederlands",         code: "nl", region: "NL", flagIso: "nl" },
   { name: "Norsk",              code: "no", region: "NO", flagIso: "no" },
-  { name: "Język polski",       code: "pl", region: "PL", flagIso: "pl" },
-  { name: "Português Brasil",   code: "pt", region: "BR", flagIso: "br" },
+  { name: "JÄ™zyk polski",       code: "pl", region: "PL", flagIso: "pl" },
+  { name: "PortuguÃªs Brasil",   code: "pt", region: "BR", flagIso: "br" },
 ];
 
 const POPULAR_CURRENCIES = [
   { code: "AED", symbol: "AED", name: "United Arab Emirates Dirham", flagIso: "ae" },
   { code: "USD", symbol: "$", name: "United States Dollar", flagIso: "us" },
-  { code: "EUR", symbol: "€", name: "Euro", flagIso: "eu" },
-  { code: "GBP", symbol: "£", name: "Great British Pound", flagIso: "gb" },
+  { code: "EUR", symbol: "â‚¬", name: "Euro", flagIso: "eu" },
+  { code: "GBP", symbol: "Â£", name: "Great British Pound", flagIso: "gb" },
 ];
 
 const ALL_CURRENCIES = [
   { code: "AED", symbol: "AED", name: "United Arab Emirates Dirham", flagIso: "ae" },
   { code: "USD", symbol: "$", name: "United States Dollar", flagIso: "us" },
-  { code: "EUR", symbol: "€", name: "Euro", flagIso: "eu" },
-  { code: "GBP", symbol: "£", name: "Great British Pound", flagIso: "gb" },
-  { code: "INR", symbol: "₹", name: "Indian Rupee", flagIso: "in" },
-  { code: "RUB", symbol: "₽", name: "Russian Ruble", flagIso: "ru" },
-  { code: "CNY", symbol: "¥", name: "Chinese Yuan", flagIso: "cn" },
+  { code: "EUR", symbol: "â‚¬", name: "Euro", flagIso: "eu" },
+  { code: "GBP", symbol: "Â£", name: "Great British Pound", flagIso: "gb" },
+  { code: "INR", symbol: "â‚¹", name: "Indian Rupee", flagIso: "in" },
+  { code: "RUB", symbol: "â‚½", name: "Russian Ruble", flagIso: "ru" },
+  { code: "CNY", symbol: "Â¥", name: "Chinese Yuan", flagIso: "cn" },
 ];
 
 interface HeaderProps {
@@ -72,6 +73,8 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
   const [isNewProjectsDropdownOpen, setIsNewProjectsDropdownOpen] = useState(false);
   const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mobileAccordionOpen, setMobileAccordionOpen] = useState<string | null>(null);
+  const toggleMobileAccordion = (key: string) => setMobileAccordionOpen(prev => prev === key ? null : key);
 
   const [isPrefModalOpen, setIsPrefModalOpen] = useState(false);
   const [prefActiveTab, setPrefActiveTab] = useState<"language" | "currency">("language");
@@ -83,6 +86,86 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
   const isHomePage = pathname === "/";
   const isPropertiesPage = pathname === "/properties";
   const isPropertyDetailPage = pathname.startsWith("/properties/") && pathname !== "/properties";
+
+  const [isSaved, setIsSaved] = useState(false);
+  const propertyId = isPropertyDetailPage
+    ? parseInt(pathname.split("/").pop() || "0", 10)
+    : 0;
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && isPropertyDetailPage && propertyId > 0) {
+      const savedList = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+      setIsSaved(savedList.includes(propertyId));
+    }
+  }, [isPropertyDetailPage, propertyId]);
+
+  useEffect(() => {
+    const handleSavedChange = (e: Event) => {
+      const customEvent = e as CustomEvent<number[]>;
+      if (isPropertyDetailPage && propertyId > 0) {
+        setIsSaved(customEvent.detail.includes(propertyId));
+      }
+    };
+    window.addEventListener("savedPropertiesChange", handleSavedChange);
+    return () => {
+      window.removeEventListener("savedPropertiesChange", handleSavedChange);
+    };
+  }, [isPropertyDetailPage, propertyId]);
+
+  const handleSaveToggle = () => {
+    if (typeof window !== "undefined" && isPropertyDetailPage && propertyId > 0) {
+      const savedList: number[] = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+      let newList: number[];
+      let message = "";
+      if (savedList.includes(propertyId)) {
+        newList = savedList.filter(id => id !== propertyId);
+        setIsSaved(false);
+        message = "Property removed from saved listings";
+      } else {
+        newList = [...savedList, propertyId];
+        setIsSaved(true);
+        message = loggedIn 
+          ? "Property saved to your account" 
+          : "Property saved locally! Log in to sync.";
+      }
+      localStorage.setItem("savedProperties", JSON.stringify(newList));
+      
+      // Notify other components of saved list change
+      window.dispatchEvent(new CustomEvent("savedPropertiesChange", { detail: newList }));
+      window.dispatchEvent(new CustomEvent("propertyDetailToast", { detail: message }));
+    }
+  };
+
+  const handleShareClick = async () => {
+    if (typeof window !== "undefined" && isPropertyDetailPage && propertyId > 0) {
+      const property = PROPERTIES_DATA.find((p) => p.id === propertyId);
+      const shareUrl = window.location.href;
+      const shareTitle = property ? property.title : "AA Real Estate Property";
+      const shareText = property
+        ? `Check out this amazing property: ${property.title} in ${property.location}`
+        : "Check out this amazing property";
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl,
+          });
+        } catch (error) {
+          console.log("Error sharing:", error);
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          window.dispatchEvent(new CustomEvent("propertyDetailToast", { detail: "Link copied to clipboard!" }));
+        } catch (err) {
+          console.error("Failed to copy link:", err);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     // Check initial login state
@@ -154,26 +237,60 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 flex items-center justify-between pointer-events-none ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center justify-between pointer-events-none ${
           scrolled
             ? theme === "light" && !isHomePage
-              ? "bg-white/90 backdrop-blur-md border-b border-neutral-200/50 py-4 px-6 md:px-12"
-              : "bg-[#0A0A0A]/65 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12"
-            : "bg-transparent py-6 md:py-8 px-6 md:px-12"
+              ? "bg-white/90 backdrop-blur-md border-b border-neutral-200/50 py-2 md:py-4 px-6 md:px-12"
+              : "bg-[#0A0A0A]/95 backdrop-blur-md border-b border-white/5 py-2 md:py-4 px-6 md:px-12"
+            : "bg-transparent py-3 md:py-8 px-6 md:px-12"
         }`}
       >
-        {/* Brand Logo */}
-        <div className="pointer-events-auto font-sans">
-          <Link
-            href="/"
-            className="block select-none hover:opacity-80 transition-all duration-300"
-          >
-            <img
-              src="/Logo/AA Real Estate.png"
-              alt="AA Traders Logo"
-              className="h-11 md:h-12 w-auto object-contain"
-            />
-          </Link>
+        {/* Brand Logo / Back Button */}
+        <div className="pointer-events-auto font-sans flex items-center">
+          {isPropertyDetailPage ? (
+            <>
+              {/* Back Button for Mobile Detail Page */}
+              <button
+                onClick={() => router.back()}
+                className={`md:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-full transition-colors active:scale-95 cursor-pointer
+                  ${theme === "light"
+                    ? "text-neutral-800 hover:bg-neutral-100"
+                    : "text-white hover:bg-white/10"
+                  }`}
+                aria-label="Go Back"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              {/* Desktop-only Logo on detail page */}
+              <div className="hidden md:block">
+                <Link
+                  href="/"
+                  className="block select-none hover:opacity-80 transition-all duration-300"
+                >
+                  <img
+                    src="/Logo/AA Real Estate.png"
+                    alt="AA Traders Logo"
+                    className="h-12 w-auto object-contain"
+                  />
+                </Link>
+              </div>
+            </>
+          ) : (
+            /* Regular logo for other pages */
+            <Link
+              href="/"
+              className="block select-none hover:opacity-80 transition-all duration-300"
+            >
+              <img
+                src="/Logo/AA Real Estate.png"
+                alt="AA Traders Logo"
+                className="h-9 md:h-12 w-auto object-contain"
+              />
+            </Link>
+          )}
         </div>
 
         {/* Minimalist Desktop Navigation Links */}
@@ -737,11 +854,11 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
 
         {/* Action Button, Theme Toggle & Mobile Menu Trigger */}
         <div className="pointer-events-auto font-sans flex items-center gap-4 relative">
-          {/* Theme Toggle (hidden on home page) */}
+          {/* Theme Toggle (hidden on home page, and hidden on mobile for detail page) */}
           {!isHomePage && (
             <button
               onClick={toggleTheme}
-              className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center border transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95
+              className={`${isPropertyDetailPage ? "hidden md:flex" : "flex"} w-9 h-9 md:w-10 md:h-10 rounded-full items-center justify-center border transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95
                 ${theme === "dark"
                   ? "bg-black border-white/10 text-white/60 hover:text-white hover:bg-neutral-900"
                   : "bg-white border-black/10 text-black/60 hover:text-black hover:bg-neutral-100"}`}
@@ -758,7 +875,69 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
             </button>
           )}
 
-          {/* Like Icon */}
+          {/* Mobile-only Property Detail Page Header Actions */}
+          {isPropertyDetailPage && (
+            <>
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className={`md:hidden flex w-9 h-9 items-center justify-center rounded-full transition-all duration-300 cursor-pointer active:scale-95
+                  ${theme === "light"
+                    ? "text-neutral-800 hover:bg-neutral-100"
+                    : "text-white hover:bg-white/10"
+                  }`}
+                title="Toggle Theme"
+              >
+                {theme === "dark" ? (
+                  <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                ) : (
+                  <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Save (Heart) Button */}
+              <button
+                onClick={handleSaveToggle}
+                className={`md:hidden flex w-9 h-9 items-center justify-center rounded-full transition-all duration-300 cursor-pointer active:scale-95
+                  ${theme === "light"
+                    ? "text-neutral-800 hover:bg-neutral-100"
+                    : "text-white hover:bg-white/10"
+                  }`}
+                title="Save Property"
+              >
+                {isSaved ? (
+                  <svg className="w-5.5 h-5.5 text-red-500 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Curved Share Arrow Button */}
+              <button
+                onClick={handleShareClick}
+                className={`md:hidden flex w-9 h-9 items-center justify-center rounded-full transition-all duration-300 cursor-pointer active:scale-95
+                  ${theme === "light"
+                    ? "text-neutral-800 hover:bg-neutral-100"
+                    : "text-white hover:bg-white/10"
+                  }`}
+                title="Share Property"
+              >
+                <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 8l6 6-6 6M21 14H10a8 8 0 00-8 8" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Like Icon — hidden on mobile (available in bottom menu bar) */}
           <button
             onClick={() => {
               if (isLoggedIn) {
@@ -767,7 +946,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
                 handleAuthButtonClick();
               }
             }}
-            className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center border transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95
+            className={`hidden md:flex w-9 h-9 md:w-10 md:h-10 rounded-full items-center justify-center border transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95
               ${theme === "dark" || isHomePage
                 ? "bg-black border-white/10 text-white/60 hover:text-white hover:bg-neutral-900"
                 : "bg-white border-black/10 text-black/60 hover:text-black hover:bg-neutral-100"}`}
@@ -792,8 +971,9 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
             </svg>
           </button>
 
+          {/* Profile / Login — hidden on mobile (available in bottom menu bar) */}
           {isLoggedIn ? (
-            <Link href="/profile" className="block relative">
+            <Link href="/profile" className="hidden md:block relative">
               <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border border-white/20 shadow-lg hover:border-white/40 hover:scale-105 cursor-pointer transition-all duration-300 relative select-none">
                 <img
                   src="/avatar1.png"
@@ -806,7 +986,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
           ) : (
             <button
               onClick={handleAuthButtonClick}
-              className={`px-6 py-2 border text-[10px] tracking-[0.2em] uppercase rounded-full cursor-pointer transition-colors
+              className={`hidden md:flex px-6 py-2 border text-[10px] tracking-[0.2em] uppercase rounded-full cursor-pointer transition-colors
                 ${theme === "light" && !isHomePage
                   ? "border-neutral-200 text-neutral-900 bg-neutral-100/50 hover:bg-neutral-100"
                   : "border-white/20 text-white bg-[#0A0A0A]/20 hover:bg-white/10"}`}
@@ -820,7 +1000,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
           {/* Mobile Hamburger Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden w-9 h-9 flex items-center justify-center rounded-xl border cursor-pointer hover:bg-white/10 active:scale-95 transition-all
+            className={`${isPropertyDetailPage ? "hidden" : "md:hidden"} w-9 h-9 flex items-center justify-center rounded-xl border cursor-pointer hover:bg-white/10 active:scale-95 transition-all
               ${theme === "light" && !isHomePage
                 ? "bg-neutral-100 border-neutral-200 text-neutral-800"
                 : "bg-white/5 border-white/10 text-white"}`}
@@ -843,118 +1023,292 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-30 bg-[#0A0A0A]/98 backdrop-blur-3xl px-6 pt-28 pb-12 flex flex-col justify-between md:hidden pointer-events-auto"
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-45 bg-[#0A0A0A]/98 backdrop-blur-3xl md:hidden pointer-events-auto flex flex-col"
           >
-            <div className="absolute top-1/4 left-1/4 w-[250px] h-[250px] rounded-full bg-purple-500/5 blur-[80px] pointer-events-none" />
-            <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-amber-500/5 blur-[100px] pointer-events-none" />
+            {/* Ambient glows */}
+            <div className="absolute top-1/3 left-1/4 w-[200px] h-[200px] rounded-full bg-purple-500/5 blur-[80px] pointer-events-none" />
+            <div className="absolute bottom-1/4 right-1/4 w-[250px] h-[250px] rounded-full bg-amber-500/5 blur-[100px] pointer-events-none" />
 
-            <div className="flex flex-col gap-6 font-sans relative z-10 pt-4">
-              <a
-                href="/properties?type=buy"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  if (isPropertiesPage && onSelectFilter) {
-                    e.preventDefault();
-                    onSelectFilter("buy", "all");
-                  } else {
-                    handleNavClick(e, 1, "/properties?type=buy");
-                  }
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
-              >
-                {t("buy")}
-              </a>
-              <a
-                href="/properties?type=rent"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  if (isPropertiesPage && onSelectFilter) {
-                    e.preventDefault();
-                    onSelectFilter("rent", "all");
-                  } else {
-                    handleNavClick(e, 2, "/properties?type=rent");
-                  }
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
-              >
-                {t("rent")}
-              </a>
-              <a
-                href="/?section=4"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 4, "/?section=4");
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
-              >
-                {t("newProjects")}
-              </a>
-              <a
-                href="/?section=6"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 6, "/?section=6");
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
-              >
-                {t("toolsInsights")}
-              </a>
-              <a
-                href="/?section=6"
-                onClick={(e) => {
-                  setIsMobileMenuOpen(false);
-                  handleNavClick(e, 6, "/?section=6");
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5"
-              >
-                {t("findAgents")}
-              </a>
+            {/* Scrollable Nav List */}
+            <div className="flex-1 overflow-y-auto pt-[72px] pb-28 relative z-10 font-sans">
 
-              {/* Language Selection Trigger (Mobile Only) */}
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setPrefActiveTab("language");
-                  setIsPrefModalOpen(true);
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5 flex items-center justify-between cursor-pointer w-full text-left bg-transparent border-0"
-              >
-                <span>{language === "ar" ? "اللغة" : language === "ru" ? "Язык" : "Language"}</span>
-                <span className="text-xs font-semibold tracking-normal text-[#EFBF04] uppercase flex items-center gap-1.5 font-sans">
-                  <span>
-                    {language === "en" ? "English" : language === "ru" ? "Русский" : language === "ar" ? "العربية" : language.toUpperCase()}
+              {/* â”€â”€â”€ BUY â”€â”€â”€ */}
+              <div className="border-b border-white/8">
+                <button
+                  onClick={() => toggleMobileAccordion("buy")}
+                  className="w-full flex items-center justify-between px-6 py-5 text-[17px] font-semibold text-white/90 hover:text-white transition-colors cursor-pointer bg-transparent"
+                >
+                  <span>{t("buy")}</span>
+                  <svg className={`w-5 h-5 text-white/40 transition-transform duration-200 ${mobileAccordionOpen === "buy" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {mobileAccordionOpen === "buy" && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: "easeInOut" }}
+                      className="overflow-hidden bg-white/[0.02]"
+                    >
+                      <div className="px-6 pt-2 pb-4 flex flex-col">
+                        {/* Residential */}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-3 pb-2">Residential for Sale</p>
+                        {[["Apartments","apartments"],["Villas","villas"],["Townhouses","townhouses"],["Penthouses","penthouses"],["Land / Plots","plots"]].map(([label, cat]) => (
+                          <button key={cat} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); if (isPropertiesPage && onSelectFilter) onSelectFilter("buy", cat); else router.push(`/properties?type=buy&category=${cat}`); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{label} for Sale</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        {/* Buyer Tools */}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Buyer Tools</p>
+                        {["Mortgage Calculator","Property Valuation","Investment ROI Calculator","Sale Price Map"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=6"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        {/* Buying Insights */}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Buying Insights</p>
+                        {["Buyer's Guide","Area Insights","Community Guides","Off-Plan Projects"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=4"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* â”€â”€â”€ RENT â”€â”€â”€ */}
+              <div className="border-b border-white/8">
+                <button
+                  onClick={() => toggleMobileAccordion("rent")}
+                  className="w-full flex items-center justify-between px-6 py-5 text-[17px] font-semibold text-white/90 hover:text-white transition-colors cursor-pointer bg-transparent"
+                >
+                  <span>{t("rent")}</span>
+                  <svg className={`w-5 h-5 text-white/40 transition-transform duration-200 ${mobileAccordionOpen === "rent" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {mobileAccordionOpen === "rent" && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: "easeInOut" }}
+                      className="overflow-hidden bg-white/[0.02]"
+                    >
+                      <div className="px-6 pt-2 pb-4 flex flex-col">
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-3 pb-2">Residential for Rent</p>
+                        {[["Apartments","apartments"],["Studios","studios"],["Villas","villas"],["Townhouses","townhouses"],["Penthouses","penthouses"]].map(([label, cat]) => (
+                          <button key={cat} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); if (isPropertiesPage && onSelectFilter) onSelectFilter("rent", cat); else router.push(`/properties?type=rent&category=${cat}`); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{label} for Rent</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Renter Tools</p>
+                        {["Rent vs Buy Calculator","Rental Price Map","Budget Calculator","Tenant Rights Guide"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=6"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Renting Insights</p>
+                        {["Renter's Guide","Area Insights","Community Guides","Short-Term Rentals"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=2"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* â”€â”€â”€ NEW PROJECTS â”€â”€â”€ */}
+              <div className="border-b border-white/8">
+                <button
+                  onClick={() => toggleMobileAccordion("projects")}
+                  className="w-full flex items-center justify-between px-6 py-5 text-[17px] font-semibold text-white/90 hover:text-white transition-colors cursor-pointer bg-transparent"
+                >
+                  <span>{t("newProjects")}</span>
+                  <svg className={`w-5 h-5 text-white/40 transition-transform duration-200 ${mobileAccordionOpen === "projects" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {mobileAccordionOpen === "projects" && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: "easeInOut" }}
+                      className="overflow-hidden bg-white/[0.02]"
+                    >
+                      <div className="px-6 pt-2 pb-4 flex flex-col">
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-3 pb-2">By Emirate</p>
+                        {["Dubai","Abu Dhabi","Sharjah","Ras Al Khaimah"].map(city => (
+                          <button key={city} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=4"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>New Projects in {city}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Top Developers</p>
+                        {[["Emaar Properties","/developers/emaar"],["Azizi Developments","/developers/azizi-developments"],["Aldar Properties","/developers/aldar-properties"],["Damac Properties","/developers/damac"],["Sobha Realty","/developers/sobha-realty"]].map(([label, href]) => (
+                          <button key={label} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push(href); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{label}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Investing Insights</p>
+                        {["Investor's Guide","Areas to Invest","Off-Plan Market Reports","Golden Visa Guidelines"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=4"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* â”€â”€â”€ TOOLS & INSIGHTS â”€â”€â”€ */}
+              <div className="border-b border-white/8">
+                <button
+                  onClick={() => toggleMobileAccordion("tools")}
+                  className="w-full flex items-center justify-between px-6 py-5 text-[17px] font-semibold text-white/90 hover:text-white transition-colors cursor-pointer bg-transparent"
+                >
+                  <span>{t("toolsInsights")}</span>
+                  <svg className={`w-5 h-5 text-white/40 transition-transform duration-200 ${mobileAccordionOpen === "tools" ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <AnimatePresence initial={false}>
+                  {mobileAccordionOpen === "tools" && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: "easeInOut" }}
+                      className="overflow-hidden bg-white/[0.02]"
+                    >
+                      <div className="px-6 pt-2 pb-4 flex flex-col">
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-3 pb-2">Tools</p>
+                        {["Mortgage Calculator","Rent vs Buy Calculator","Property Valuation","Investment ROI Calculator"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=6"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Market Insights</p>
+                        {["Dubai Market Trends","Property Price Index","Transaction Reports","Area Price Maps"].map(item => (
+                          <button key={item} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=4"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{item}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                        <p className="text-[11px] tracking-[0.14em] uppercase text-white/30 font-bold pt-4 pb-2">Popular Communities</p>
+                        {["Dubai Marina","Palm Jumeirah","Downtown Dubai","Arabian Ranches","JVC","Business Bay"].map(area => (
+                          <button key={area} onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/properties"); }}
+                            className="flex items-center justify-between w-full text-left text-[15px] text-white/70 hover:text-white py-3 border-b border-white/5 transition-colors last:border-0">
+                            <span>{area}</span>
+                            <svg className="w-3.5 h-3.5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* â”€â”€â”€ FIND AGENTS â”€â”€â”€ */}
+              <div className="border-b border-white/8">
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); router.push("/?section=6"); }}
+                  className="w-full flex items-center justify-between px-6 py-5 text-[17px] font-semibold text-white/90 hover:text-white transition-colors cursor-pointer bg-transparent"
+                >
+                  <span>{t("findAgents")}</span>
+                  <svg className="w-5 h-5 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* â”€â”€â”€ Language & Currency â”€â”€â”€ */}
+              <div className="mx-6 mt-2">
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); setPrefActiveTab("language"); setIsPrefModalOpen(true); }}
+                  className="flex items-center justify-between w-full py-4 border-b border-white/5 text-[15px] font-medium text-white/50 hover:text-white/80 transition-colors cursor-pointer bg-transparent"
+                >
+                  <span className="flex items-center gap-3">
+                    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}><circle cx="12" cy="12" r="10"/><path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    {language === "ar" ? "Ø§Ù„Ù„ØºØ©" : language === "ru" ? "Ð¯Ð·Ñ‹Ðº" : "Language"}
                   </span>
-                  <svg className="w-3.5 h-3.5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </button>
+                  <span className="text-[13px] font-bold text-[#EFBF04] flex items-center gap-1.5">
+                    {language === "en" ? "English" : language === "ru" ? "Ð ÑƒÑÑÐºÐ¸Ð¹" : language === "ar" ? "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©" : language.toUpperCase()}
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  </span>
+                </button>
+                <button
+                  onClick={() => { toggleTheme(); }}
+                  className="flex items-center justify-between w-full py-4 border-b border-white/5 text-[15px] font-medium text-white/50 hover:text-white/80 transition-colors cursor-pointer bg-transparent"
+                >
+                  <span className="flex items-center gap-3">
+                    {theme === "dark" ? (
+                      <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                      </svg>
+                    )}
+                    Theme Mode
+                  </span>
+                  <span className="text-[13px] font-bold text-[#EFBF04] flex items-center gap-1.5">
+                    {theme === "dark" ? "Dark" : "Light"}
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  </span>
+                </button>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); setMobileAccordionOpen(null); setPrefActiveTab("currency"); setIsPrefModalOpen(true); }}
+                  className="flex items-center justify-between w-full py-4 border-b border-white/5 text-[15px] font-medium text-white/50 hover:text-white/80 transition-colors cursor-pointer bg-transparent"
+                >
+                  <span className="flex items-center gap-3">
+                    <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path strokeLinecap="round" d="M6 10h.01M18 15h.01"/></svg>
+                    {language === "ar" ? "Ø§Ù„Ø¹Ù…Ù„Ø©" : language === "ru" ? "Ð’Ð°Ð»ÑŽÑ‚Ð°" : "Currency"}
+                  </span>
+                  <span className="text-[13px] font-bold text-[#EFBF04] flex items-center gap-1.5">
+                    {currency}
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  </span>
+                </button>
+              </div>
 
-              {/* Currency Selection Trigger (Mobile Only) */}
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setPrefActiveTab("currency");
-                  setIsPrefModalOpen(true);
-                }}
-                className="text-lg tracking-[0.2em] uppercase font-bold text-white/80 hover:text-white transition-colors py-2.5 border-b border-white/5 flex items-center justify-between cursor-pointer w-full text-left bg-transparent border-0"
-              >
-                <span>{language === "ar" ? "العملة" : language === "ru" ? "Валюта" : "Currency"}</span>
-                <span className="text-xs font-semibold tracking-normal text-[#EFBF04] uppercase flex items-center gap-1.5 font-sans">
-                  <span>{currency}</span>
-                  <svg className="w-3.5 h-3.5 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </button>
-            </div>
-
-            <div className="font-sans text-center relative z-10">
-              <p className="text-[9px] tracking-[0.25em] uppercase text-white/20 font-light">
+              {/* Footer */}
+              <p className="mt-8 text-[9px] tracking-[0.25em] uppercase text-white/15 font-light text-center">
                 AA TRADERS DEVELOPMENTS &copy; 2026
               </p>
             </div>
@@ -965,7 +1319,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
       {/* Preferences Modal (Language / Currency) */}
       <AnimatePresence>
         {isPrefModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto bg-black/60 backdrop-blur-sm p-4">
+          <div className="fixed inset-0 z-60 flex items-center justify-center pointer-events-auto bg-black/60 backdrop-blur-sm p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1300,7 +1654,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
 
       {/* Mobile Bottom Navigation / Property Detail Contact Bar (Conditional) */}
       {isPropertyDetailPage ? (
-        <div className={`fixed bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-center gap-6 px-6 border-t transition-all duration-500 h-[76px] pb-safe
+        <div className={`fixed bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-center gap-6 px-6 border-t transition-all duration-500 h-[76px] pb-safe pointer-events-auto
           ${theme === "light"
             ? "bg-white/95 backdrop-blur-md border-neutral-200/60 shadow-[0_-8px_30px_rgba(0,0,0,0.06)]"
             : "bg-[#0A0A0A]/95 backdrop-blur-md border-white/5 shadow-[0_-8px_30px_rgba(0,0,0,0.4)]"
@@ -1353,7 +1707,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
           </button>
         </div>
       ) : (
-        <div className={`fixed bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-around px-2 border-t transition-all duration-500 h-[68px] pb-safe
+        <div className={`fixed bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-around px-2 border-t transition-all duration-500 h-[68px] pb-safe pointer-events-auto
           ${theme === "light" && !isHomePage
             ? "bg-white/95 backdrop-blur-md border-neutral-200/60 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] text-neutral-600"
             : "bg-[#0A0A0A]/95 backdrop-blur-md border-white/5 shadow-[0_-8px_30px_rgba(0,0,0,0.4)] text-white/60"
@@ -1370,7 +1724,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
             <span className="text-[10px] tracking-wide mt-1">
-              {language === "ar" ? "الرئيسية" : language === "ru" ? "Главная" : "Home"}
+              {language === "ar" ? "Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©" : language === "ru" ? "Ð“Ð»Ð°Ð²Ð½Ð°Ñ" : "Home"}
             </span>
           </Link>
 
@@ -1385,7 +1739,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <span className="text-[10px] tracking-wide mt-1">
-              {language === "ar" ? "البحث" : language === "ru" ? "Поиск" : "Search"}
+              {language === "ar" ? "Ø§Ù„Ø¨Ø­Ø«" : language === "ru" ? "ÐŸÐ¾Ð¸ÑÐº" : "Search"}
             </span>
           </Link>
 
@@ -1406,7 +1760,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
             <span className="text-[10px] tracking-wide mt-1">
-              {language === "ar" ? "المشاريع" : language === "ru" ? "Проекты" : "Projects"}
+              {language === "ar" ? "Ø§Ù„Ù…Ø´Ø§Ø±ÙŠØ¹" : language === "ru" ? "ÐŸÑ€Ð¾ÐµÐºÑ‚Ñ‹" : "Projects"}
             </span>
           </Link>
 
@@ -1429,7 +1783,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <span className="text-[10px] tracking-wide mt-1">
-              {language === "ar" ? "المفضلة" : language === "ru" ? "Избранное" : "Saved"}
+              {language === "ar" ? "Ø§Ù„Ù…ÙØ¶Ù„Ø©" : language === "ru" ? "Ð˜Ð·Ð±Ñ€Ð°Ð½Ð½Ð¾Ðµ" : "Saved"}
             </span>
           </button>
 
@@ -1458,7 +1812,7 @@ export default function Header({ onSelectFilter, activeType }: HeaderProps) {
               </svg>
             )}
             <span className="text-[10px] tracking-wide mt-1">
-              {language === "ar" ? "حسابي" : language === "ru" ? "Кабинет" : "Profile"}
+              {language === "ar" ? "Ø­Ø³Ø§Ø¨ÙŠ" : language === "ru" ? "ÐšÐ°Ð±Ð¸Ð½ÐµÑ‚" : "Profile"}
             </span>
           </button>
         </div>

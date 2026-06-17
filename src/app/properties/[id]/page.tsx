@@ -9,6 +9,7 @@ import DeveloperLogo from "@/components/DeveloperLogo";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { InteractiveMenu } from "@/components/ui/modern-mobile-menu";
 
 // ─── Icons ──────────────────────────────────────────────────────────────────
 const PinIcon = () => (
@@ -334,6 +335,7 @@ export default function PropertyDetailPage({
   const { theme, toggle: toggleTheme } = useTheme();
   const { formatPrice, formatArea, currency } = usePreferences();
   const pageContainerRef = useRef<HTMLDivElement>(null);
+  const subNavContainerRef = useRef<HTMLDivElement>(null);
 
   const propertyId = parseInt(id, 10);
   const property = PROPERTIES_DATA.find((p) => p.id === propertyId);
@@ -365,12 +367,31 @@ export default function PropertyDetailPage({
   const [isDevModalOpen, setIsDevModalOpen] = useState(false);
   const [isDescExpanded, setIsDescExpanded] = useState(false);
 
-  // Load initial saved status from localStorage
+  // Load initial saved status from localStorage and listen to external changes (e.g. from header)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedList = JSON.parse(localStorage.getItem("savedProperties") || "[]");
       setIsSaved(savedList.includes(propertyId));
     }
+
+    const handleSavedChange = (e: Event) => {
+      const customEvent = e as CustomEvent<number[]>;
+      setIsSaved(customEvent.detail.includes(propertyId));
+    };
+
+    const handleToastEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      setToastMessage(customEvent.detail);
+      setTimeout(() => setToastMessage(null), 3000);
+    };
+
+    window.addEventListener("savedPropertiesChange", handleSavedChange);
+    window.addEventListener("propertyDetailToast", handleToastEvent);
+
+    return () => {
+      window.removeEventListener("savedPropertiesChange", handleSavedChange);
+      window.removeEventListener("propertyDetailToast", handleToastEvent);
+    };
   }, [propertyId]);
 
   const handleSaveToggle = () => {
@@ -536,7 +557,8 @@ export default function PropertyDetailPage({
     ];
 
     const handleScroll = () => {
-      const scrollPos = container.scrollTop + 180; // adjusted for header offset
+      const isMobile = window.innerWidth < 768;
+      const scrollPos = container.scrollTop + (isMobile ? 130 : 180); // adjusted for header offset
 
       for (const section of sections) {
         const el = document.getElementById(section);
@@ -590,6 +612,26 @@ export default function PropertyDetailPage({
 
   // Active Navigation Section state
   const [activeSection, setActiveSection] = useState("gallery");
+
+  // Mobile Active Image Index state for horizontal slider
+  const [mobileActiveImageIndex, setMobileActiveImageIndex] = useState(0);
+
+  // Auto-scroll sub-nav horizontally to center active section on mobile
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768 && activeSection && subNavContainerRef.current) {
+      const activeBtn = document.getElementById(`sub-nav-btn-${activeSection}`);
+      const container = subNavContainerRef.current;
+      if (activeBtn && container) {
+        const containerRect = container.getBoundingClientRect();
+        const btnRect = activeBtn.getBoundingClientRect();
+        const scrollLeftTarget = container.scrollLeft + (btnRect.left - containerRect.left) - (containerRect.width / 2) + (btnRect.width / 2);
+        container.scrollTo({
+          left: scrollLeftTarget,
+          behavior: "smooth"
+        });
+      }
+    }
+  }, [activeSection]);
 
   // Mortgage Calculator States
   const [mortgageDownPaymentPercent, setMortgageDownPaymentPercent] = useState(20);
@@ -932,7 +974,7 @@ export default function PropertyDetailPage({
       <Header />
 
       {/* ── Main Layout ── */}
-      <main className="relative z-10 w-full pt-36 pb-0">
+      <main className="relative z-10 w-full pt-20 md:pt-36 pb-0">
         <div className="w-full px-6 md:px-12">
         
         {/* Navigation Breadcrumbs / Back Row */}
@@ -1061,7 +1103,7 @@ export default function PropertyDetailPage({
         </div>
 
         {/* Mobile Save, Share, Report Action Group */}
-        <div className="flex md:hidden items-center gap-3 mb-8 select-none">
+        <div className="hidden items-center gap-3 mb-8 select-none">
           {/* Save Button */}
           <button
             onClick={handleSaveToggle}
@@ -1157,13 +1199,13 @@ export default function PropertyDetailPage({
         </div>
 
         {/* ── Sub-Navigation Bar ── */}
-        <div className={`sticky top-[73px] z-30 border-b backdrop-blur-md transition-all duration-300 -mx-6 md:-mx-12 px-6 md:px-12 w-[calc(100%+3rem)] md:w-[calc(100%+6rem)] mb-8
+        <div className={`sticky top-[53px] md:top-[81px] z-30 border-b backdrop-blur-md transition-all duration-300 -mx-6 md:-mx-12 px-6 md:px-12 w-[calc(100%+3rem)] md:w-[calc(100%+6rem)] mb-8
           ${theme === "light"
             ? "bg-white/75 border-neutral-200/50 text-neutral-800"
             : "bg-[#0A0A0A]/70 border-white/5 text-white/90"}`}
         >
           <div className="w-full">
-            <div className="flex items-center justify-start md:justify-between overflow-x-auto md:overflow-visible scrollbar-none gap-6 md:gap-0 h-14 md:h-16 text-xs font-semibold select-none whitespace-nowrap w-full">
+            <div ref={subNavContainerRef} className="flex items-center justify-start md:justify-between overflow-x-auto md:overflow-visible scrollbar-none gap-6 md:gap-0 h-14 md:h-16 text-xs font-semibold select-none whitespace-nowrap w-full">
               {[
                 { id: "gallery", label: "Gallery" },
                 { id: "description", label: "Description" },
@@ -1177,11 +1219,13 @@ export default function PropertyDetailPage({
                 return (
                   <button
                     key={tab.id}
+                    id={`sub-nav-btn-${tab.id}`}
                     onClick={() => {
                       const el = document.getElementById(tab.id);
                       const container = pageContainerRef.current;
                       if (el && container) {
-                        const headerOffset = 145; // main header (80) + sub-nav (65)
+                        const isMobile = window.innerWidth < 768;
+                        const headerOffset = isMobile ? 110 : 145; // main header + sub-nav
                         const containerRect = container.getBoundingClientRect();
                         const elementPosition = el.getBoundingClientRect().top;
                         const offsetPosition = elementPosition - containerRect.top + container.scrollTop - headerOffset;
@@ -1212,106 +1256,227 @@ export default function PropertyDetailPage({
           </div>
         </div>
 
-        {/* ── Image Gallery Grid ── */}
-        <div id="gallery" className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
-          {/* Left Side: Large primary landscape image or Video player */}
-          <div className="lg:col-span-2 relative aspect-[21/9] sm:aspect-[21/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-xl group bg-neutral-950">
-            <AnimatePresence mode="wait">
-              {mediaType === "photo" ? (
-                <motion.div
-                  key="photo"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0 w-full h-full"
-                >
-                  <img
-                    src={property.image}
-                    alt={property.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
-                  
-                  {/* Subtle glassmorphic play button in center */}
+        {/* ── Image Gallery Grid/Carousel ── */}
+        <div id="gallery" className="mb-8 w-full">
+          {/* Mobile Swipeable Gallery (visible only on mobile/tablet) */}
+          <div className="block lg:hidden relative w-full">
+            <div 
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-3 w-full rounded-[2rem]"
+              onScroll={(e) => {
+                const target = e.currentTarget;
+                const index = Math.round(target.scrollLeft / target.clientWidth);
+                setMobileActiveImageIndex(index);
+              }}
+            >
+              {/* Slide 1: Main Photo or Video */}
+              <div className="w-full shrink-0 snap-center relative aspect-[4/3] sm:aspect-[16/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-xl bg-neutral-950">
+                <AnimatePresence mode="wait">
+                  {mediaType === "photo" ? (
+                    <motion.div
+                      key="photo"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 w-full h-full"
+                    >
+                      <img
+                        src={property.image}
+                        alt={property.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                      
+                      {/* Play button */}
+                      <button
+                        onClick={() => setMediaType("video")}
+                        className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 active:scale-95 transition-all duration-300 shadow-2xl cursor-pointer"
+                      >
+                        <svg className="w-5 h-5 text-white fill-white translate-x-0.5" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="video"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 w-full h-full bg-black"
+                    >
+                      <video
+                        src="/Section 2 Video/Bg3JpCFVhXQn97VzoZ1IHBgQMBg.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        controls
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Switcher overlay */}
+                <div className="absolute bottom-4 left-4 z-20 flex gap-2">
+                  <button
+                    onClick={() => setMediaType("photo")}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-normal transition-all duration-300 flex items-center gap-1 cursor-pointer border shadow-md
+                      ${mediaType === "photo"
+                        ? "bg-white border-white text-black"
+                        : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
+                  >
+                    Photos
+                  </button>
                   <button
                     onClick={() => setMediaType("video")}
-                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 active:scale-95 transition-all duration-300 shadow-2xl cursor-pointer group-hover:scale-105"
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-normal transition-all duration-300 flex items-center gap-1 cursor-pointer border shadow-md
+                      ${mediaType === "video"
+                        ? "bg-white border-white text-black"
+                        : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
                   >
-                    <svg className="w-6 h-6 text-white fill-white translate-x-0.5" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+                    Video
                   </button>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="video"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0 w-full h-full bg-black"
-                >
-                  <video
-                    src="/Section 2 Video/Bg3JpCFVhXQn97VzoZ1IHBgQMBg.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    controls
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </div>
 
-            {/* Premium Media Switcher Overlay */}
-            <div className="absolute bottom-6 left-6 z-20 flex gap-2">
-              <button
-                onClick={() => setMediaType("photo")}
-                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-normal transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
-                  ${mediaType === "photo"
-                    ? "bg-white border-white text-black"
-                    : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Photos
-              </button>
-              <button
-                onClick={() => setMediaType("video")}
-                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-normal transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
-                  ${mediaType === "video"
-                    ? "bg-white border-white text-black"
-                    : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                3D Video / Tour
-              </button>
+              {/* Slide 2: Gallery Image 1 */}
+              <div className="w-full shrink-0 snap-center relative aspect-[4/3] sm:aspect-[16/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-xl bg-neutral-950">
+                <img
+                  src={galleryImage1}
+                  alt="Interior perspective"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              </div>
+
+              {/* Slide 3: Gallery Image 2 */}
+              <div className="w-full shrink-0 snap-center relative aspect-[4/3] sm:aspect-[16/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-xl bg-neutral-950">
+                <img
+                  src={galleryImage2}
+                  alt="Architectural landscape"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Dot Indicators */}
+            <div className="absolute bottom-4 right-4 flex gap-1.5 z-25 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 select-none">
+              {[0, 1, 2].map((idx) => (
+                <div 
+                  key={idx}
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                    mobileActiveImageIndex === idx ? "bg-[#EFBF04] scale-125" : "bg-white/40"
+                  }`}
+                />
+              ))}
             </div>
           </div>
 
-          {/* Right Side: Two stacked smaller images */}
-          <div className="flex flex-col sm:flex-row lg:flex-col gap-4">
-            <div className="flex-1 relative aspect-[16/10] sm:aspect-auto lg:h-[155px] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg group">
-              <img
-                src={galleryImage1}
-                alt="Interior perspective"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+          {/* Desktop Gallery Grid (visible only on desktop) */}
+          <div className="hidden lg:grid lg:grid-cols-3 gap-3">
+            {/* Left Side: Large primary landscape image or Video player */}
+            <div className="lg:col-span-2 relative aspect-[21/9] sm:aspect-[21/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-xl group bg-neutral-950">
+              <AnimatePresence mode="wait">
+                {mediaType === "photo" ? (
+                  <motion.div
+                    key="photo"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    <img
+                      src={property.image}
+                      alt={property.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                    
+                    {/* Subtle glassmorphic play button in center */}
+                    <button
+                      onClick={() => setMediaType("video")}
+                      className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 active:scale-95 transition-all duration-300 shadow-2xl cursor-pointer group-hover:scale-105"
+                    >
+                      <svg className="w-6 h-6 text-white fill-white translate-x-0.5" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="video"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 w-full h-full bg-black"
+                  >
+                    <video
+                      src="/Section 2 Video/Bg3JpCFVhXQn97VzoZ1IHBgQMBg.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Premium Media Switcher Overlay */}
+              <div className="absolute bottom-6 left-6 z-20 flex gap-2">
+                <button
+                  onClick={() => setMediaType("photo")}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold tracking-normal transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
+                    ${mediaType === "photo"
+                      ? "bg-white border-white text-black"
+                      : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Photos
+                </button>
+                <button
+                  onClick={() => setMediaType("video")}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold tracking-normal transition-all duration-300 flex items-center gap-1.5 cursor-pointer border shadow-md
+                    ${mediaType === "video"
+                      ? "bg-white border-white text-black"
+                      : "bg-black/60 backdrop-blur-md border-white/10 text-white hover:bg-black/80"}`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  3D Video / Tour
+                </button>
+              </div>
             </div>
-            <div className="flex-1 relative aspect-[16/10] sm:aspect-auto lg:h-[155px] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg group">
-              <img
-                src={galleryImage2}
-                alt="Architectural landscape"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+
+            {/* Right Side: Two stacked smaller images */}
+            <div className="flex flex-col gap-4">
+              <div className="flex-1 relative h-[155px] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg group">
+                <img
+                  src={galleryImage1}
+                  alt="Interior perspective"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              </div>
+              <div className="flex-1 relative h-[155px] rounded-[2rem] overflow-hidden border border-white/5 shadow-lg group">
+                <img
+                  src={galleryImage2}
+                  alt="Architectural landscape"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              </div>
             </div>
           </div>
         </div>
@@ -2196,7 +2361,7 @@ export default function PropertyDetailPage({
                       ? "bg-[#EFBF04]/10 border-[#EFBF04]/25 text-[#EFBF04]" 
                       : "bg-[#EFBF04]/10 border-[#EFBF04]/20 text-[#EFBF04] shadow-[0_0_15px_rgba(239,191,4,0.1)]"}`}
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-5 h-5 text-[#EFBF04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                   </div>
@@ -2206,7 +2371,7 @@ export default function PropertyDetailPage({
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors
                   ${theme === "light" ? "hover:bg-neutral-100 text-neutral-500" : "hover:bg-white/5 text-white/50"}`}
                 >
-                  <svg className={`w-4 h-4 transition-transform duration-300 ${isPlotDocsOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isPlotDocsOpen ? "rotate-180" : ""} ${theme === "light" ? "text-neutral-500" : "text-white/50"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -2236,9 +2401,9 @@ export default function PropertyDetailPage({
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300
                               ${theme === "light"
                                 ? "bg-[#EFBF04]/8 border-[#EFBF04]/20 text-[#EFBF04]"
-                                : "bg-[#EFBF04]/8 border-[#EFBF04]/15 text-[#EFBF04]"}`}
+                                : "bg-[#EFBF04]/8 border-[#EFBF04]/15 text-white"}`}
                             >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <svg className={`w-5 h-5 ${theme === "light" ? "text-[#EFBF04]" : "text-white"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                               </svg>
                             </div>
@@ -2270,7 +2435,7 @@ export default function PropertyDetailPage({
                                 : "bg-[#202020]/40 border-white/5 text-white/50 hover:text-[#EFBF04] hover:border-[#EFBF04]/20 hover:bg-[#EFBF04]/5"}`}
                             title={`Download ${doc.name}`}
                           >
-                            <svg className="w-4.5 h-4.5 fill-none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className={`w-4.5 h-4.5 fill-none ${theme === "light" ? "text-neutral-500" : "text-white/50"} group-hover:text-[#EFBF04] transition-colors duration-300`} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
                           </a>
@@ -3719,6 +3884,10 @@ export default function PropertyDetailPage({
         )}
       </AnimatePresence>
 
+      {/* Mobile view bottom bar */}
+      <div className="md:hidden">
+        <InteractiveMenu />
+      </div>
     </div>
   );
 }
